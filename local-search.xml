@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>Small-step 操作语义</title>
+    <link href="/2022/03/03/Small-step-%E6%93%8D%E4%BD%9C%E8%AF%AD%E4%B9%89/"/>
+    <url>/2022/03/03/Small-step-%E6%93%8D%E4%BD%9C%E8%AF%AD%E4%B9%89/</url>
+    
+    <content type="html"><![CDATA[<h1 id="small-step-operational-semantics">Small-step Operational Semantics</h1><h2 id="简介">简介</h2><p>程序所要表达的"意思"是什么? 当我们写程序的时候, 用不同种类的字符按照特定的顺序编成代码. 但是以某种特定语法(syntax)形式所构成的仅仅是程序自身而已, 并不能说明程序所包含的意义. 或许在程序执行的时候, 我们可以用解释器去定义一段程序的意思. 但是解释器或者编译器中不可避免地会有bug, 也就是说解释器或者编译器并不能准确地反映出程序的意义. 所以, 必须要找到能够表达程序意思的方法. 这个方法就是, 要给出语言语义的形式化的数学定义. 形式化的定义主要有如下几个好处: + <strong>较少歧义</strong>. 语言的行为的明晰的, 这对那些需要用该语言编程的人员是有用的, 为该语言实现一个编译器或者解释器, 或者为语言添加新的特性等等. + <strong>更加精确</strong>. 数学形式的概念和符号能够精确且准确地描述一种语言, 并且说明合法程序中的一些限制. + <strong>形式化论证</strong>. 形式化的语义允许我们说明和证明需求的程序性质.</p><p>但是, 形式化的语义可能导致复杂的数学模型, 尤其当尝试对一个具有复杂特性的编程语言的所有细节进行描述时. 现实世界中的编程语言很少有形式化的语义描述, 因为编程语言很复杂, 有很多的特性, 难度很大. 为了能够描述这些语言特性, 用于建模的数学公式或者符号必定非常复杂且难以理解. 那么, 就需要重新设计一套基于数学符号的能够精确对语言特性进行建模的形式化规范. 那么, 在学术和应用研究中通常使用三种方法对编程语言的语义进行形式化的描述: + <strong>操作语义(operational semantics)</strong>: 描述程序在一个抽象机器上是如何执行的. + <strong>指称语义(denotational semantics)</strong>: 讲程序建模为数学上的函数形式. + <strong>公理语义(axiomatic semantics)</strong>: 以逻辑表达式的形式对满足程序执行前后的行为进行定义.</p><p>以上三种方法在不同的应用场景都有各自的优缺点. 感兴趣的读者可以阅读综述文章<a href="http://www.jos.org.cn/html/2019/1/5652.htm">形式化方法概貌</a>.</p><h2 id="简易语言的算术表达式">简易语言的算术表达式</h2><p>为了介绍操作语义, 先设计一个简单的语言, 基于该语言能够实现基本的算术运算. 使用下列域(domain)来描述该语言的结构: <span class="math display">\[\begin{aligned}x,y,z   &amp;\in \mathbf{Var}\\n,m     &amp;\in \mathbf{Int}\\e       &amp;\in \mathbf{Exp}\end{aligned}\]</span> 其中, <span class="math inline">\(\mathbf{Var}\)</span> 是变量<strong>名</strong>的集合(例如, foo, bar). <span class="math inline">\(\mathbf{Int}\)</span> 是整型常量的集合(例如, 42). <span class="math inline">\(\mathbf{Exp}\)</span> 是表达式所在域, 这里我们使用 BNF 范式对表达式进行语法的定义: <span class="math display">\[e::=x\ |\ n\ |\ e_1+e_2\ |\ e_1\times e_2\ |\ x:=e_1;e_2\]</span> 表达式 <span class="math inline">\(x:=e_1;e_2\)</span> 说明变量 <span class="math inline">\(x\)</span> 先赋值为 <span class="math inline">\(e_1\)</span>, 后被赋值为 <span class="math inline">\(e_2\)</span>, 范式中其他各项的含义不再做详细说明.</p><p>上述的语法为语言指定了格式. 但是存在歧义. 比如表达式 <span class="math inline">\(1+2\times 3\)</span>, 根据语法可以构造出两个不同的抽象语法树(abstract syntax tree).</p><p><img src="../img/operseman/ast.png" /></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>逻辑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>语义</tag>
+      
+      <tag>推理规则</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>线性演算</title>
     <link href="/2022/02/13/%E7%BA%BF%E6%80%A7%E6%BC%94%E7%AE%97/"/>
     <url>/2022/02/13/%E7%BA%BF%E6%80%A7%E6%BC%94%E7%AE%97/</url>
