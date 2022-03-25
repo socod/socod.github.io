@@ -6,7 +6,7 @@
   <link href="https://socod.github.io/atom.xml" rel="self"/>
   
   <link href="https://socod.github.io/"/>
-  <updated>2022-03-11T02:07:39.340Z</updated>
+  <updated>2022-03-25T05:45:15.098Z</updated>
   <id>https://socod.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Bit Vectors</title>
+    <link href="https://socod.github.io/BitVector/"/>
+    <id>https://socod.github.io/BitVector/</id>
+    <published>2022-03-25T05:36:33.000Z</published>
+    <updated>2022-03-25T05:45:15.098Z</updated>
+    
+    
+    <summary type="html">介绍位向量与位向量演算的判定方法.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="数据验证" scheme="https://socod.github.io/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/"/>
+    
+  </entry>
   
   <entry>
     <title>线性演算(二)</title>
