@@ -6,7 +6,7 @@
   <link href="https://socod.github.io/atom.xml" rel="self"/>
   
   <link href="https://socod.github.io/"/>
-  <updated>2022-04-05T05:05:04.936Z</updated>
+  <updated>2022-06-10T09:30:06.407Z</updated>
   <id>https://socod.github.io/</id>
   
   <author>
@@ -17,20 +17,14 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>BVSolver</title>
+    <title>Bit Vectors (2)</title>
     <link href="https://socod.github.io/BVSolver/"/>
     <id>https://socod.github.io/BVSolver/</id>
     <published>2022-04-05T04:58:59.000Z</published>
-    <updated>2022-04-05T05:05:04.936Z</updated>
+    <updated>2022-06-10T09:30:06.407Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html"></summary>
-        
-      
+    <summary type="html">介绍位向量求解算法.</summary>
     
     
     
@@ -42,11 +36,11 @@
   </entry>
   
   <entry>
-    <title>Bit Vectors</title>
+    <title>Bit Vectors (1)</title>
     <link href="https://socod.github.io/BitVector/"/>
     <id>https://socod.github.io/BitVector/</id>
     <published>2022-03-25T05:36:33.000Z</published>
-    <updated>2022-03-25T05:45:15.098Z</updated>
+    <updated>2022-06-10T09:25:50.808Z</updated>
     
     
     <summary type="html">介绍位向量与位向量演算的判定方法.</summary>
