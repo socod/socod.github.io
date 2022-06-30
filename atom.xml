@@ -6,7 +6,7 @@
   <link href="https://socod.github.io/atom.xml" rel="self"/>
   
   <link href="https://socod.github.io/"/>
-  <updated>2022-06-30T03:02:18.721Z</updated>
+  <updated>2022-06-30T08:51:42.340Z</updated>
   <id>https://socod.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数组理论 (二)</title>
+    <link href="https://socod.github.io/ArrayEncod/"/>
+    <id>https://socod.github.io/ArrayEncod/</id>
+    <published>2022-05-21T06:50:07.000Z</published>
+    <updated>2022-06-30T08:51:42.340Z</updated>
+    
+    
+    <summary type="html">介绍数组理论的编码.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="数组" scheme="https://socod.github.io/tags/%E6%95%B0%E7%BB%84/"/>
+    
+    <category term="数组判定" scheme="https://socod.github.io/tags/%E6%95%B0%E7%BB%84%E5%88%A4%E5%AE%9A/"/>
+    
+  </entry>
   
   <entry>
     <title>悠泥客指针</title>
