@@ -6,7 +6,7 @@
   <link href="https://socod.github.io/atom.xml" rel="self"/>
   
   <link href="https://socod.github.io/"/>
-  <updated>2022-06-10T10:46:04.974Z</updated>
+  <updated>2022-06-30T03:02:18.721Z</updated>
   <id>https://socod.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>悠泥客指针</title>
+    <link href="https://socod.github.io/Unptr/"/>
+    <id>https://socod.github.io/Unptr/</id>
+    <published>2022-05-10T10:50:23.000Z</published>
+    <updated>2022-06-30T03:02:18.721Z</updated>
+    
+    
+    <summary type="html">介绍智能指针 unique_ptr</summary>
+    
+    
+    
+    <category term="C++" scheme="https://socod.github.io/categories/C/"/>
+    
+    
+    <category term="智能指针" scheme="https://socod.github.io/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/"/>
+    
+  </entry>
   
   <entry>
     <title>数组理论 (一)</title>
