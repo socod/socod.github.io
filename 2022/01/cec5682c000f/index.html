@@ -1,0 +1,794 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍等式逻辑与未解释函数, 说明通过同余闭包算法如何证明程序之间的等价性.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="等式逻辑与未解释函数">
+<meta property="og:url" content="https://socod.github.io/2022/01/cec5682c000f/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍等式逻辑与未解释函数, 说明通过同余闭包算法如何证明程序之间的等价性.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-22T02:50:55.000Z">
+<meta property="article:modified_time" content="2022-01-22T02:53:34.857Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="编译优化验证">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>等式逻辑与未解释函数 - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="等式逻辑与未解释函数">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-22 10:50" pubdate>
+        2022年1月22日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">等式逻辑与未解释函数</h1>
+            
+            <div class="markdown-body">
+              <h2 id="等式逻辑">等式逻辑</h2>
+<p>等式逻辑(equality logic)可以认为是命题逻辑,
+这种命题逻辑的原子都是等式, 等式两边是变量或者一边是变量一边是常数.
+等式逻辑的文法如下: <span class="math display">\[
+\begin{aligned}
+formula&amp;:formula\land formula\ |\ \neg formula\ |\ (formula)\ |\
+atom\\
+atom&amp;:term\ =\ term\\
+term&amp;:identifier\ |\ constant
+\end{aligned}
+\]</span> 举个例子, 公式 <span class="math inline">\((y=z\lor
+(\neg(x=z)\land x=2))\)</span> 是良形式的等式逻辑公式, 变量 <span
+class="math inline">\(x,y,z\in \mathbb{R}\)</span>. 一组可满足的赋值为
+<span
+class="math inline">\(\{x\mapsto2,y\mapsto2,z\mapsto0\}\)</span>.</p>
+<p>针对等式逻辑的可满足性问题是属于 NPC 的,
+即确定性图灵机可以在较大的时间复杂度类别中求解它,
+并且可以在多项式时间内验证其解的问题. 实际上等式逻辑和命题逻辑都是 NPC
+问题, 这意味着二者可以对同一个判定问题进行建模.
+那么为什么还要引入等式逻辑呢? 主要有两个原因,</p>
+<ol type="1">
+<li>方便建模 对于某些特定问题, 用等式逻辑进行建模要更加自然和方便,
+反之亦然.</li>
+<li>高效 输入等式逻辑公式中的高阶结构可以潜在地用于使判定过程更快地工作.
+如果直接在命题逻辑中对问题进行建模, 则一些信息可能会丢失.</li>
+</ol>
+<p>通常来说, 等式逻辑公式中是有布尔变量的. 但是,
+我们并不应该把他们集成到理论的定义中, 这是为了保证算法描述尽可能简单.
+布尔变量能够通过在输入的公式中用两个新变量的等式关系替换掉. 但是,
+这并不是十分高效的解决办法. 后文将说明如何直接处理这些布尔变量.</p>
+<h2 id="未解释函数">未解释函数</h2>
+<p>等式逻辑在与未解释函数(uninterpreted
+functions)结合的时候会变得非常有用. 简单来说,
+未解释函数的作用就是用来抽象, 泛化或者定理化. 不像其他函数符号,
+未解释函数不应被解释为公式模型的一部分, 也就是说, 在公式中,
+未解释函数单单是一个未释义的函数. 比如说如下公式, <span
+class="math inline">\(F\)</span> 和 <span
+class="math inline">\(G\)</span> 是未解释的,
+二元运算符"+"就为常用的加法功能: <span class="math display">\[
+F(x)=F(G(y))\lor x+1=y.
+\]</span> 带有未解释函数的等式逻辑的文法定义如下: <span
+class="math display">\[
+\begin{aligned}
+formula &amp;: formula \land formula\ |\ \neg formula\ |\ (formula)\ |\
+atom\\
+atom &amp;: term = term\ |\ predicate-symbol\ (list\ of\ terms)\\
+term &amp;: identifier\ |\ function-symbol\ (list\ of\ terms)\\
+\end{aligned}
+\]</span> ### 未解释函数的使用</p>
+<p>用未解释函数去替换公式中原本的函数时常用的技术,
+使得公式更容易推理(比如, 证明其有效性). 看如下推理规则: <span
+class="math display">\[
+\models\varphi^{UF}\Longrightarrow\ \models\varphi.\tag{1}
+\]</span> 其中 <span class="math inline">\(\models\varphi^{UF}\)</span>
+代表公式 <span class="math inline">\(\varphi\)</span>
+中一些或者全部函数被未解释函数替换后形成的公式.
+未解释函数被广泛应用于微积分和其他数学分支, 但是在推理和验证领域,
+主要应用于简化证明过程. 在某些情况下,
+未解释函数能够让我们在忽略一些后者全部函数语义的时候对系统进行推理,
+假设这些函数对于证明并不是必要的. 忽略函数的语义是指,
+一个解释并不需要为了满足公式而去满足这些原子.
+它唯一需要满足的是一个公理,
+该公理表明未解释的函数与任何函数一样都是一致的, 即给定相同的输入,
+它将返回相同的输出. 这是函数一致性(functional consistency)的要求.
+所谓函数一致性(功能一致性), 就是相同函数的实例接受相等的参数,
+那么返回值也是相等的. 有很多实例, 无论对于函数的解释如何,
+公式总是有效的. 在这些例子中, 未解释函数极大地简化了证明过程,
+尤其是在借助自动定理证明工具进行机械证明地时候.</p>
+<p>假设我们有检查 EUF 公式的方法. 基于这个假设,
+使用未解释函数的基本框架如下:</p>
+<ol type="1">
+<li>符号 <span class="math inline">\(\varphi\)</span>
+代表带有未解释函数的公式. 假设检查公式 <span
+class="math inline">\(\varphi\)</span> 的有效性的计算复杂度非常高,
+甚至无法计算.</li>
+<li>对公式 <span class="math inline">\(\varphi\)</span>
+中的每一个函数都用一个与之对应的未解释的函数进行赋值, 并记新公式为 <span
+class="math inline">\(\varphi^{UF}\)</span>.</li>
+<li>检查公式 <span class="math inline">\(\varphi^{UF}\)</span> 的有效性.
+如果它是有效的, 那么返回" <span class="math inline">\(\varphi\
+是有效的\)</span>". 否则, 返回"无法判定".</li>
+</ol>
+<p>步骤2的执行会付出一些代价, 因为会丢失信息. 就像上文提到的,
+它会导致验证过程的不完备, 即使原公式是属于可判定的逻辑. 由此,
+当一个对于输入公式的判定过程的计算太过复杂的时候, 可以设计
+一个程序将公式中函数的解释版本替换成未解释版本.</p>
+<h3 id="例子-证明程序的等价性">例子: 证明程序的等价性</h3>
+<p>考虑如下两个在功能上一致的 C 程序(a)和(b),
+目的是证明它们对于每一个可能的输入"in"都返回相同的值.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">func</span><span class="hljs-params">(<span class="hljs-keyword">int</span> in)</span></span>&#123;<br>    <span class="hljs-keyword">int</span> i, out_a;<br>    out_a = in;<br>    <span class="hljs-keyword">for</span>(i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2</span>; i++)&#123;<br>        out_a = out_a * in;<br>    &#125;<br>    <span class="hljs-keyword">return</span> out_a;<br>&#125;<br></code></pre></td></tr></table></figure>
+<center>
+(a)
+</center>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">func_new</span><span class="hljs-params">(<span class="hljs-keyword">int</span> in)</span></span>&#123;<br>    <span class="hljs-keyword">int</span> out_b;<br>    out_b = (in * in) * in;<br>    <span class="hljs-keyword">return</span> out_b;<br>&#125;<br></code></pre></td></tr></table></figure>
+<center>
+(b)
+</center>
+<p>通常来说, 证明两个程序等价是不可判定的, 换句话说,
+没有一个既可靠又完备的方法证明这样的等价性. 但是在当前的例子中,
+等价性是可判定的.
+关于这些程序的一个关键是它们只有有限循环，因此可以计算它们的输入/输出关系。
+从这两个程序推导这些关系可以如下进行:</p>
+<ol type="1">
+<li>移除变量声明和 return 语句.</li>
+<li>展开 for 循环.</li>
+<li>用新的辅助变量替换每个赋值语句中的左侧变量.</li>
+<li>无论在何处读取变量(在表达式中引用), 都应使用辅助变量替换该变量,
+该辅助变量会在赋值的最后位置替换该变量.</li>
+<li>将所有程序语句合取起来.</li>
+</ol>
+<p>上述操作的结果变为两个公式 <span
+class="math inline">\(\varphi_a\)</span> 和 <span
+class="math inline">\(\varphi_b\)</span> , 如下所示: <span
+class="math display">\[
+\begin{aligned}
+out0\_a&amp;=in0_a\ &amp;\land\\
+out1\_a&amp;=out0\_a*in0_a\ &amp;\land\\
+out2\_a&amp;=out1\_a*in0_a\\
+\\
+&amp;\hspace{10mm}(\varphi_a)
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
+out0\_b&amp;=(in0_b*in0_b)*in0_b\\
+\\
+&amp;\hspace{10mm}(\varphi_b)
+\end{aligned}
+\]</span> 所以证明程序(a)和(b)等价性的问题就转化为,
+证明如下公式的有效性: <span class="math display">\[
+in0_a=in0_b\land\varphi_a\land\varphi_b\Longrightarrow out2_a=out0_b.
+\]</span> 未解释函数可以帮助证明程序(a)和(b)的等价性. 在这种情况下,
+这样做的动机是计算上的, 确定乘以例如64位变量的公式非常困难.
+用未解释函数替换乘法符号可以解决该问题. <span class="math display">\[
+\begin{aligned}
+out0\_a&amp;=in0\_a&amp;\land\\
+out1\_a&amp;=G(out0\_a,in0\_a)&amp;\land\\
+out2\_a&amp;=G(out1\_a,in0\_a)\\
+\\
+&amp;(\varphi^{UF}_a)
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+out0\_b&amp;=G(G(in0\_b,in0\_b),in0\_b)\\
+\\
+&amp;\hspace{3mm}(\varphi^{UF}_b)
+\end{aligned}
+\]</span></p>
+<p>如上所示, <span class="math inline">\(\varphi^{UF}_a\)</span> 和
+<span class="math inline">\(\varphi^{UF}_b\)</span> 是在对公式 <span
+class="math inline">\((\varphi_a)\)</span> 和 <span
+class="math inline">\((\varphi_b)\)</span> 用未解释函数 <span
+class="math inline">\(G\)</span> 进行替换之后的公式. 所以现在,
+我们可以尝试验证 <span class="math display">\[
+\varphi^{UF}_a\land\varphi^{UF}_b\Longrightarrow\ out2\_a=out0\_b.
+\]</span></p>
+<h2
+id="通过同余闭包判定等式和未解释函数的合取式">通过同余闭包判定等式和未解释函数的合取式</h2>
+<p>现在说明一个用于解决等式逻辑和未解释函数合取式的方法.
+从变量和未解释函数的等式和不等式的合取式 <span
+class="math inline">\(\varphi^{UF}\)</span> 开始,
+基于计算等效类的算法有两个阶段.
+下面所示算法版本假设未解释函数只接收一个参数. 见算法1所示. <span
+class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithme\ 1:\ }{\rm CONGRUENCE\mbox{-}CLOSURE}\\
+&amp;\mathbf{Input:\ }{\rm A\ conjunction\ }\varphi^{UF}\ {\rm of\
+equality\ predicates\ over\ variables\ and\ uninterpreted\ functions}\\
+&amp;\mathbf{Output:\ }{\rm &#39;&#39;Satisfiable&#39;&#39;\ if\
+}\varphi^{UF}\ {\rm is\ satisfiable,\ and\
+&#39;&#39;Unsatisfiable&#39;&#39;\ otherwise}\\
+\\
+&amp;1.\hspace{2mm}{\rm Build\ congruence\mbox{-}closed\ equivalence\
+classes.}\\
+&amp;\hspace{6mm}{\rm (a)\ \ Initially,\ put\ two\ terms\ }t_1,t_2\ {\rm
+(either\ variables\ or\ uninterpreted\mbox{-}function\ instances)\ in\
+their\ }\\
+&amp;\hspace{15mm}{\rm own\ equivalence\ class\ if\ }(t_1=t_2)\ {\rm is\
+a\ predicate\ in\ }\varphi^{UF}.\ {\rm All\ other\ variables\ form\
+singleton\ }\\
+&amp;\hspace{15mm}{\rm equivalence\ classes.}\\
+&amp;\hspace{6mm}{\rm (b)\ Given\ two\ equivalence\ classes\ with\ a\
+shared\ term,\ merge\ them.\ Repeate\ until\ there\ are\ no\ }\\
+&amp;\hspace{15mm}{\rm more\ classes\ to\ be\ merged.}\\
+&amp;\hspace{6mm}{\rm (c)\ Compute\ the\ }congruence\ closure:{\rm
+given\ two\ terms\ }t_i,t_j\ {\rm that\ are\ in\ the\ same\ class\ and\
+that\ }\\
+&amp;\hspace{15mm}F(t_i)\ {\rm and\ }F(t_j){\rm\ are\ terms\ in\
+}\varphi^{UF}\ {\rm for\ some\ uninterpreted\ function\ }F,\ {\rm merge\
+the\ classes\ of\ }\\
+&amp;\hspace{15mm}F(t_i)\ {\rm and\ }F(t_j).\ {\rm Repeat\ util\ there\
+are\ no\ more\ such\ instances.}\\
+&amp;2.\hspace{2mm}{\rm If\ there\ exists\ a\ disequality\ }t_1\ne t_j\
+{\rm in\ }\varphi^{UF}\ {\rm such\ that\ }t_i {\rm and\ }t_j\ {\rm are\
+in\ the\ same\ equivalence\ class,\ }\\
+&amp;\hspace{6mm}{\rm returen\ &#39;&#39;Unsatisfiable&#39;&#39;.\
+Otherwise\ return\ &#39;&#39;Satisfiable&#39;&#39;.}
+\end{aligned}
+\]</span> 算法说明:</p>
+<p>该算法的输入是变量和未解释函数的等式谓词的合取公式 <span
+class="math inline">\(\varphi^{UF}\)</span>; 输出是, 返回可满足如果公式
+<span class="math inline">\(\varphi^{UF}\)</span> 是可满足,
+否则返回不可满足.</p>
+<ol type="1">
+<li><p>建立同余闭包等价类</p>
+<ol type="a">
+<li><p>初始化,
+将两个项(变量或者未解释函数的实例)置入它们自己的等式集合中如果 <span
+class="math inline">\((t_1=t_2)\)</span> 是公式 <span
+class="math inline">\(\varphi^{UF}\)</span> 中的断言.
+所有其他变量构成单例等价类.</p></li>
+<li><p>给定两个具有相同项的等价类, 将它们合并.
+重复直到不再有要合并的类.</p></li>
+<li><p>计算同余闭包: 给定两个在同一个类中的项 <span
+class="math inline">\(t_i,t_j\)</span>, 并且 <span
+class="math inline">\(F(t_i)\)</span> 和 <span
+class="math inline">\(F(t_j)\)</span> 是公式中 <span
+class="math inline">\(\varphi^{UF}\)</span> 某些未解释函数的项, 合并
+<span class="math inline">\(F(t_i)\)</span> 和 <span
+class="math inline">\(F(t_j)\)</span>. 重复直到没有此类实例.</p></li>
+</ol></li>
+<li><p>如果在公式 <span class="math inline">\(\varphi^{UF}\)</span>
+中存在不等式 <span class="math inline">\(t_i\ne t_j\)</span>, 而且 <span
+class="math inline">\(t_i\)</span> 和 <span
+class="math inline">\(t_j\)</span> 是在同一个等价类中, 那么返回不可满足.
+否则返回可满足.</p></li>
+</ol>
+<p>比如, 考虑如下合取式 <span class="math display">\[
+\varphi^{UF} := x_1=x_2\land x_2=x_3\land x_4=x_5\land x_5\ne x_1\land
+F(x_1)\ne F(x_3).
+\]</span> 在初始步骤中, 等价类为 <span class="math display">\[
+\{x_1, x_2\},\{x_2, x_3\},\{x_4,x_5\},\{F(x_1)\},\{F(x_3)\}.
+\]</span> 步骤 1.b 合并前两个类: <span class="math display">\[
+\{x_1,x_2,x_3\},\{x_4,x_5\},\{F(x_1)\}, \{F(x_3)\}.
+\]</span> 下一步骤合并包含 <span class="math inline">\(F(x_1)\)</span>
+和 <span class="math inline">\(F(x_3)\)</span> 的类, 因为 <span
+class="math inline">\(x_1\)</span> 和 <span
+class="math inline">\(x_3\)</span> 在同一个类中: <span
+class="math display">\[
+\{x_1,x_2,x_3\},\{x_4,x_5\},\{F(x_1),F(x_3)\}.
+\]</span> 在步骤 2 中, 可见 <span class="math inline">\(F(x_1)\ne
+F(x_3)\)</span> 是公式 <span class="math inline">\(\varphi^{UF}\)</span>
+的断言, 但是 <span class="math inline">\(F(x_1)\)</span> 和 <span
+class="math inline">\(F(x_3)\)</span> 是在同一个类中. 因此, 公式 <span
+class="math inline">\(\varphi^{UF}\)</span> 不可满足.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BC%96%E8%AF%91%E4%BC%98%E5%8C%96%E9%AA%8C%E8%AF%81/">编译优化验证</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/02/39dd3a3dcdf6/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">线性演算(一)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/be225a850aec/">
+                        <span class="hidden-mobile">DPLL Algorithm</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '8e747f42f80c6d0781dc78df426ec519'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

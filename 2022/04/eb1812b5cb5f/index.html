@@ -1,0 +1,844 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="简单介绍数组理论.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组理论 (一)">
+<meta property="og:url" content="https://socod.github.io/2022/04/eb1812b5cb5f/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="简单介绍数组理论.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-21T09:35:21.000Z">
+<meta property="article:modified_time" content="2022-06-10T10:46:04.974Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="数组">
+<meta property="article:tag" content="数组判定">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>数组理论 (一) - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="数组理论 (一)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-21 17:35" pubdate>
+        2022年4月21日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      24 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">数组理论 (一)</h1>
+            
+            <div class="markdown-body">
+              <h1 id="数组">1. 数组</h1>
+<p>现代多数编程语言都对数组类型提供了支持,
+并且数组在对像内存这样的硬件组件建模时也会用到.
+所以对硬件系统的分析就要求能够对包含数组的公式进行判定.
+首先说明如何用数组理论对一个循环不变式进行判定.</p>
+<p>考虑如下伪代码片段: <span class="math display">\[
+\begin{aligned}
+&amp;a: \mathbf{array}\ 0..99\ \mathbf{of\ integer;}\\
+&amp;i: \mathbf{integer;}\\
+\\
+&amp;\mathbf{for}\ \rm i:=0\ \mathbf{to}\ 99\ \mathbf{do}\\
+&amp;\hspace{2cm} \mathbf{assert} (\forall x\in \mathbb{N}_0.x\lt
+i\Longrightarrow a[x]=0);\\
+&amp;\hspace{2cm} \rm a[i]:=0;\\
+&amp;\hspace{2cm} \mathbf{assert}(\forall x\in \mathbb{N}_0.x\le i
+\Longrightarrow a[x]=0);\\
+&amp;\mathbf{done;}\\
+&amp;\mathbf{assert}(\forall x\in \mathbb{N}_0.x\le 99 \Longrightarrow
+a[x]=0);
+\end{aligned}
+\]</span> 正确性论证的主要步骤是在执行循环体内的赋值时,
+证明赋值之后的断言是从赋值前的断言中产生的.
+通常的做法是生成验证条件(<strong>verification conditions</strong>),
+比如说, 使用霍尔公理系统(Hoare's axiom system). 能够得到如下的验证条件:
+<span class="math display">\[
+\begin{gather*}
+(\forall x\in \mathbb{N}_0.x\lt i\Longrightarrow a[x]=0) \\
+\land a&#39;=a\{i\leftarrow 0\}\\
+\Longrightarrow (\forall x\in \mathbb{N}_0.x\le i \Longrightarrow
+a&#39;[x]=0).\tag{f.1}
+\end{gather*}
+\]</span></p>
+<p>数组理论允许对数组进行公式化的表达, 数组被形式化为从索引类型(index
+type)到元素类型(element type)的映射. 用 <span
+class="math inline">\(T_I\)</span> 表示索引类型, <span
+class="math inline">\(T_E\)</span>表示元素类型. 数组自身的类型表示为
+<span class="math inline">\(T_A\)</span>, 也就是 <span
+class="math inline">\(T_I \rightarrow T_E\)</span> 的简写形式, 比如说,
+将 <span class="math inline">\(T_I\)</span> 的一个元素映射到 <span
+class="math inline">\(T_E\)</span> 的一个元素的函数的集合.
+索引集和元素集都不需要是有限的.</p>
+<p>令 <span class="math inline">\(a\in T_A\)</span> 表示一个数组.
+有两个基本的数组操作:</p>
+<ol type="1">
+<li>从 <span class="math inline">\(a\)</span> 中读取一个下标为 <span
+class="math inline">\(i\in T_I\)</span> 的元素. 下标为 <span
+class="math inline">\(i\)</span> 的元素的值表示为 <span
+class="math inline">\(a[i]\)</span>. 该运算符称作数组索引运算符.</li>
+<li>向 <span class="math inline">\(a\)</span> 中写入一个下标为 <span
+class="math inline">\(i\in T_I\)</span> 的元素. 令 <span
+class="math inline">\(e\in T_E\)</span> 表示要写入的值. 数组 <span
+class="math inline">\(a\)</span> 中元素 <span
+class="math inline">\(i\)</span> 被 <span
+class="math inline">\(e\)</span> 替换记为 <span
+class="math inline">\(a\{i\leftarrow e\}\)</span>.
+该运算符称作数组更新或者数组存储运算符.</li>
+</ol>
+<p>我们将用于推理索引和元素的理论分别称为索引理论(index
+theory)和要素理论(element theory). 数组理论通过索引和元素理论进行参数化.
+通过递归地定义 <span class="math inline">\(T_A(n)\)</span> 就能得到
+<span class="math inline">\(n\)</span> 维数组. 对于 <span
+class="math inline">\(n \ge 2\)</span>, 我们只需将 <span
+class="math inline">\(T_A(n-1)\)</span> 添加到 <span
+class="math inline">\(T_A(n)\)</span> 的元素类型中去.</p>
+<p>索引和元素理论的选择将影响所得数组理论的表达能力. 例如,
+索引理论需要允许存在和全称量词,
+以便对诸如"存在一个数组元素为零"或"该数组的所有元素都大于零"之类的属性进行建模.
+合适的索引理论的一个例子是Presburger算术(Presburger arithmetic),
+即具有量词的整数的线性演算.</p>
+<h2 id="语法">1.1 语法</h2>
+<p>我们将数组理论的语法定义为对索引理论和元素理论的组合的扩展. 令 <span
+class="math inline">\(term_I\)</span> 和 <span
+class="math inline">\(term_E\)</span> 分别表示这两个理论中的一项.
+先定义一个数组项 <span class="math inline">\(term_A\)</span>: <span
+class="math display">\[
+term_A:array-identifier\ |\ term_A\{ term_I\leftarrow term_E \}.
+\]</span> 然后将元素的项扩展至包含数组元素, 比如说, <span
+class="math display">\[
+term_E:term_A[term_I]\ |\ (previous\ rules),
+\]</span> 其中 <span class="math inline">\(previous\ rules\)</span>
+表示在此扩展之前定义 <span class="math inline">\(term_E\)</span>
+的语法规则. 最终, 我们通过允许数组项之间的等式来扩展公式中的谓词: <span
+class="math display">\[
+formula:term_A=term_A\ |\ (previous\ rules),
+\]</span> 其中 <span class="math inline">\(previous\ rules\)</span>
+表示在此扩展之前定义 <span class="math inline">\(formula\)</span>
+的语法规则. 如果索引理论包括量词,
+则在数组之间具有显式等式的语法的扩展是多余的, 因为对于数组 <span
+class="math inline">\(a_1\)</span> 和 <span
+class="math inline">\(a_2\)</span>,如果 <span class="math inline">\(a_1
+= a_2\)</span>, 那么该等式也可以写成 <span class="math inline">\(\forall
+i.a_1[i]=a_2[i]\)</span>.</p>
+<h2 id="语义">1.2 语义</h2>
+<p>我们用三个公理说明数组理论中新的原子和项的含义.</p>
+<p>第一个公理给出了数组索引运算符的确切含义. 如果数组相同并且索引相同,
+则两个数组索引项的值相同. <span class="math display">\[
+\forall a_1\in T_A.\forall a_2\in T_A.\forall i\in T_I.\forall j\in
+T_I.(a_1=a_2\land i=j)\Longrightarrow a_1[i]=a_2[j].\tag{a.1}
+\]</span>
+用于定义数组更新运算符含义的公理是"读写公理"(<strong>read-over-write
+axiom</strong>): 数组值 <span class="math inline">\(e\)</span>
+在被写入下标为 <span class="math inline">\(i\)</span> 的数组 <span
+class="math inline">\(a\)</span> 中之后, 那么该数组索引为 <span
+class="math inline">\(i\)</span> 的值就为 <span
+class="math inline">\(e\)</span>. 数组中任意下标不为 <span
+class="math inline">\(i\)</span> 的值与写之前一致: <span
+class="math display">\[
+\forall a\in T_A.\forall e\in T_E.\forall i\in T_I.\forall j\in T_I.a\{
+i\leftarrow e\}[j]=
+\begin{equation}
+\left\{
+\begin{array}{lr}
+e&amp;:&amp;i=j\\
+a[j]&amp;:&amp;otherwise.
+\end{array}
+\right.
+\end{equation}\tag{a.2}
+\]</span> 最后, 我们用可扩展性规则(<strong>extensionality
+rule</strong>)赋予数组相等的明显的含义: <span class="math display">\[
+\forall a_1\in T_A.\forall a_2 \in T_A.(\forall i\in
+T_I.a_1[i]=a_2[i])\Longrightarrow a_1=a_2.\tag{a.3}
+\]</span></p>
+<h1 id="消除数组项">2. 消除数组项</h1>
+<p>我们提出一种将数组理论中的公式转换为由索引理论和元素理论组成的公式的方法.
+如果这种组合的理论包含未解释函数和针对索引的量词, 该变换是可应用的.</p>
+<p>考虑公理 <span class="math inline">\(a.1\)</span>,
+该公理定义了数组索引操作符的语义. 再考虑以下函数一致性. 非正式地,
+函数一致性要求同一个函数的两个应用, 如果它们的参数一样的话,
+那所得到的返回结果必须一致. 可以将公理 <span
+class="math inline">\(a.1\)</span> 看作是函数一致性的一种特例.</p>
+<p>可以用一个未解释函数对数组索引操作符做替换. 有如下数组理论公式, 其中
+<span class="math inline">\(a\)</span> 是一个 <span
+class="math inline">\(\rm char\)</span> 类型的数组: <span
+class="math display">\[
+(i=j\land a[j]=&#39;z&#39;)\Longrightarrow a[i]=&#39;z&#39;.
+\]</span> 字符常量 <span class="math inline">\(&#39;z&#39;\)</span>
+是一个数组元素的成员. 令 <span class="math inline">\(F_a\)</span>
+代表为数组 <span class="math inline">\(a\)</span> 引入的未解释函数:
+<span class="math display">\[
+(i=j\land F_a(j)=&#39;z&#39;)\Longrightarrow F_a(i)=&#39;z&#39;.
+\]</span>
+上面的公式用针对等式和未解释函数的判定程序可以验证其有效性.</p>
+<p>关于数组更新操作符.
+一种对数组更新操作进行建模的方法是用一个新的同类型的数组变量 <span
+class="math inline">\(a&#39;\)</span> 替换 <span
+class="math inline">\(a\{i\leftarrow e\}\)</span> 形式的每一个表达式.
+然后, 添加两个约束, 这些约束直接对应于可重写公理的两种情况:</p>
+<ol type="1">
+<li><span class="math inline">\(a&#39;[i]=e\)</span> 为要写入的值,</li>
+<li><span class="math inline">\(\forall j\ne i.a&#39;[j]=a[j]\)</span>
+为那些未改变的值.</li>
+</ol>
+<p>以上称之为写规则(<strong>write rule</strong>),
+是对数组理论公式的等价保留转换.</p>
+<p>比如说, 公式 <span class="math display">\[
+a\{i\leftarrow e\}[i]\ge e \tag{2.1}
+\]</span> 就是通过引入一个新的数组标识符 <span
+class="math inline">\(a&#39;\)</span> 替换了 <span
+class="math inline">\(a\{i\leftarrow e\}\)</span> 转换过来的. 另外,
+添加约束 <span class="math inline">\(a&#39;[i]=e\)</span>, 就能得到
+<span class="math display">\[
+a&#39;[i]=e \Longrightarrow a&#39;[i]\ge e,
+\]</span> 上式子也显示了(2.1)的有效性.
+需要使用重写公理的第二部分来显示如下公式的有效性 <span
+class="math display">\[
+a[0]=10\Longrightarrow a\{1\leftarrow 20\}[0]=10.
+\]</span> 和以前一样, 通过用新的标识符 <span
+class="math inline">\(a&#39;\)</span> 替换 <span
+class="math inline">\(a\{ 1\leftarrow 20 \}\)</span>,
+并添加上述两个约束来对公式进行转换: <span class="math display">\[
+(a[0]=10\land a&#39;[1]=20\land (\forall j\ne
+1.a&#39;[j]=a[j]))\Longrightarrow a&#39;[0]=10.
+\]</span> 通过使用两个未解释函数 <span
+class="math inline">\(F_a\)</span> 和 <span
+class="math inline">\(F_b\)</span> 分别替换 <span
+class="math inline">\(a\)</span> 和 <span
+class="math inline">\(a&#39;\)</span> 得到: <span
+class="math display">\[
+(F_a(0)=10\land F_{a&#39;}(1)=20\land (\forall j\ne
+1.F_{a&#39;}(j)=F_a(j))\Longrightarrow F_{a&#39;}(0)=10.
+\]</span> 这个简单的例子表明, 只要索引理论提供了量词,
+数组理论就可以简化为索引理论和未解释函数的组合.
+问题在于这种组合不一定是可判定的.
+带有量词的便捷索引理论是Presburger演算, 实际上,
+它与未解释函数的组合是不可判定的.
+如上所述，即使索引理论和元素理论的组合是可判定的,
+数组理论也是不可判定的. 因此需要限制所考虑的公式集,
+以便得到一个判定程序. 这是归约算法使用的方法.</p>
+<h1 id="the-reduction-algorithm">3. The Reduction Algorithm</h1>
+<p>规约算法从数组理论的数组属性片段中接收一个公式,
+并将其简化为一个使用元素和索引理论与等式和未解释函数相结合的可满足公式.
+<span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 1}:\ \text{ARRAY-REDUCTION}\\
+\\
+&amp;\mathbf{Input:}\ \text{An array property formula}\ \phi_A\ \text{in
+NNF}\\
+&amp;\mathbf{Output:}\quad \text{A formula }\phi_{UF}\ \text{in the
+index and element theories with}\\
+&amp;\quad\quad\quad\quad\quad\; \text{uninterpretedted functions}\\
+\\
+&amp;1.\; \text{Apply the write rule to remove all array updates from
+}\phi_A.\\
+&amp;2.\; \text{Replace all existential quantifications of the form}\
+\exists i\in T_I.P(i)\ \text{by}\ P(j),\\
+&amp;\quad\;\text{where } j\ \text{is a fresh variable}.\\
+&amp;3.\; \text{Replace all universal quantifications of the form
+}\forall i\in T_I.P(i)\ \text{by }\\
+&amp;\hspace{73mm} \bigwedge_{i\in\mathcal{I}(\phi)} P(i).\\
+&amp;4.\; \text{Replace the array read operators by uninterpreted
+function and obtain}\\
+&amp;\quad \phi_{UF};\\
+&amp;5.\; \mathbf{return}\; \phi_{UF};
+\end{aligned}
+\]</span></p>
+<p>上述算法将一个数组理论公式作为输入.
+将数组属性(也就是数组理论公式的标准型)转换为否定范式可能会将索引的全称量词转换为存在量词.
+由于句法上的限制, 公式不包含明显的量词替换. 算法第一步,
+应用写规则并移除所有的数组更新操作符. 所得到的公式包含针对索引的量词,
+数组读取操作, 基于元素和索引理论的子公式.</p>
+<p>因为公式是否定范式形式的,
+所以存在量词可以用一个新的变量(也就是隐式地存在量化)进行替换. 全称量词
+<span class="math inline">\(\forall i\in T_I.P(i)\)</span> 用合取式
+<span class="math inline">\(\bigwedge_{i\in
+\mathcal{I}(\phi)}P(i)\)</span> 进行替换, 其中集合 <span
+class="math inline">\(\mathcal{I}(\phi)\)</span> 表示索引表达式, <span
+class="math inline">\(i\)</span> 就可能与公式 <span
+class="math inline">\(\phi\)</span> 等价. 该集合包含如下元素:</p>
+<ol type="1">
+<li>在 <span class="math inline">\(\phi\)</span>
+中用作数组索引的所有表达式均不是量化变量.</li>
+<li>在 <span class="math inline">\(\phi\)</span>
+中的数组索引表达式内使用的所有表达式都不是量化变量.</li>
+<li>如果公式 <span class="math inline">\(\phi\)</span> 均不包含以上两项,
+为了获得一组非空的索引表达式, <span
+class="math inline">\(\mathcal{I}(\phi)\)</span> 就必须为 <span
+class="math inline">\(\{0\}\)</span>.</li>
+</ol>
+<p>最后, 数组读取操作符就用未解释函数进行了替换.</p>
+<p>用一个例子说明规约算法的流程:</p>
+<p>证明如下公式的有效性: <span class="math display">\[
+\begin{gather*}
+(\forall x\in \mathbb{N}_0.x\lt i\Longrightarrow a[x]=0) \\
+\land a&#39;=a\{i\leftarrow 0\}\\
+\Longrightarrow (\forall x\in \mathbb{N}_0.x\le i \Longrightarrow
+a&#39;[x]=0).
+\end{gather*}
+\]</span> 也就是说, 要说明以下公式的不可满足性: <span
+class="math display">\[
+\begin{gather*}
+(\forall x\in \mathbb{N}_0.x\lt i\Longrightarrow a[x]=0) \\
+\land a&#39;=a\{i\leftarrow 0\}\\
+\land(\exists x\in \mathbb{N}_0.x\le i \land a&#39;[x]\ne0).
+\end{gather*}
+\]</span> 应用写规则,得到 <span class="math display">\[
+\begin{gather*}
+(\forall x\in \mathbb{N}_0.x\lt i\Longrightarrow a[x]=0) \\
+\land a&#39;[i]=0\land \forall j\ne i.a&#39;[j]=a[j]\\
+\land (\exists x\in \mathbb{N}_0.x\le i \land a&#39;[x]\ne0).
+\end{gather*}
+\]</span> 算法的第二步, 用一个新变量 <span class="math inline">\(z\in
+\mathbb{N}_0\)</span> 实例化存在量词: <span class="math display">\[
+\begin{gather*}
+(\forall x\in \mathbb{N}_0.x\lt i\Longrightarrow a[x]=0) \\
+\land a&#39;[i]=0\land \forall j\ne i.a&#39;[j]=a[j]\\
+\land z\le i\land a&#39;[z]\ne0.
+\end{gather*}
+\]</span> 这个例子中的集合 <span
+class="math inline">\(\mathcal{I}\)</span> 为 <span
+class="math inline">\(\{i,z\}\)</span>. 所以替换两个全称量词: <span
+class="math display">\[
+\begin{gather*}
+(i\lt i\Longrightarrow a[i]=0)\land (z\lt i\Longrightarrow a[z]=0) \\
+\land a&#39;[i]=0\land (i\ne i\Longrightarrow a&#39;[i]=a[i])\land(z\ne
+i\Longrightarrow a&#39;[z]=a[z])\\
+\land z\le i\land a&#39;[z]\ne0.
+\end{gather*}
+\]</span> 删除显然满足的合取式子: <span class="math display">\[
+\begin{gather*}
+(z\lt i\Longrightarrow a[z]=0) \\
+\land a&#39;[i]=0\land(z\ne i\Longrightarrow a&#39;[z]=a[z])\\
+\land z\le i\land a&#39;[z]\ne0.
+\end{gather*}
+\]</span> 然后分别用未解释函数 <span class="math inline">\(F_a\)</span>
+和 <span class="math inline">\(F_{a&#39;}\)</span> 替换两个数组 <span
+class="math inline">\(a\)</span> 和 <span
+class="math inline">\(a&#39;\)</span>: <span class="math display">\[
+\begin{gather*}
+(z\lt i\Longrightarrow F_a[z]=0) \\
+\land F_{a&#39;}[i]=0\land(z\ne i\Longrightarrow F_{a&#39;}[z]=F_a[z])\\
+\land z\le i\land F_{a&#39;}[z]\ne0.
+\end{gather*}
+\]</span> 通过区分 <span class="math inline">\(z\lt i\)</span>, <span
+class="math inline">\(z = i\)</span> 和 <span class="math inline">\(z\gt
+i\)</span> 三种情况, 很容易看出该公式是不可满足的.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E7%BB%84/">数组</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E7%BB%84%E5%88%A4%E5%AE%9A/">数组判定</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/d9b2728991b4/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">悠泥客指针</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/525f83ab9fb7/">
+                        <span class="hidden-mobile">Bit Vectors (2)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'e60ec40892bd1cf427aaa591f7a706f1'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

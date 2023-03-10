@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍可满足求解理论中经典的CDCL算法.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CDCL Algorithm">
+<meta property="og:url" content="https://socod.github.io/2022/01/ecd0f787ac3d/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍可满足求解理论中经典的CDCL算法.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://socod.github.io/img/CDCL-Algorithm/conflict-graph.png">
+<meta property="article:published_time" content="2022-01-07T12:31:17.000Z">
+<meta property="article:modified_time" content="2022-01-15T08:25:53.547Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="CDCL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://socod.github.io/img/CDCL-Algorithm/conflict-graph.png">
+  
+  
+  <title>CDCL Algorithm - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="CDCL Algorithm">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-07 20:31" pubdate>
+        2022年1月7日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">CDCL Algorithm</h1>
+            
+            <div class="markdown-body">
+              <h2 id="conflict-driven-clause-learningcdcl-algorithm">1 Conflict-Driven
+Clause Learning(CDCL) Algorithm</h2>
+<p>SAT 求解器可以被分为两类,
+一类是基于冲突驱动的子句学习框架的算法或者组合算法;
+一类是基于随机搜索(stochastic search)的算法. 根据经验来看, 基于 CDCL
+的算法在大多数情况下, 针对 CNF 公式的求解性能要优于随机搜索.
+所以着重学习一下 CDCL 和 DPLL 对 SAT 求解问题会有更加深入的了解.</p>
+<h3 id="cdcl-sat算法">CDCL-SAT算法</h3>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 1.}\ \rm{CDCL\mbox{-}SAT}\\
+&amp;\mathbf{Input:}\ \rm{A\ propositional\ CNF\ formula}\ \mathcal{B}\\
+&amp;\mathbf{Output:}\ \rm{&#39;&#39;Satisfiable&#39;&#39;\ if\ the\
+formula\ is\ satisfiable\ and\ &#39;&#39;Unsatisfiable&#39;&#39;\
+otherwise}\\
+&amp;\\
+&amp;1.\hspace{2mm}\mathbf{function}\ \rm{CDCL}\\
+&amp;2.\hspace{10mm}\mathbf{while}\ \rm{(TRUE)}\ \mathbf{do}\\
+&amp;3.\hspace{18mm}\mathbf{while}\ \rm{(BCP()\ =\
+&#39;&#39;CONFLICT&#39;&#39;)}\ \mathbf{do}\\
+&amp;4.\hspace{25mm}backtrack\mbox{-}level:=
+\rm{ANALYZE\mbox{-}CONFLICT()};\\
+&amp;5.\hspace{25mm}\mathbf{if}\ backtrack\mbox{-}level\lt 0
+\mathbf{then\ return}\ \rm{&#39;&#39;Unsatisfiable&#39;&#39;};\\
+&amp;6.\hspace{25mm}{\rm BackTrack}(backtrack\mbox{-}level);\\
+&amp;7.\hspace{18mm}\mathbf{if}\ \neg{\rm DECIDE()}\ \mathbf{then\
+return}\ {\rm &#39;&#39;Satisfiable&#39;&#39;};
+\end{aligned}
+\]</span></p>
+<p>如算法1 所示, CDCL 求解器接受一个 CNF 合取范式公式 <span
+class="math inline">\(\mathcal{B}\)</span> 作为输入,
+输出为该公式是否为可满足的. 算法执行到循环体内,
+当通过执行布尔约束传播(BCP)函数得到冲突结果时, 算法进入第二层循环.
+在分析冲突子句(conflict clause)之后, ANALYZE-CONFLICT()
+函数返回一个回溯层(backtrack-level)的值并且生成一组新的冲突子句. 此时,
+如果要回溯的决策层的值小于零, 那么说明此 CNF
+公式不可满足(因为如果回溯结果小于零, 就说明不存在一组赋值使得 CNF
+公式整体为真); 反之, 执行回溯函数 BackTrack(), 并回溯到决策层
+backtrack-level(). 如果没有侦测到冲突, 那么执行 DECIDE() 函数,
+判断是否还有未被赋值的文字, 如果都被赋值了, 那么公式 <span
+class="math inline">\(\mathcal{B}\)</span> 是可满足的, 否则循环继续.</p>
+<p>以上是 CDCL 框架的整体思路, 但是这里存在两个问题需要进行深究: 1)
+如何对冲突子句进行分析, 也就是函数ANALYZE-CONFLICT() 是如何工作的. 2)
+函数DECIDE() 如何能够快速且高效地判断已赋值和未赋值的变量,
+并赋真值给尚未赋值的变量.</p>
+<h2 id="analyze-conflict-算法">2 ANALYZE-CONFLICT 算法</h2>
+<p>先说明第一个问题. ANALYZE-CONFLICT()
+负责从先前得出的冲突子句和冲突蕴涵图推导出新的冲突子句并计算出 CDCL
+算法所要回溯的决策层. ANALYZE-CONFLICT() 在冲突蕴涵图上从冲突节点回溯,
+并通过<strong>一系列步骤</strong>生成新的冲突子句.
+以下对该算法进行说明.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 2.}\ \rm{ANALYZE\mbox{-}CONFLICT}\\
+&amp;\mathbf{Input:}\\
+&amp;\mathbf{Output:}\ \rm{Backtracking\ decision\ level\ +\ a\ new\
+conflict\ clause}\\
+&amp;\\
+&amp;1.\hspace{2mm}\mathbf{if}\ current\mbox{-}decision\mbox{-}level=0\
+\mathbf{then\ return}\ -1;\\
+&amp;2.\hspace{2mm}cl:=current\mbox{-}conflicting\mbox{-}clause;\\
+&amp;3.\hspace{2mm}\mathbf{while}\ ({\rm \neg
+STOP\mbox{-}CRITERION\mbox{-}MET}(cl))\ \mathbf{do}\\
+&amp;4.\hspace{10mm}lit:={\rm
+LAST\mbox{-}ASSIGNED\mbox{-}LITERAL}(cl);\\
+&amp;5.\hspace{10mm}var:={\rm VARIABLE\mbox{-}OF\mbox{-}LITERAL}(lit);\\
+&amp;6.\hspace{10mm}ante:={\rm ANTECEDENT}(lit);\\
+&amp;7.\hspace{10mm}cl:={\rm RESOLVE}(cl,\ ante,\ var);\\
+&amp;8.\hspace{2mm}{\rm
+add\mbox{-}clause\mbox{-}to\mbox{-}database}(cl);\\
+&amp;9.\hspace{2mm}\mathbf{return}\ {\rm
+clause\mbox{-}asserting\mbox{-}level}(cl);\hspace{15mm} \triangleright\
+{\rm 2nd\ highest\ decision\ level\ in\ } cl
+\end{aligned}
+\]</span></p>
+<p>如算法2 所示, ANALYZE-CONFLICT 算法的输出正如前文所述,
+即回溯决策层并产生一组新的冲突子句(断言子句). 如果当前的决策层的值为0,
+那么返回-1, 随之的结果就是在 CDCL 求解器中判定公式 <span
+class="math inline">\(\mathcal{B}\)</span> 不可满足. 否则, 变量 <span
+class="math inline">\(cl\)</span> 记为当前冲突子句, 并进入循环体.
+循环的判断条件 STOP-CRITERION-MET(cl), 一个比较好的策略是, 在当前决策层,
+当且仅当 <span class="math inline">\(cl\)</span>
+包含第一个唯一蕴涵节点(UIP)的否定, 结果就返回"真". 循环体内部,
+将当前冲突子句的最后一个赋值文字赋值给变量 <span
+class="math inline">\(lit\)</span>. 将 <span
+class="math inline">\(lit\)</span> 中的变量(即没有逻辑连接符<span
+class="math inline">\(\neg\)</span>的文字)赋值给 <span
+class="math inline">\(var\)</span>. <span
+class="math inline">\(lit\)</span> 的前件赋值给 <span
+class="math inline">\(ante\)</span>, 所谓前件就是仅由 <span
+class="math inline">\(lit\)</span> 决定真值的子句(clause). 循环体最后,
+更新当前冲突子句 <span class="math inline">\(cl\)</span> 的值,
+这个更新策略为 RESOLVE(<span class="math inline">\(cl\)</span>, <span
+class="math inline">\(ante\)</span>, <span
+class="math inline">\(var\)</span>). 循环结束之后, 更新数据库,
+并返回决策层级.先说明策略 RESOLVE 的作用. 该策略涉及到一个概念,
+即二元解析(Binary Resolution). 考虑如下推导规则:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{(a_1 \lor\ ...\ a_n\lor\ \beta)\  (b_1\lor\ ...\ b_n\lor\
+\neg\beta)}{(a_1\lor...\lor a_n\lor b_1 ...\lor b_n)}
+\end{aligned}
+\]</span> 其中, <span
+class="math inline">\(a_1,...,a_n,b_1,...b_n\)</span> b 表示文字, <span
+class="math inline">\(\beta\)</span> 表示变量. 变量 <span
+class="math inline">\(\beta\)</span> 被称作解析变量(resolution
+variable). 两个子句 <span class="math inline">\((a_1 \lor\ ...\ a_n\lor\
+\beta)\ \)</span> 和 <span class="math inline">\((b_1\lor\ ...\ b_n\lor\
+\neg\beta)\)</span> 是待解析子句, 最终结果 <span
+class="math inline">\((a_1\lor...\lor a_n\lor b_1 ...\lor b_n)\)</span>
+是已解析子句. 显而易见, 二元解析的作用是将两个含有同一个变量 <span
+class="math inline">\(\beta\)</span>
+的析取子句合并成不含公共变量的析取子句. 由此,
+基于二元解析规则的演绎推理系统是可靠且完备的. 换句话说,
+当且仅当存在一个以空子句结束的有限二元解析步骤的序列时, 这样一个 CNF
+公式是不可满足的. 用一个简单的例子说明二元解析和 RESOLVE 策略.</p>
+<p><img src="\img\CDCL-Algorithm\conflict-graph.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></p>
+<center>
+图1 RESOLVE策略
+</center>
+<p>如图1 所示的冲突蕴涵子图, 整个 ANALYZE-CONFLICT
+算法的作用就是从图中的冲突节点 <span
+class="math inline">\(\mathcal{k}\)</span> 开始从右向左回溯,
+以产生新的冲突子句. 该蕴涵图的结果是产生一个当前的冲突子句 <span
+class="math inline">\(c_5 := (x_{10}\lor x_2\lor \neg x_4)\)</span>.
+ANALYZE-CONFLICT 从冲突子句 <span class="math inline">\(c_4\)</span>
+处回溯整个蕴涵图, 回溯过程如下表1所示.</p>
+<p>
+表1. 回溯过程
+</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 52%" />
+<col style="width: 15%" />
+<col style="width: 7%" />
+<col style="width: 9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(\rm
+Name\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(cl\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(lit\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(var\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(ante\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span
+class="math inline">\(c_4\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((\neg
+x_6\lor x_7)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(x_7\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(x_7\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(c_3\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\((\neg
+x_5\lor\neg x_6)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\neg
+x_6\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(x_6\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(c_2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\((\neg
+x_4\lor x_{10}\lor \neg x_5)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\neg
+x_5\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(x_5\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(c_1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span
+class="math inline">\(c_5\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((\neg
+x_4\lor x_2\lor x_{10})\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>子句 <span class="math inline">\(c_5\)</span> 是一个断言子句,
+在这个子句中，第一个 UIP(<span class="math inline">\(x_4\)</span>)
+的否定是来自当前决策层的唯一文字.</p>
+<h2 id="decide策略">3 DECIDE策略</h2>
+<p>第二个问题, DECIDE 策略的选择. 在 SAT
+求解过程中最重要的部分就是选择变量并给已选变量赋值的策略, 这个策略就是
+SAT 求解器的启发式判定(decision heuristic)策略.
+先介绍几个常见的启发式判定策略.</p>
+<h3 id="jeroslow-wang">3.1 Jeroslow-Wang</h3>
+<p>其实最容易想到的就是 Jeroslow-Wang 策略,
+只要找到在每一个子句中出现次数最多的那个文字就行了. 对于给定的CNF公式
+<span class="math inline">\(\mathcal{B}\)</span>, 计算每一个文字 <span
+class="math inline">\(l\)</span> <span class="math display">\[
+J(l)\ = \Sigma_{\omega \in \mathcal{B}, l\in\omega}2^{-|\omega|}
+\]</span> 其中 <span class="math inline">\(\omega\)</span> 代表一个子句,
+相应地, <span class="math inline">\(|\omega|\)</span> 表示该子句的长度.
+选择出一个使得 <span class="math inline">\(J(l)\)</span> 值最大的文字
+<span class="math inline">\(l\)</span>, 也就是尚未被赋值的那个文字.
+这个策略给予在短子句中出现频率最高的文字较高的优先等级,
+可以被静态或者动态实现. 显然,
+动态实现方法在每个决策点会导致很大的性能开销.</p>
+<h3 id="动态最大单项和dynamic-largest-individual-sum-dlis">3.2
+动态最大单项和(Dynamic Largest Individual Sum, DLIS)</h3>
+<p>在每一个决策层, 选择满足当前为满足子句数量最多的尚未赋值的文字.
+实现这种启发式方法的常见方法是将每个文字的指针指向它所出现的子句列表中.
+在每个决策层, 求解器计算包含这个文字但尚未满足的子句数量,
+并将这个数字分配给该文字. 随后, 选择计数最多的文字. 同样, DLIS
+也导致很大的开销, 因为做出决策的复杂度与子句的数量成正比.</p>
+<h3
+id="变量状态下的独立衰减和variable-state-independent-decaying-sum-vsids">3.3
+变量状态下的独立衰减和(Variable State Independent Decaying Sum,
+VSIDS)</h3>
+<p>这是 SAT 求解器 Chaff 中引入的一种策略. 首先,
+在计算每个文字出现的子句数量时, 不考虑该子句是否已经满足的问题.
+这意味着, 对每一个决策的质量都会受到影响, 但是做出决策的复杂度会更好:
+假设我们把文字保存在一个列表中, 按照各自的分数排序,
+做出判定只需要需要常数时间. 其次, 定期将所有分数除以 2.</p>
+<p>该决策的思路是使启发式决策基于冲突驱动,
+意思就是说它试图首先解决最近发现的冲突. 为此,
+它需要给近期冲突中所涉及到的变量更高的分数.
+每一次冲突都会产生一个冲突子句. 一个新的冲突子句, 和其他子句一样,
+每出现一个文字就加1分. 这个子句被添加后时间越长, 这些文字的分数被 2
+整除的次数就越多. 因此, 变量在新的冲突子句中就变得更有影响力. 引入了
+VSIDS 的 SAT 求解器 Chaff,
+允许人们通过控制分数的被除频率和除数来调整这一策略. 针对不同 CNF
+公式的解法最好是要有不同的参数.</p>
+<p>还有另外一个基于冲突驱动的启发式方法. 比如说, MINISAT
+求解器所采用的策略. MINISAT
+为每一个变量保存一个双精度浮点型的活动分数(activity score),
+用来衡量每一个变量推导出新子句的参与度. 如果一个子句 <span
+class="math inline">\(c\)</span> 可以从其他子句 <span
+class="math inline">\(c_1,...,c_n\)</span> 推导得出, 那么在子句 <span
+class="math inline">\(c_1,..c_n\)</span> 中的每一个实例的变量 <span
+class="math inline">\(v\)</span> 都会以常量 <span
+class="math inline">\(inc\)</span> 的方式增加. <span
+class="math inline">\(inc\)</span> 初始值设为 1,
+在每次侦测到冲突之后就会被乘以 1.05,
+因此会给那些参与到最近冲突子句中的变量较高的分数. 为了防止溢出,
+如果某些变量的活动分数比 <span class="math inline">\(10^{100}\)</span>
+高, 那么所有的变量分数包括常量 <span class="math inline">\(inc\)</span>
+都乘以 <span class="math inline">\(10^{-100}\)</span>.
+有着最高分数的变量将被选定. 被选定的变量的值, 要么是 <span
+class="math inline">\(\rm FALSE\)</span> , 要么随机, 或者,
+将先前的赋值重新赋给该变量. MINISAT 的成功之处在于,
+并没有尝试猜测变量的正确赋值, 重要的是基于学习的本地搜索,
+而不是去猜测当前分支的正确性. 因为, 即使是在可满足公式中的大多数分支中,
+也不能推出一组使得公式可满足的赋值.</p>
+<div class="note note-success">
+            <p>感兴趣的读者可以进一步学习 CDCL 算法相关的内容: <atarget="_blank" rel="noopener" href="https://cse442-17f.github.io/Conflict-Driven-Clause-Learning/">CSE442-17f</a>,<atarget="_blank" rel="noopener" href="https://users.aalto.fi/~tjunttil/2020-DP-AUT/notes-sat/cdcl.html">CS-E3220</a>.</p>
+          </div>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/CDCL/">CDCL</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/be225a850aec/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">DPLL Algorithm</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/b1229a78479c/">
+                        <span class="hidden-mobile">Alice</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '17c5250b5e8067c319d098eb988f8801'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -1,0 +1,915 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍位向量与位向量演算的判定方法.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bit Vectors (1)">
+<meta property="og:url" content="https://socod.github.io/2022/03/7e9d080a4eac/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍位向量与位向量演算的判定方法.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-25T05:36:33.000Z">
+<meta property="article:modified_time" content="2022-06-10T09:25:50.808Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="数据验证">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>Bit Vectors (1) - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Bit Vectors (1)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-25 13:36" pubdate>
+        2022年3月25日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      9.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      31 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Bit Vectors (1)</h1>
+            
+            <div class="markdown-body">
+              <h1 id="位向量bit-vectors">位向量(Bit Vectors)</h1>
+<h2 id="位向量演算">1 位向量演算</h2>
+<p>计算机系统的设计是很容易出错的, 因此, 亟需验证此类系统的判定程序.
+一个计算机系统通过位向量(bit vectors)来对信息进行编码, 比如说, 数字.</p>
+<p>位向量演算的文法: <span class="math display">\[
+\begin{aligned}
+formula&amp;:formula\land formula\ |\ \neg formula\ |\ (formula)\ |\
+atom\\
+atom&amp;:term\ rel\ term\ |\ Boolean-Identifier\ |\ term[constant]\\
+rel&amp;:&lt;\ |\ =\\
+term&amp;:term\ op\ term\ |\ identifier\ |\ ~term\ |\ constant\ |\ \\
+&amp;\ atom?term:term\ |\ term[constant:constant]\ |\ ext(term)\\
+op&amp;:+\ |\ -\ |\ \cdot\ |\ /\ |\ &lt;&lt;\ |\ &gt;&gt;\ |\ \&amp;\ |\
+|\ |\ \oplus\ |\ \circ
+\end{aligned}
+\]</span></p>
+<p>通常来说, 其他运算符比如 <span class="math inline">\(\vee, \ne,
+\ge\)</span> 可以通过文法中的布尔运算符组合得到.
+其中一元运算符"~"表示按位取反(bitwise negation).
+<em>ext</em>函数代表符号扩展或者零扩展. 二元运算符"<span
+class="math inline">\(\circ\)</span>"表示位向量的串联.</p>
+<p>为什么要使用位向量演算?</p>
+<p>首先考虑如下公式: <span class="math display">\[
+(x-y\gt 0)\Longleftrightarrow (x&gt;y).
+\]</span> 如果 <span class="math inline">\(x,y\)</span>
+是有限宽度的位向量, 该等价形式就不再成立了,
+因为该减法操作可能存在溢出问题. 例如如下的的 C 程序片段:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> number = <span class="hljs-number">200</span>;<br>number = number + <span class="hljs-number">100</span>;<br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Sum: %d\n&quot;</span>, number);<br></code></pre></td></tr></table></figure>
+<p>上述结果输出的是 44, 因为是运算是无符号的字符类型, 所以: <span
+class="math display">\[
+\begin{aligned}
+11001000=200\\
++01100100=100\\
+\hline
+=00101100=44
+\end{aligned}
+\]</span> 在计算机中用 8 位二进制表示一个数的时候, 200 被存储为
+11001000. 当执行加 100 的操作时, 会造成溢出, 因为第九位被舍去了.</p>
+<p>因此, 运算符, 比如"+", 的含义是通过模运算定义的. 但是,
+关于位向量的推理问题超出了溢出和模运算的范围. 出于效率原因,
+程序员使用位级运算符(bit-level
+operators)将尽可能多的信息编码为可用的位数.</p>
+<p>比如说, 命题 SAT 求解器的实现. 命题 SAT 求解器在 CNF
+范式上的操作要存储大量的文字.
+我们假定已经对出现在公式中的文字进行了标号, <span
+class="math inline">\(x_1, x_2,...\)</span>.</p>
+<p>针对 CNF 的 DIMACS 标准用符号数对文字进行编码, 例如, 文字 <span
+class="math inline">\(\neg x_3\)</span> 表示为 <span
+class="math inline">\(-3\)</span>. 治所用采用这种方式,
+是因为避免了额外用一位来存储位向量的符号位. 从另一个方面说,
+这种方法减少了变量数量可能增长至 <span
+class="math inline">\(2^{31}-1\)</span> 这种情况,
+而且对于实际应用还是能够满足的.</p>
+<p>为了能够提取出变量的下标, 我们要对位向量的符号正负进行分析,
+如下程序:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">unsigned</span> <span class="hljs-title">variable_index</span><span class="hljs-params">(<span class="hljs-keyword">int</span> literal)</span></span>&#123;<br>    <span class="hljs-keyword">if</span>(literal &lt; <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-keyword">return</span> -literal;<br>    &#125;<span class="hljs-keyword">else</span>&#123;<br>        <span class="hljs-keyword">return</span> literal;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>由于很难为现代处理器的分支预测机制进行预测, 因此在上述程序中实现
+<span class="math inline">\(if\)</span>
+语句所需的分支会减慢程序的执行速度. 因此, 大多数 SAT
+求解器使用不同的编码形式: 位向量的最低有效位用于编码文字的符号,
+其余位则用于编码变量. 然后可以通过位向量右移操作来提取变量的索引:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">unsigned</span> <span class="hljs-title">variable_index</span><span class="hljs-params">(<span class="hljs-keyword">unsigned</span> literal)</span></span>&#123;<br>    <span class="hljs-keyword">return</span> literal &gt;&gt; <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>类似地, 符号位可以通过按位与操作取得:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">literal_sign</span><span class="hljs-params">(<span class="hljs-keyword">unsigned</span> literal)</span></span>&#123;<br>    <span class="hljs-keyword">return</span> literal &amp; <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>上述的右移和按位与操作, 在大多数微处理器中都有实现, 而且执行效率较高.
+这些位操作也高频地出现在硬件设计中.
+对这些设计和构造进行推理证明需要用到位向量演算.</p>
+<h3 id="表示方法">1.1 表示方法</h3>
+<p>我们使用 Church 的 <span class="math inline">\(\lambda\mbox{-}\rm
+notation\)</span> 来定义向量. 一个有 <span
+class="math inline">\(l\)</span> 个比特位的位向量用 lambda 表达式描述:
+<span class="math display">\[
+\lambda.i\in\{0,...,l-1\}.f(i),
+\]</span> 其中 <span class="math inline">\(f(i)\)</span> 是表示第 <span
+class="math inline">\(i\)</span> 个比特的值的函数.</p>
+<p>用一个例子说明 <span class="math inline">\(\lambda\mbox{-}\rm
+operator\)</span> 是如何表示一个位向量的.</p>
+<p>考虑如下表达式:</p>
+<ul>
+<li><p><span class="math display">\[
+  \lambda.i\in\{0,...,l-1\}.0
+  \]</span></p>
+<p>表示 <span class="math inline">\(l\)</span> 长度的 0 向量.</p></li>
+<li><p>一个 <span class="math inline">\(\lambda\)</span>
+表达式可以用另外一种方式来定义一个不具名的函数.
+我们可以定义一个函数<span class="math inline">\(z\)</span> <span
+class="math display">\[
+  z(i)\doteq 0,
+  \]</span> 对于函数<span
+class="math inline">\(z\)</span>也可以简单地写成 <span
+class="math inline">\(\lambda.i\in\{0,...,l-1\}.0\)</span>.</p></li>
+<li><p>表达式 <span class="math display">\[
+  \lambda i\in\{0,...,7\}.
+  \begin{equation}
+  \left\{\begin{array}{lr}
+              0:i\ \rm is\ even\\
+              1:\rm otherwise
+          \end{array}
+  \right.
+  \end{equation}
+  \]</span> 表示位向量是 10101010.</p></li>
+<li><p>表达式 <span class="math display">\[
+  \lambda i\in\{0,...,l-1\}.\neg x_i
+  \]</span> 表示对向量<span
+class="math inline">\(x\)</span>进行按位取反操作.</p></li>
+</ul>
+<h3 id="语义">1.2 语义</h3>
+<p>首先给出位向量的定义. 一个位向量 <span
+class="math inline">\(b\)</span> 是一个给定长度 <span
+class="math inline">\(l\)</span> 或者维度的比特向量: <span
+class="math display">\[
+b:\{0,...,l-1\}\longrightarrow\{0,1\}.
+\]</span> 用 <span class="math inline">\(bvec_l\)</span> 来表示长度为
+<span class="math inline">\(l\)</span> 的所有 <span
+class="math inline">\(2^l\)</span> 个位向量的集合. 位向量 <span
+class="math inline">\(b\)</span> 的第 <span
+class="math inline">\(i\)</span> 个比特记为 <span
+class="math inline">\(b_i\)</span>.</p>
+<p>一个位向量公式的含义依赖于位向量变量的宽度.即使不使用演算也是如此,
+比如说, <span class="math display">\[
+x\neq y\land x\neq z\land y\neq z
+\]</span> 对于其中三个如果只有一个比特的位向量来说是不可满足的,
+但是对于位数更多的是可满足的.</p>
+<p>有时可以用位向量对正数进行编码(无符号位向量),
+也可以同时对正数和复数进行编码(有符号位向量). 因此,
+每一种表达式都有与之对应的类型(<strong>type</strong>).
+位向量的类型表述是</p>
+<ol type="1">
+<li>表达式的宽度(以比特为单位),</li>
+<li>无论是否有符号.</li>
+</ol>
+<p>我们将表示方式限制为具有固定长度的位向量,
+因为一旦允许任意宽度的位向量, 位向量演算就无法判定.
+宽度在实践中出现的大多数问题中都是已知的.</p>
+<p><strong>按位运算符</strong></p>
+<p>或运算符 "|". <span class="math inline">\(|_{[l]}: (bvec_l \times
+bvec_l)\longrightarrow bvec_l\)</span>.</p>
+<p>使用 <span class="math inline">\(\lambda\)</span> 表示符,
+按位或操作可以表示为: <span class="math display">\[
+a\ |\ b \doteq \lambda i.(a_i \lor b_i).
+\]</span> 其他的按位运算符的定义方式也是类似的.</p>
+<p><strong>算术运算符</strong></p>
+<p>具有算术运算符的位向量公式的含义取决于对其包含的位向量的解释.
+有许多使用位向量对数字进行编码的方法.
+最常用的整数编码是无符号整数的二进制编码(binary
+encoding)和带符号整数的二进制补码(two's complement).</p>
+<p>二进制编码(binary encoding). 令 <span
+class="math inline">\(x\)</span> 代表一个自然数, <span
+class="math inline">\(b\)</span> 是属于 <span
+class="math inline">\(bvec_l\)</span> 的一个位向量. 我们称 <span
+class="math inline">\(b\)</span> 为 <span
+class="math inline">\(x\)</span> 二进制编码, 当且仅当 <span
+class="math display">\[
+x = \langle b\rangle_U,
+\]</span> 其中的 <span class="math inline">\(\langle b
+\rangle_U\)</span> 有如下定义: <span class="math display">\[
+\langle \cdot \rangle_U: bvec_l \longrightarrow \{0,...,2^l-1\},\\
+\langle b\rangle_U \doteq \Sigma_{i=0}^{l-1}b_i\cdot 2^i.
+\]</span> <span class="math inline">\(b_0\)</span> 称为最低有效位, <span
+class="math inline">\(b_{l-1}\)</span> 称为最高有效位.</p>
+<p>二进制编码只能用来表示非负整数. 同样地,
+一种编码复数的方式是使用其中一个比特位作为符号位.
+使用符号位的一种简单方法是在设置了指定位(例如最高有效位)的情况下简单地对数字进行取反.
+比如说, 1001 会被解释成 <span class="math inline">\(-1\)</span> 而不是
+1. 这种编码方式很少应用于实践中.
+大多数微处理器架构大多采用二进制补码进行编码.</p>
+<p><strong>二进制补码(two's complement)</strong>. 令 <span
+class="math inline">\(x\)</span> 代表一个自然数, <span
+class="math inline">\(b\)</span> 是属于 <span
+class="math inline">\(bvec_l\)</span> 的一个位向量. 我们称 <span
+class="math inline">\(b\)</span> 为 <span
+class="math inline">\(x\)</span> 的二进制补码, 当且仅当 <span
+class="math display">\[
+x=\langle b \rangle_S,
+\]</span> 其中 <span class="math inline">\(\langle b \rangle\)</span>
+定义为: <span class="math display">\[
+\langle \cdot \rangle_S: bvec_l \longrightarrow
+\{-2^{l-1},...,2^{l-1}-1\},\\
+\langle b\rangle_S := -2^{l-1}\cdot b_{l-1}+ \Sigma_{i=0}^{l-2}b_i\cdot
+2^i.
+\]</span> 下标为 <span class="math inline">\(l-1\)</span> 的比特为位向量
+<span class="math inline">\(b\)</span> 的符号位.</p>
+<p>比如说, 一些二进制整型和其对应的二进制补码编码 <span
+class="math display">\[
+\begin{aligned}
+&amp;\langle 11001000\rangle_U = 20,\\
+&amp;\langle 11001000\rangle_U=-128+64+8=-56,\\
+&amp;\langle 01100100\rangle_S=100.
+\end{aligned}
+\]</span> 如最开始的示例所描述的那样, 位向量的算术运算具有环绕效果:
+如果表示结果所需的位数超过了可用位数, 则结果的其他比特位将被丢弃,
+即结果被截断. 这对应于以 <span class="math inline">\(2^l\)</span>
+为底的取模运算. 写成 <span class="math inline">\(x=y\ mod\ b\)</span>
+代表 <span class="math inline">\(x\)</span> 与 <span
+class="math inline">\(y\)</span> 模 <span
+class="math inline">\(b\)</span> 是相等的.
+模运算的使用允许可以对所有的算数运算符进行直接定义:</p>
+<ul>
+<li><p>加法和减法: <span class="math display">\[
+  \begin{aligned}
+  a_{[l]} +_U b_{[l]} = c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_U + \langle b\rangle_U = \langle c\rangle_U\ \rm mod\ 2^l,\\
+  a_{[l]} -_U b_{[l]} = c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_U - \langle b\rangle_U = \langle c\rangle_U\ \rm mod\ 2^l,\\
+  a_{[l]} +_S b_{[l]} = c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_S + \langle b\rangle_S = \langle c\rangle_S\ \rm mod\ 2^l,\\
+  a_{[l]} -_S b_{[l]} = c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_S - \langle b\rangle_S = \langle c\rangle_S\ \rm mod\ 2^l.
+  \end{aligned}
+  \]</span></p></li>
+<li><p>取反(unary minus): <span class="math display">\[
+  -a_{[l]}=b_{[l]}\Longleftrightarrow -\langle a\rangle_S = \langle
+b\rangle_S\ \rm mod\ 2^l.
+  \]</span></p></li>
+<li><p>关系运算符(relational operators): <span class="math display">\[
+  \begin{aligned}
+  a_{[l]U}\lt b_{[l]U} &amp;\Longleftrightarrow \langle a\rangle_U \lt
+\langle b\rangle_U,\\
+  a_{[l]S}\lt b_{[l]S} &amp;\Longleftrightarrow \langle a\rangle_S \lt
+\langle b\rangle_S,\\
+  a_{[l]U}\lt b_{[l]S} &amp;\Longleftrightarrow \langle a\rangle_U \lt
+\langle b\rangle_S,\\
+  a_{[l]S}\lt b_{[l]U} &amp;\Longleftrightarrow \langle a\rangle_S \lt
+\langle b\rangle_U.
+  \end{aligned}
+  \]</span></p></li>
+<li><p>乘法与除法: <span class="math display">\[
+  \begin{aligned}
+  a_{[l]}\cdot_U b_{[l]}=c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_U\cdot \langle b\rangle_U = \langle c\rangle_U\ \rm mod\ 2^l,\\
+  a_{[l]}/_U b_{[l]}=c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_U/ \langle b\rangle_U = \langle c\rangle_U\ \rm mod\ 2^l,\\
+  a_{[l]}\cdot_S b_{[l]}=c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_U\cdot \langle b\rangle_S = \langle c\rangle_S\ \rm mod\ 2^l,\\
+  a_{[l]}/_S b_{[l]}=c_{[l]} &amp;\Longleftrightarrow \langle
+a\rangle_U/ \langle b\rangle_S = \langle c\rangle_S\ \rm mod\ 2^l.
+  \end{aligned}
+  \]</span> 乘法的语义无论参数是无符号数还是二进制补码形式都不受影响,
+因此下标 <span class="math inline">\(U/S\)</span> 可以省略.
+但是除法不行.</p></li>
+<li><p>扩展运算符(extension operator):
+将原有的无符号位向量扩展为具有更多比特的无符号位向量称为零扩展(zero
+extension), 对于有符号的位向量来说是符号扩展(sign extension). 令 <span
+class="math inline">\(l\le m\)</span>. 以下的扩展形式对值无影响: <span
+class="math display">\[
+  \begin{aligned}
+  ext_{[m]U}(a_{[l]}) = b_{[m]U} &amp;\Longleftrightarrow \langle
+a\rangle_U = \langle b\rangle_U,\\
+  ext_{[m]S}(a_{[l]}) = b_{[m]S} &amp;\Longleftrightarrow \langle
+a\rangle_S = \langle b\rangle_S.
+  \end{aligned}
+  \]</span></p></li>
+<li><p>移位(shifting): 左移位运算符"&lt;&lt;"取两个操作数,
+并将第一个操作数向左移动第二个操作数相对应的位数.
+左侧操作数的宽度称为移位宽度(width of the shift),
+右侧操作数的宽度是移位距离的宽度(width of the shift distance),
+向量从右边开始用进行零填充: <span class="math display">\[
+  a_{[l]} &lt;&lt; b_U = \lambda i\in\{0,...,l-1\}.
+  \begin{equation}
+  \left\{\begin{array}{lr}
+              a_{i-\langle b\rangle_U}:i \ge \langle b\rangle_U\\
+              0:\rm otherwise.
+          \end{array}
+  \right.
+  \end{equation}
+  \]</span> 右移运算符的含义取决于第一个操作数的编码方式:
+如果使用的是二进制编码(也就是针对无符号位向量的编码),
+那就从左端开始填充0. 这称为<strong>逻辑右移(logical right
+shift)</strong>: <span class="math display">\[
+  a_{[l]U} &gt;&gt; b_U = \lambda i\in\{0,...,l-1\}.
+  \begin{equation}
+  \left\{\begin{array}{lr}
+              a_{i+\langle b\rangle_U}:i \lt l - \langle b\rangle_U\\
+              0:\rm otherwise.
+          \end{array}
+  \right.
+  \end{equation}
+  \]</span>
+如果第一个操作数采用的是二进制补码进行编码(也就是针对有符号位向量的编码),
+那么<span class="math inline">\(a\)</span> 的符号位就要被复制.
+这称为<strong>算术右移(arithmetic right shift)</strong>: <span
+class="math display">\[
+  a_{[l]S} &gt;&gt; b_U = \lambda i\in\{0,...,l-1\}.
+  \begin{equation}
+  \left\{\begin{array}{lr}
+              a_{i+\langle b\rangle_U}:i \lt l - \langle b\rangle_U\\
+              a_{l-1}:\rm otherwise.
+          \end{array}
+  \right.
+  \end{equation}
+  \]</span></p></li>
+</ul>
+<h2 id="用flattening判定位向量的演算">2
+用Flattening判定位向量的演算</h2>
+<p>最常用的针对位向量演算的判定程序称为 <em>flattening</em>.
+如图所示的算法实现了这一技术. 给定一个位向量演算公式 <span
+class="math inline">\(\varphi\)</span>, 该算法计算出一个等价的命题公式
+<span class="math inline">\(\mathcal{B}\)</span>,
+并将命题公式传给一个SAT求解器. <span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 1.}\ \rm{BV\mbox{-}FLATTENING}\\
+&amp;\mathbf{Input:}\ \rm{A\ formula}\ \varphi\ {\rm in\
+bit\mbox{-}vector\ arithmetic}\\
+&amp;\mathbf{Output:}\ \rm{An\ equisatisfiable\ Boolean\ formula\ }
+\mathcal{B}\\
+&amp;\\
+&amp;1.\hspace{2mm}\mathbf{function\ } {\rm BV\mbox{-}FLATTENING}\\
+&amp;2.\hspace{10mm}\mathcal{B}:=e(\varphi);\hspace{50mm}\triangleright\
+{\rm the\ propositional\ skeleton\ of\ }\varphi\\
+&amp;3.\hspace{10mm} \mathbf{for\ } {\rm each}\ t_{[l]} \in T(\varphi)\
+\mathbf{do}\\
+&amp;4.\hspace{18mm} \mathbf{for\ } {\rm each}\ i\in \{0,...,l-1\}\
+\mathbf{do}\\
+&amp;5.\hspace{40mm} {\rm set}\ e(t)_i\ {\rm to\ a\ new\ Boolean\
+variable};\\
+&amp;6.\hspace{10mm} \mathbf{for\ } {\rm each\ } a\in At(\varphi)\
+\mathbf{do}\\
+&amp;7.\hspace{18mm} \mathcal{B}:=\mathcal{B}\wedge\ {\rm
+BV\mbox{-}CONSTRAINT}(e,a);\\
+&amp;8.\hspace{10mm} \mathbf{for\ } {\rm each\ } t_{[l]}\in T(\varphi)\
+\mathbf{do}\\
+&amp;9.\hspace{18mm} \mathcal{B}:=\mathcal{B}\wedge\ {\rm
+BV\mbox{-}CONSTRAINT}(e,t);\\
+&amp;10.\hspace{8mm} \mathbf{return\ } \mathcal{B};
+\end{aligned}
+\]</span> 令 <span class="math inline">\(At(\varphi)\)</span> 表示原公式
+<span class="math inline">\(\varphi\)</span> 中原子的集合. 第一步,
+算法将 <span class="math inline">\(\varphi\)</span>
+中的原子用新的布尔变量进行替换. 用 <span
+class="math inline">\(e(a)\)</span> 来表示替换之后的原子 <span
+class="math inline">\(a\)</span>, 并且 <span class="math inline">\(a\in
+At(\varphi)\)</span>, 这个过程称为 <span
+class="math inline">\(a\)</span> 的命题编码器(propositional encoder).
+所有的原子被布尔变量替换之后形成的公式记为 <span
+class="math inline">\(e(\varphi)\)</span>, 称之为公式 <span
+class="math inline">\(\varphi\)</span> 的命题骨架(propositional
+skeleton). 命题骨架是初始赋值给 <span
+class="math inline">\(\mathcal{B}\)</span> 的表达式. 令 <span
+class="math inline">\(T(\varphi)\)</span> 代表原公式 <span
+class="math inline">\(\varphi\)</span> 中项(terms)的集合. 算法对 <span
+class="math inline">\(T(\varphi)\)</span>
+中的每一个位向量的项都赋一个新的布尔变量的向量. 用 <span
+class="math inline">\(e(t)\)</span> 表示对于给定 <span
+class="math inline">\(t\)</span> 的变量向量, <span
+class="math inline">\(t \in T(\varphi)\)</span>, 用 <span
+class="math inline">\(e(t)_i\)</span> 表示 <span
+class="math inline">\(t\)</span> 中索引为 <span
+class="math inline">\(i\)</span> 的 变量. <span
+class="math inline">\(e(t)\)</span> 的宽度与项 <span
+class="math inline">\(t\)</span> 的宽度一致. 然后, 该算法在公式 <span
+class="math inline">\(\varphi\)</span> 上做迭代, 并计算相应的约束.
+约束由函数 BV-CONSTRAINT 返回, 并添加到公式 <span
+class="math inline">\(\mathcal{B}\)</span> 中.</p>
+<p>特定原子 <span class="math inline">\(a\)</span> 或项 <span
+class="math inline">\(t\)</span> 所需的约束分别取决于原子或项.
+如果是位向量或布尔变量, 则不需要约束, 并且 BV-CONSTRAINT 返回真. 如果
+<span class="math inline">\(t\)</span> 是一个位向量约束 <span
+class="math inline">\(C_{[l]}\)</span>, 那么会生成以下约束: <span
+class="math display">\[
+\bigwedge_{i=1}^{l-1}(C_i \Longleftrightarrow e(t)_i).
+\]</span> 否则, 项 <span class="math inline">\(t\)</span>
+必须包含一个位向量运算符. 所需的约束依赖于这个运算符.
+按位运算符的约束很简单. 比如说, 考虑按位或, 令 <span
+class="math inline">\(t = a|_{[l]}b\)</span>. 函数 BV-CONSTRAINT
+返回的约束为 <span class="math display">\[
+\bigwedge_{i=0}^{l-1}((a_i\lor b_i)\Longleftrightarrow e(t)_i).
+\]</span> 其他的按位运算符对应的约束与上述的形式一致.</p>
+<p>上述算法其实就是对一个位向量演算公式进行布尔变量变量编码和添加相应的布尔约束条件,
+进而传给SAT求解器, 并对公式进行可满足性的判定.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/">数据验证</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/04/525f83ab9fb7/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Bit Vectors (2)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/7ddb5ee9afcf/">
+                        <span class="hidden-mobile">线性演算(二)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '81a86167449855184539a9f61769489c'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

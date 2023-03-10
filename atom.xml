@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>socod</title>
+  
+  <subtitle>socod</subtitle>
+  <link href="https://socod.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://socod.github.io/"/>
+  <updated>2023-03-09T14:21:10.000Z</updated>
+  <id>https://socod.github.io/</id>
+  
+  <author>
+    <name>socod</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>红黑树</title>
+    <link href="https://socod.github.io/2022/08/5cd9ec8eff25/"/>
+    <id>https://socod.github.io/2022/08/5cd9ec8eff25/</id>
+    <published>2022-08-21T01:44:10.000Z</published>
+    <updated>2023-03-09T14:21:10.000Z</updated>
+    
+    
+    <summary type="html">介绍红黑树.</summary>
+    
+    
+    
+    <category term="C++" scheme="https://socod.github.io/categories/C/"/>
+    
+    <category term="数据结构" scheme="https://socod.github.io/categories/C/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+    
+    <category term="自平衡二叉树" scheme="https://socod.github.io/tags/%E8%87%AA%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>谢尔德指针</title>
+    <link href="https://socod.github.io/2022/07/d7e9fc032ed0/"/>
+    <id>https://socod.github.io/2022/07/d7e9fc032ed0/</id>
+    <published>2022-07-17T07:50:23.000Z</published>
+    <updated>2022-10-04T01:32:05.641Z</updated>
+    
+    
+    <summary type="html">介绍智能指针 shared_ptr.</summary>
+    
+    
+    
+    <category term="C++" scheme="https://socod.github.io/categories/C/"/>
+    
+    
+    <category term="智能指针" scheme="https://socod.github.io/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>组合理论的判定</title>
+    <link href="https://socod.github.io/2022/06/a6effd395506/"/>
+    <id>https://socod.github.io/2022/06/a6effd395506/</id>
+    <published>2022-06-26T12:52:30.000Z</published>
+    <updated>2022-07-29T03:46:03.374Z</updated>
+    
+    
+    <summary type="html">介绍组合理论的判定过程.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="算法" scheme="https://socod.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="组合理论" scheme="https://socod.github.io/tags/%E7%BB%84%E5%90%88%E7%90%86%E8%AE%BA/"/>
+    
+    <category term="Nelson-Oppen" scheme="https://socod.github.io/tags/Nelson-Oppen/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>量化公式</title>
+    <link href="https://socod.github.io/2022/06/6d923e6ce0cf/"/>
+    <id>https://socod.github.io/2022/06/6d923e6ce0cf/</id>
+    <published>2022-06-11T02:01:56.000Z</published>
+    <updated>2022-07-29T02:55:22.572Z</updated>
+    
+    
+    <summary type="html">介绍量化公式及量词消除算法.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="算法" scheme="https://socod.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="量词消除" scheme="https://socod.github.io/tags/%E9%87%8F%E8%AF%8D%E6%B6%88%E9%99%A4/"/>
+    
+    <category term="量化公式" scheme="https://socod.github.io/tags/%E9%87%8F%E5%8C%96%E5%85%AC%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>指针逻辑</title>
+    <link href="https://socod.github.io/2022/05/e44910fffebb/"/>
+    <id>https://socod.github.io/2022/05/e44910fffebb/</id>
+    <published>2022-05-29T13:52:57.000Z</published>
+    <updated>2022-07-26T14:54:07.457Z</updated>
+    
+    
+    <summary type="html">介绍指针逻辑及其判定过程.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="指针逻辑" scheme="https://socod.github.io/tags/%E6%8C%87%E9%92%88%E9%80%BB%E8%BE%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数组理论 (二)</title>
+    <link href="https://socod.github.io/2022/05/28e00f7e9070/"/>
+    <id>https://socod.github.io/2022/05/28e00f7e9070/</id>
+    <published>2022-05-21T06:50:07.000Z</published>
+    <updated>2022-07-26T14:54:53.444Z</updated>
+    
+    
+    <summary type="html">介绍数组理论的编码.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="数组" scheme="https://socod.github.io/tags/%E6%95%B0%E7%BB%84/"/>
+    
+    <category term="数组判定" scheme="https://socod.github.io/tags/%E6%95%B0%E7%BB%84%E5%88%A4%E5%AE%9A/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>悠泥客指针</title>
+    <link href="https://socod.github.io/2022/05/d9b2728991b4/"/>
+    <id>https://socod.github.io/2022/05/d9b2728991b4/</id>
+    <published>2022-05-10T10:50:23.000Z</published>
+    <updated>2022-06-30T03:02:18.721Z</updated>
+    
+    
+    <summary type="html">介绍智能指针 unique_ptr</summary>
+    
+    
+    
+    <category term="C++" scheme="https://socod.github.io/categories/C/"/>
+    
+    
+    <category term="智能指针" scheme="https://socod.github.io/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数组理论 (一)</title>
+    <link href="https://socod.github.io/2022/04/eb1812b5cb5f/"/>
+    <id>https://socod.github.io/2022/04/eb1812b5cb5f/</id>
+    <published>2022-04-21T09:35:21.000Z</published>
+    <updated>2022-06-10T10:46:04.974Z</updated>
+    
+    
+    <summary type="html">简单介绍数组理论.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="数组" scheme="https://socod.github.io/tags/%E6%95%B0%E7%BB%84/"/>
+    
+    <category term="数组判定" scheme="https://socod.github.io/tags/%E6%95%B0%E7%BB%84%E5%88%A4%E5%AE%9A/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Bit Vectors (2)</title>
+    <link href="https://socod.github.io/2022/04/525f83ab9fb7/"/>
+    <id>https://socod.github.io/2022/04/525f83ab9fb7/</id>
+    <published>2022-04-05T04:58:59.000Z</published>
+    <updated>2022-06-10T09:30:06.407Z</updated>
+    
+    
+    <summary type="html">介绍位向量求解算法.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="数据验证" scheme="https://socod.github.io/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Bit Vectors (1)</title>
+    <link href="https://socod.github.io/2022/03/7e9d080a4eac/"/>
+    <id>https://socod.github.io/2022/03/7e9d080a4eac/</id>
+    <published>2022-03-25T05:36:33.000Z</published>
+    <updated>2022-06-10T09:25:50.808Z</updated>
+    
+    
+    <summary type="html">介绍位向量与位向量演算的判定方法.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="数据验证" scheme="https://socod.github.io/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>线性演算(二)</title>
+    <link href="https://socod.github.io/2022/03/7ddb5ee9afcf/"/>
+    <id>https://socod.github.io/2022/03/7ddb5ee9afcf/</id>
+    <published>2022-03-11T01:52:22.000Z</published>
+    <updated>2022-03-11T02:07:39.340Z</updated>
+    
+    
+    <summary type="html">介绍线性求解的扩展和变量、量词消除的方法.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="算法" scheme="https://socod.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="量词消除" scheme="https://socod.github.io/tags/%E9%87%8F%E8%AF%8D%E6%B6%88%E9%99%A4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Small-step 操作语义</title>
+    <link href="https://socod.github.io/2022/03/0d3f0f950b1e/"/>
+    <id>https://socod.github.io/2022/03/0d3f0f950b1e/</id>
+    <published>2022-03-03T12:36:05.000Z</published>
+    <updated>2022-03-06T09:45:35.458Z</updated>
+    
+    
+    <summary type="html">介绍小步(small step)操作语义</summary>
+    
+    
+    
+    <category term="逻辑" scheme="https://socod.github.io/categories/%E9%80%BB%E8%BE%91/"/>
+    
+    
+    <category term="语义" scheme="https://socod.github.io/tags/%E8%AF%AD%E4%B9%89/"/>
+    
+    <category term="推理规则" scheme="https://socod.github.io/tags/%E6%8E%A8%E7%90%86%E8%A7%84%E5%88%99/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>线性演算(一)</title>
+    <link href="https://socod.github.io/2022/02/39dd3a3dcdf6/"/>
+    <id>https://socod.github.io/2022/02/39dd3a3dcdf6/</id>
+    <published>2022-02-13T07:22:17.000Z</published>
+    <updated>2022-03-11T02:12:34.207Z</updated>
+    
+    
+    <summary type="html">介绍线性演算及其求解.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="算法" scheme="https://socod.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="线性规划" scheme="https://socod.github.io/tags/%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>等式逻辑与未解释函数</title>
+    <link href="https://socod.github.io/2022/01/cec5682c000f/"/>
+    <id>https://socod.github.io/2022/01/cec5682c000f/</id>
+    <published>2022-01-22T02:50:55.000Z</published>
+    <updated>2022-01-22T02:53:34.857Z</updated>
+    
+    
+    <summary type="html">介绍等式逻辑与未解释函数, 说明通过同余闭包算法如何证明程序之间的等价性.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="算法" scheme="https://socod.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="编译优化验证" scheme="https://socod.github.io/tags/%E7%BC%96%E8%AF%91%E4%BC%98%E5%8C%96%E9%AA%8C%E8%AF%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>DPLL Algorithm</title>
+    <link href="https://socod.github.io/2022/01/be225a850aec/"/>
+    <id>https://socod.github.io/2022/01/be225a850aec/</id>
+    <published>2022-01-15T06:52:22.000Z</published>
+    <updated>2022-01-19T08:24:26.320Z</updated>
+    
+    
+    <summary type="html">介绍判定过程中扩展的DPLL(T)算法.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="算法" scheme="https://socod.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="DPLL" scheme="https://socod.github.io/tags/DPLL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CDCL Algorithm</title>
+    <link href="https://socod.github.io/2022/01/ecd0f787ac3d/"/>
+    <id>https://socod.github.io/2022/01/ecd0f787ac3d/</id>
+    <published>2022-01-07T12:31:17.000Z</published>
+    <updated>2022-01-15T08:25:53.547Z</updated>
+    
+    
+    <summary type="html">介绍可满足求解理论中经典的CDCL算法.</summary>
+    
+    
+    
+    <category term="判定过程" scheme="https://socod.github.io/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/"/>
+    
+    
+    <category term="算法" scheme="https://socod.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="CDCL" scheme="https://socod.github.io/tags/CDCL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Alice</title>
+    <link href="https://socod.github.io/2021/12/b1229a78479c/"/>
+    <id>https://socod.github.io/2021/12/b1229a78479c/</id>
+    <published>2021-12-29T02:09:40.742Z</published>
+    <updated>2021-12-29T02:46:37.032Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html"></summary>
+        
+      
+    
+    
+    
+    
+    <category term="42" scheme="https://socod.github.io/tags/42/"/>
+    
+  </entry>
+  
+</feed>

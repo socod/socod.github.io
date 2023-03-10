@@ -1,0 +1,838 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍小步(small step)操作语义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Small-step 操作语义">
+<meta property="og:url" content="https://socod.github.io/2022/03/0d3f0f950b1e/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍小步(small step)操作语义">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://socod.github.io/img/operseman/ast.svg">
+<meta property="article:published_time" content="2022-03-03T12:36:05.000Z">
+<meta property="article:modified_time" content="2022-03-06T09:45:35.458Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="语义">
+<meta property="article:tag" content="推理规则">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://socod.github.io/img/operseman/ast.svg">
+  
+  
+  <title>Small-step 操作语义 - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Small-step 操作语义">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-03 20:36" pubdate>
+        2022年3月3日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      24 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Small-step 操作语义</h1>
+            
+            <div class="markdown-body">
+              <h1 id="small-step-operational-semantics">Small-step Operational
+Semantics</h1>
+<h2 id="简介">1. 简介</h2>
+<p>程序所要表达的"意思"是什么? 当我们写程序的时候,
+用不同种类的字符按照特定的顺序编成代码.
+但是以某种特定语法(syntax)形式所构成的仅仅是程序自身而已,
+并不能说明程序所包含的意义.</p>
+<p>或许在程序执行的时候, 我们可以用解释器去定义一段程序的意思.
+但是解释器或者编译器中不可避免地会有bug,
+也就是说解释器或者编译器并不能准确地反映出程序的意义. 所以,
+必须要找到能够表达程序意思的方法.</p>
+<p>这个方法就是, 要给出语言语义的形式化的数学定义.
+形式化的定义主要有如下几个好处:</p>
+<ul>
+<li><strong>较少歧义</strong>. 语言的行为的明晰的,
+这对那些需要用该语言编程的人员是有用的,
+为该语言实现一个编译器或者解释器, 或者为语言添加新的特性等等.</li>
+<li><strong>更加精确</strong>.
+数学形式的概念和符号能够精确且准确地描述一种语言,
+并且说明合法程序中的一些限制.</li>
+<li><strong>形式化论证</strong>.
+形式化的语义允许我们说明和证明需求的程序性质.</li>
+</ul>
+<p>但是, 形式化的语义可能导致复杂的数学模型,
+尤其当尝试对一个具有复杂特性的编程语言的所有细节进行描述时.
+现实世界中的编程语言很少有形式化的语义描述, 因为编程语言很复杂,
+有很多的特性, 难度很大. 为了能够描述这些语言特性,
+用于建模的数学公式或者符号必定非常复杂且难以理解. 那么,
+就需要重新设计一套基于数学符号的能够精确对语言特性进行建模的形式化规范.
+那么,
+在学术和应用研究中通常使用三种方法对编程语言的语义进行形式化的描述:</p>
+<ul>
+<li><p><strong>操作语义(operational semantics)</strong>:
+描述程序在一个抽象机器上是如何执行的.</p></li>
+<li><p><strong>指称语义(denotational semantics)</strong>:
+讲程序建模为数学上的函数形式.</p></li>
+<li><p><strong>公理语义(axiomatic semantics)</strong>:
+以逻辑表达式的形式对满足程序执行前后的行为进行定义.</p></li>
+</ul>
+<p>以上三种方法在不同的应用场景都有各自的优缺点.
+感兴趣的读者可以阅读综述文章<a
+target="_blank" rel="noopener" href="http://www.jos.org.cn/html/2019/1/5652.htm">形式化方法概貌</a>.</p>
+<h2 id="简易语言的算术表达式">2. 简易语言的算术表达式</h2>
+<p>为了介绍操作语义, 先设计一个简单的语言,
+基于该语言能够实现基本的算术运算.
+使用下列域(domain)来描述该语言的结构:</p>
+<p><span class="math display">\[
+\begin{aligned}
+x,y,z   &amp;\in \mathbf{Var}\\
+n,m     &amp;\in \mathbf{Int}\\
+e       &amp;\in \mathbf{Exp}
+\end{aligned}
+\]</span></p>
+<p>其中, <span class="math inline">\(\mathbf{Var}\)</span>
+是变量<strong>名</strong>的集合(例如, foo, bar). <span
+class="math inline">\(\mathbf{Int}\)</span> 是整型常量的集合(例如, 42).
+<span class="math inline">\(\mathbf{Exp}\)</span> 是表达式所在域,
+这里我们使用 BNF 范式对表达式进行语法的定义:</p>
+<p><span class="math display">\[
+e::=x\ |\ n\ |\ e_1+e_2\ |\ e_1\times e_2\ |\ x:=e_1;e_2
+\]</span></p>
+<p>表达式 <span class="math inline">\(x:=e_1;e_2\)</span> 说明变量 <span
+class="math inline">\(x\)</span> 先赋值为 <span
+class="math inline">\(e_1\)</span>, 后被赋值为 <span
+class="math inline">\(e_2\)</span>,
+范式中其他各项的含义不再做详细说明.</p>
+<p>上述的语法为语言指定了格式. 但是存在歧义. 比如表达式 <span
+class="math inline">\(1+2\times 3\)</span>,
+根据语法可以构造出两个不同的抽象语法树(abstract syntax tree).</p>
+<p><img src="\img\operseman\ast.svg" srcset="/img/loading.gif" lazyload style="zoom:50%"/></p>
+<p>有很多中方法解决存在的歧义问题. 其一, 重写语法规则,
+这样会使得语法变得复杂, 且难以理解. 其二, 加括号.</p>
+<p><span class="math display">\[
+x\ |\ n\ |\ (e_1+e_2)\ |\ (e_1\times e_2)\ |\ x:=e_1;e_2
+\]</span></p>
+<p>然而, 这也导致了不必要的混乱和复杂. 相反,
+我们把语言的"具体语法"(它规定了如何无歧义地将字符串解析为程序片段)与语言的"抽象语法"(它描述了程序片段的结构,
+可能是有歧义的)分开. 后续阐述中, 将使用抽象语法,
+并假定抽象语法树是已知的. 在编写表达式时,
+我们偶尔会使用括号来表示抽象语法树的结构,
+但小括号不是语言本身的一部分.</p>
+<h2 id="小步操作语义">3. 小步操作语义</h2>
+<p><code>操作语义 operational semantics</code>描述了程序是如何在抽象机器上执行的.
+<code>小步 small-step 操作语义</code>细化了这种执行,
+将其转变为表达式的连续规约(reduction),
+直到得到一个数值(对应上文中的语言), 该数值表示计算的结果.</p>
+<p>抽象机器(abstract
+machine)的状态通常称为<code>配置 configuration</code>(在程序逻辑的理论研究中,
+经常会遇到这个单词), 那么对于本文所述的语言就肯定包含两条信息:</p>
+<ul>
+<li><strong>store</strong> 也叫环境 environment 或者状态 state,
+<code>store</code> 所做的是将整型的数值赋给变量. 在程序的执行过程中,
+通常使用 <code>store</code> 去决定与变量的数值大小, 同时也可以对
+<code>store</code>
+进行更新来<strong>反映</strong>有一个新的数值赋给了变量.</li>
+<li><strong>表达式左式的赋值</strong>.</li>
+</ul>
+<div class="note note-success">
+            <p>这里的 <code>store</code> 与计算机系统中的 store 概念类似,都有"存储"之意, 保存或者<strong>说明</strong>当前程序的状态.文中涉及较多术语, 作者认为不作硬性翻译为好.</p>
+          </div>
+<p>由此, <code>stores</code> 的域就是从 <span
+class="math inline">\(\mathbf{Var}\)</span> 到 <span
+class="math inline">\(\mathbf{Int}\)</span> 的函数形式(映射 map, <span
+class="math inline">\(\mathbf{Var}\to \mathbf{Int}\)</span>),
+configuration 的域是 表达式和 <code>stores</code> 的二元组.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{Config}&amp;=\mathbf{Exp}\times\mathbf{Store}\\
+\mathbf{Store}&amp;=\mathbf{Var}\to\mathbf{Int}
+\end{aligned}
+\]</span></p>
+<p>在形式上, 使用一组方括号来表示 configurations. 例如, <span
+class="math inline">\(\langle(foo+2)\times(bar+1),\sigma\rangle\)</span>,
+这里的 <span class="math inline">\(\sigma\)</span> 就是一个 store,
+前者是一个包含了两个变量的表达式.</p>
+<p>本文语言的小步操作语义就是一种关系 <span
+class="math inline">\(\rightarrow \subset
+\mathbf{Config}\times\mathbf{Config}\)</span>,
+该关系描述了一种配置是如何迁移(transition)到另一种配置的. 即, 关系 <span
+class="math inline">\(\rightarrow\)</span>
+说明了是如何一步一步地对程序的状态进行判定的.
+我们用中缀的形式表示这种关系. 给定任意两个configurations <span
+class="math inline">\(\langle e_1,\sigma_1\rangle\)</span> 与 <span
+class="math inline">\(\langle e_2,\sigma_2\rangle\)</span>,
+如何二者存在关系 <span class="math inline">\(\rightarrow\)</span>, 则
+<span class="math inline">\(\langle e_1,\sigma_1\rangle\rightarrow
+\langle e_2,\sigma_2\rangle\)</span>.</p>
+<p>现在, 语言语义的定义就转变为对关系 <span
+class="math inline">\(\rightarrow\)</span> 的定义,
+该关系说明了抽象机配置之间的迁移.</p>
+<p>这里存在一个问题, 整型域是无限的, 表达式的域也是无限的. 因此,
+可能的抽象机配置也是一个未知数, 可能的每一步的迁移状态也是一个未知数.
+所以, 我们要用有限的描述去表达迁移状态的无限集合.</p>
+<p>我们可以使用推理规则来描述迁移函数:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;{\rm VAR} \frac{}{\langle x,\sigma\rangle\rightarrow\langle
+n,\sigma\rangle}{\rm where}\ n=\sigma(x)\\
+\\
+&amp;{\rm LADD} \frac{\langle e_1,\sigma\rangle\rightarrow\langle
+e_1^\prime,\sigma^\prime\rangle}
+{\langle e_1+e_2,\sigma\rangle\rightarrow\langle
+e_1^\prime+e_2,\sigma^\prime\rangle}
+\hspace{6mm}
+{\rm RADD} \frac{\langle e_2,\sigma\rangle\rightarrow\langle
+e_2^\prime,\sigma^\prime\rangle}
+{\langle n+e_2,\sigma\rangle\rightarrow\langle
+n+e_2^\prime,\sigma^\prime\rangle}\\
+\\
+&amp;{\rm ADD} \frac{}{\langle n+m,\sigma\rangle\rightarrow\langle
+p,\sigma\rangle}{\rm where}\ p {\rm is\ the\ sum\ of\ }n\ {\rm and\ }m\\
+\\
+&amp;{\rm LMUL} \frac{\langle e_1,\sigma\rangle\rightarrow\langle
+e_1^\prime,\sigma^\prime\rangle}
+{\langle e_1\times e_2,\sigma\rangle\rightarrow\langle e_1^\prime\times
+e_2,\sigma^\prime\rangle}
+\hspace{6mm}
+{\rm RMUL} \frac{\langle e_2,\sigma\rangle\rightarrow\langle
+e_2^\prime,\sigma^\prime\rangle}
+{\langle n\times e_2,\sigma\rangle\rightarrow\langle n\times
+e_2^\prime,\sigma^\prime\rangle}\\
+\\
+&amp;{\rm MUL} \frac{}{\langle n\times m,\sigma\rangle\rightarrow\langle
+p,\sigma\rangle}{\rm where}\ p {\rm is\ the\ product\ of\ }n\ {\rm and\
+}m\\
+\\
+&amp;{\rm ASG1} \frac{\langle e_1,\sigma\rangle\rightarrow\langle
+e_1^\prime,\sigma^\prime\rangle}
+{\langle x:=e_1;e_2,\sigma\rangle\rightarrow\langle
+x:=e_1^\prime;e_2,\sigma^\prime\rangle}
+\hspace{6mm}
+{\rm ASG} \frac{}
+{\langle x:=n;e_2,\sigma\rangle\rightarrow\langle e_2,\sigma[x\mapsto
+n]\rangle}
+\end{aligned}
+\]</span></p>
+<p>所谓推理规则, 直线上方公式和附加条件都成立的话,
+直线下方的事实也是成立的. 线上称为前提, 线下称为结论.
+没有前提的推理规则为公理, 有前提的即为推导规则.</p>
+<p>同时, 我们使用标记 <span class="math inline">\(\sigma[x\mapsto
+n]\)</span> 表示一个 store 将变量 <span class="math inline">\(x\)</span>
+映射(map)到 一个整型 <span class="math inline">\(n\)</span>.
+更形式化和准确的表达是, 如果 <span class="math inline">\(f\)</span>
+是函数 <span class="math inline">\(\sigma[x\mapsto n]\)</span>,
+那么有:</p>
+<p><span class="math display">\[
+\begin{equation}
+f(y)=
+\left\{
+\begin{aligned}
+&amp;n &amp; {\rm if}\ y=x\\
+&amp;\sigma(y) &amp; {\rm otherwise}
+\end{aligned}
+\right.
+\end{equation}
+\]</span></p>
+<h2 id="应用语义规则">4. 应用语义规则</h2>
+<p>基于第3节的语义推理规则, 我们尝试判定表达式 <span
+class="math inline">\((foo+2)\times(bar+1)\)</span> 的值, 其中 <span
+class="math inline">\(\sigma(foo)=4,\ \sigma(bar)=3\)</span>. 也就是说,
+我们要为配置: <span class="math inline">\(\langle
+(foo+2)\times(bar+1),\sigma\rangle\)</span>
+找到状态迁移的推导树(derivation tree).
+可以逐步的运用第3节的语义规则进行推理.</p>
+<p>根据表达式的形式, 我们应用语义规则 <code>LMUL</code> 来进行推理, 其中
+<span class="math inline">\(e_1=foo+2\)</span>, <span
+class="math inline">\(e_2=bar+1\)</span>, <span
+class="math inline">\(e_1^\prime\)</span> 暂且未知.</p>
+<p><span class="math display">\[
+{\rm LMUL}\frac{\langle foo+2,\sigma\rangle\rightarrow\langle
+e_1^\prime,\sigma\rangle}
+{\langle (foo+2)\times(bar+1),\sigma\rangle\rightarrow\langle
+e_1^\prime\times(bar+1),\sigma\rangle}
+\]</span></p>
+<p>接下来, 我们需要确定 <span class="math inline">\(e_1^\prime\)</span>
+的值. 从推理规则中找到符合 <span class="math inline">\(\langle
+foo+2,\sigma\rangle\rightarrow \langle e_1^\prime,\sigma\rangle\)</span>
+结论的形式. 那么, 接下就应用 <code>LADD</code> 规则.</p>
+<p><span class="math display">\[
+{\rm LADD} \frac{\langle foo,\sigma\rangle\rightarrow\langle
+e_1^{\prime\prime},\sigma\rangle}
+{\langle foo+2,\sigma\rangle\rightarrow\langle
+e_1^{\prime\prime}+2,\sigma\rangle}
+\]</span></p>
+<p>其中, <span class="math inline">\(e_1^\prime = e_1^{\prime\prime} +
+2\)</span>. 然后, 重复这个过程, 对 <span class="math inline">\(\langle
+foo,\sigma\rangle\rightarrow\langle
+e_1^{\prime\prime},\sigma\rangle\)</span> 进行推理, 应用公理
+<code>VAR</code>.</p>
+<p><span class="math display">\[
+{\rm VAR} \frac{}{\langle foo,\sigma\rangle\rightarrow\langle
+4,\sigma\rangle}
+\]</span></p>
+<p>因为有 <span class="math inline">\(\sigma(foo)=4\)</span>,
+所以应用公理, 证明结束. <span
+class="math inline">\(e^{\prime\prime}=4\)</span> 并且 <span
+class="math inline">\(e_1^\prime=4+2\)</span>. 由此, 可以构建推导树.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;{\rm VAR}
+\frac{}
+{\langle foo,\sigma\rangle\rightarrow\langle 4,\sigma\rangle}\\
+&amp;{\rm LADD}
+\frac{}
+{\langle foo+2,\sigma\rangle\rightarrow\langle 4+2,\sigma\rangle}\\
+&amp;{\rm LMUL}
+\frac{}
+{\langle (foo+2)\times(bar+1),\sigma\rangle\rightarrow\langle
+(4+2)\times(bar+1),\sigma\rangle}
+\end{aligned}
+\]</span></p>
+<p>基于语义规则, 上述推理证明了一步迁移: <span
+class="math inline">\(\langle
+(foo+2)\times(bar+1),\sigma\rangle\rightarrow\langle
+(4+2)\times(bar+1),\sigma\rangle\)</span> 在抽象机上是可行的.
+需要注意的是, 证明或者推导树必须是有穷的,
+也就是在有限步的计算之后是有结果的, 而且结论是有效的.
+接下去的推理步骤在此就省略了.</p>
+<p>如果我们继续这个推理过程, 就能得到一个具体的计算结果.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\langle (foo+2)\times(bar+1),\sigma\rangle&amp;\longrightarrow\langle
+(4+2)\times(bar+1),\sigma\rangle\\
+&amp;\longrightarrow\langle 6\times(bar+1),\sigma\rangle\\
+&amp;\longrightarrow\langle 6\times(3+1),\sigma\rangle\\
+&amp;\longrightarrow\langle 6\times 4,\sigma\rangle\\
+&amp;\longrightarrow\langle 24,\sigma\rangle
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(\langle 24,\sigma\rangle\)</span>
+就成为最终配置. 对于简易语言的表达式来说, 最终配置的形式就是 <span
+class="math inline">\(\langle n,\sigma\rangle\)</span>, <span
+class="math inline">\(n\)</span> 是一个整数, <span
+class="math inline">\(\sigma\)</span> 是 store.</p>
+<p>那么, 关系 <span class="math inline">\(\rightarrow^*\)</span> 是关系
+<span class="math inline">\(\rightarrow\)</span>
+的自反传递闭包(reflexive transitive closure). 即, 如果 <span
+class="math inline">\(\langle e,\sigma\rangle\rightarrow^*\langle
+e^\prime,\sigma^\prime\rangle\)</span>, 那么经过 0
+或者多次的推导(有限次), 最终能够得到从配置 <span
+class="math inline">\(\langle e,\sigma\rangle\)</span> 到 <span
+class="math inline">\(\langle e^\prime,\sigma^\prime\rangle\)</span>
+的迁移. 这时候, 我们可以记</p>
+<p><span class="math display">\[
+\langle (foo+2)\times(bar+1),\sigma\rangle\longrightarrow^*\langle
+24,\sigma\rangle.
+\]</span></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E9%80%BB%E8%BE%91/">逻辑</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AF%AD%E4%B9%89/">语义</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%8E%A8%E7%90%86%E8%A7%84%E5%88%99/">推理规则</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/7ddb5ee9afcf/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">线性演算(二)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/39dd3a3dcdf6/">
+                        <span class="hidden-mobile">线性演算(一)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '80759b84e8223df68bbf9daa256b5cf8'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

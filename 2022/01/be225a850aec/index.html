@@ -1,0 +1,835 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍判定过程中扩展的DPLL(T)算法.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DPLL Algorithm">
+<meta property="og:url" content="https://socod.github.io/2022/01/be225a850aec/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍判定过程中扩展的DPLL(T)算法.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-15T06:52:22.000Z">
+<meta property="article:modified_time" content="2022-01-19T08:24:26.320Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="DPLL">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>DPLL Algorithm - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="DPLL Algorithm">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-15 14:52" pubdate>
+        2022年1月15日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">DPLL Algorithm</h1>
+            
+            <div class="markdown-body">
+              <h1 id="dpllt-algorithm">DPLL(<span class="math inline">\(T\)</span>)
+Algorithm</h1>
+<h2 id="无量词理论quantifier-free-theories">无量词理论(Quantifier-Free
+Theories)</h2>
+<p>考虑存在如下断言: <span class="math display">\[
+\begin{eqnarray*}
+&amp;&amp;(x_1=x_2\lor x_1=x_3)\land(x_1=x_2\lor x_1=x_4)\land x_1\neq
+x_2\land x_1\neq x_3 \land x_1\neq x_4, \tag{1}\\
+&amp;&amp;((x_1+2x_3&lt;5)\lor\neg(x_3\le1)\land(x_1\ge3)), \tag{2}\\
+&amp;&amp;(i=j\land a[j]=1)\land\neg(a[j]=1).\tag{3}
+\end{eqnarray*}
+\]</span></p>
+<p>上述三个断言都是与之相对应的等式断言, 线性演算断言和数组逻辑断言.
+有一个通用的框架来定义这些断言, 就是一阶逻辑(first-order logic).
+需要注意的是, 上述三个公式都是无量词修饰(quantifier-free)的,
+或者说没有范阈限制, 一阶逻辑理论(first-order theory).</p>
+<p>存在一个框架或者说一个判定过程,
+用以解决上述可判定的无量词一阶逻辑理论问题, 并且是由 CDCL 框架泛化而来,
+通常称为 DPLL(<span class="math inline">\(T\)</span>).</p>
+<h2 id="dpllt-概述">DPLL(<span class="math inline">\(T\)</span>)
+概述</h2>
+<p>每一个理论 <span class="math inline">\(T\)</span>
+都是定义在一个符号集合 <span class="math inline">\(\Sigma\)</span> 上的.
+在等式逻辑的例子中, <span
+class="math inline">\(\Sigma=\{&#39;=&#39;\}\)</span>. 当定义 <span
+class="math inline">\(\Sigma\)</span> 上的文字或者原子或者公式的时候,
+就意味着, 公式中的文字只能使用 <span
+class="math inline">\(\Sigma\)</span> 中的符合. 用 <span
+class="math inline">\(at(\varphi)\)</span> 表示一个给定否定范式公式
+<span class="math inline">\(\varphi\)</span> 的 <span
+class="math inline">\(\Sigma\)</span> 原子的集合, 用 <span
+class="math inline">\(at_i(\varphi)\)</span> 表示公式 <span
+class="math inline">\(\varphi\)</span> 中第 <span
+class="math inline">\(i\)</span> 个原子. 对于给定的原子 <span
+class="math inline">\(a\)</span>, 用 <span
+class="math inline">\(e(a)\)</span> 来表示这个原子的布尔编码,
+将其扩展到在符号集合 <span class="math inline">\(\Sigma\)</span>
+上的公式 <span class="math inline">\(t\)</span>, 用 <span
+class="math inline">\(e(t)\)</span> 来表示将 <span
+class="math inline">\(t\)</span>
+中的每一个原子对应的布尔编码代入公式所形成的布尔公式. 比如说, 如果 <span
+class="math inline">\(x=y\)</span> 是定义在符号集合 <span
+class="math inline">\(\Sigma\)</span> 上的原子命题, 那么布尔变量 <span
+class="math inline">\(e(x=y)\)</span> 就表示它的编码. 如果 <span
+class="math display">\[
+\varphi := x=y\lor x=z.
+\]</span> 是一个定义在符号集合 <span
+class="math inline">\(\Sigma\)</span> 上的公式(<span
+class="math inline">\(\Sigma\)</span>-formula), 那么 <span
+class="math display">\[
+e(\varphi) := e(x=y)\lor e(x=z).
+\]</span> 对于一个 <span class="math inline">\(\Sigma\)</span>-formula
+公式 <span class="math inline">\(\varphi\)</span> 来说, 布尔公式 <span
+class="math inline">\(e(\varphi)\)</span> 被称作公式 <span
+class="math inline">\(\varphi\)</span> 的命题框架(propositional
+skeleton).</p>
+<p>假设一个等式逻辑公式 <span class="math inline">\(\varphi\)</span>,
+<span class="math display">\[
+\varphi := x=y \land((y=z\land \neg(x=z))\lor x=z).
+\]</span> 公式 <span class="math inline">\(\varphi\)</span> 的命题框架是
+<span class="math display">\[
+e(\varphi) := e(x=y)\land((e(y=z)\land\neg e(x=z))\lor e(x=z)).
+\]</span> 布尔公式 <span class="math inline">\(\mathcal{B}\)</span>
+设值为 <span class="math inline">\(e(\varphi)\)</span>, 记为 <span
+class="math inline">\(\mathcal{B} := e(\varphi)\)</span>.</p>
+<p>下一步, 将公式 <span class="math inline">\(\mathcal{B}\)</span>
+传给一个 SAT 求解器. 假设, 经过求解器的求解, SAT 给判定过程 <span
+class="math inline">\(DP_T\)</span> 返回了一组使得公式可满足的赋值.</p>
+<blockquote>
+<p><span class="math inline">\(DP_T\)</span>: 一个理论
+T(theory)是定义在符号集合 <span class="math inline">\(\Sigma\)</span>
+的, 符合理论 <span class="math inline">\(T\)</span> 定义的文字是 <span
+class="math inline">\(T\)</span>-文字, <span
+class="math inline">\(DP_T\)</span> 程序就是针对 <span
+class="math inline">\(T\)</span>-文字合取式的判定过程.</p>
+</blockquote>
+<p><span class="math display">\[
+\alpha := \{e(x=y)\mapsto {\rm TRUE}, e(y=z)\mapsto {\rm TRUE},
+e(x=z)\mapsto {\rm FALSE}\}.
+\]</span></p>
+<p>判定过程 <span class="math inline">\(DP_T\)</span>
+要判定一组文字所对应的这组赋值的合取式是否是可满足的. 这个合取式记为
+<span class="math inline">\(\hat{Th(\alpha)}\)</span>.
+对于上面的一组赋值, <span class="math display">\[
+\hat{Th(\alpha)} := x=y\land y=z\land\neg(x=z).
+\]</span> 显然, 这个公式是不可满足的, 也就是说这个公式的否定是重言式.
+因此要被添加到公式 <span class="math inline">\(\mathcal{B}\)</span> 中,
+<em>这里说明一下, 为什么要把重言式添加到公式中,
+因为重言式并不会影响公式的判定结果, 为了提高判定过程的执行效率,
+就需要让求解器知道哪些赋值是无意义的, 比如此例,
+如果不将该重言式添加到公式</em> <span
+class="math inline">\(\mathcal{B}\)</span> <em>中, 那么 SAT
+求解器就可能重复赋值, 而影响判定过程的执行效率</em>. 该重言式的布尔编码:
+<span class="math display">\[
+e(\neg\hat{Th(\alpha)}) := (\neg e(x=y)\lor\neg e(y=z)\lor e(x=z)).
+\]</span> 这个子句是与当前的赋值相矛盾的, 所以要阻止其被重复赋值.
+这种子句称为封锁子句(blocking clause). 通常, 将 <span
+class="math inline">\(DP_T\)</span> 过程所返回的结果记为 <span
+class="math inline">\(t\)</span>, 也称为引理(lemma). 在上述例子中, <span
+class="math inline">\(t := \neg\hat{Th(\alpha)}\)</span>, 也就是说,
+这个引理是完全赋值 <span class="math inline">\(\alpha\)</span> 的否定,
+并且是一个子句, 但是通常 <span class="math inline">\(t\)</span>
+是多子句的形式, 这取决于 <span class="math inline">\(DP_T\)</span>
+的实现形式.</p>
+<p>在封锁子句添加到公式中后, SAT 求解器再次被调用并给公式赋新值, 比如说,
+<span class="math display">\[
+{\alpha}&#39; := \{ e(x=y)\mapsto {\rm TRUE}, e(y=z)\mapsto{\rm TRUE},
+e(x=z)\mapsto{\rm TRUE} \}.
+\]</span> 那么, 对应的 <span class="math inline">\(\Sigma\)</span>-公式
+<span class="math display">\[
+{\hat Th(\alpha&#39;)} := x=y\land y=z\land x=z.
+\]</span> 是可满足的, 也说明原公式 <span
+class="math inline">\(\varphi\)</span> 是可满足的. 可以看到, 只要是满足
+<span class="math inline">\({\hat Th(\alpha&#39;)}\)</span>
+的赋值同样是满足公式 <span class="math inline">\(\varphi\)</span>
+的.</p>
+<p>当然, 如果原公式 <span class="math inline">\(\varphi\)</span>
+大小线性甚至指数增加, 通过完全赋值的方法显然效率很低.
+有很多种提升效率的方法, 在对子句进行部分赋值之后即调用判定过程 <span
+class="math inline">\(DP_T\)</span>, 而不是等到全部赋值之后.
+一组相矛盾的部分赋值能够得到更加强大的引理 <span
+class="math inline">\(t\)</span>, 因为它可以组织所有对它进行扩展的赋值.
+另外, 如果一组部分赋值不是矛盾的, 那也可以回传给 SAT
+求解器用以更进一步的推导. 比如上面的例子, 存在一组部分赋值 <span
+class="math display">\[
+\alpha := \{ e(x=y)\mapsto {\rm TRUE}, e(y=z) \mapsto {\rm TRUE} \}.
+\]</span> 所对应要传递给 <span class="math inline">\(DP_T\)</span>
+的合取公式 <span class="math display">\[
+{\hat Th(\alpha)} := x=y\land y=z.
+\]</span> 这个公式能够让 <span class="math inline">\(DP_T\)</span>
+推导出 <span class="math inline">\(x=z\)</span>, 同时能够让 SAT
+求解器知道, 根据当前的部分赋值 <span
+class="math inline">\(\alpha\)</span> 能够推导出 <span
+class="math inline">\(e(x=z)\mapsto {\rm TRUE}\)</span>. 因此, 类比在
+SAT 求解器种的布尔约束传播(Boolean constraint propagation),
+这里可以称作是理论传播(theory propagation).
+这种传播可能会导致进一步的布尔约束传播, 也就是说这个过程在 SAT
+求解器做出下一个判定之前可能会迭代很多次.</p>
+<p>现在引出一个算法, LAZY-BASIC(算法1), 用以判定一个 <span
+class="math inline">\(T\)</span>-公式 <span
+class="math inline">\(\varphi\)</span> 是否是可满足的. 这个算法的做法是,
+从公式 <span class="math inline">\(\mathcal{B}=e(\varphi)\)</span> 开始,
+迭代地对命题公式 <span class="math inline">\(\mathcal{B}\)</span>
+进行求解,
+并用DEDUCTION(演绎推理)方法计算出的约束条件的编码逐步增强这一过程. <span
+class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 1:}\ \rm LAZY\mbox{-}BASIC\\
+&amp;\mathbf{Input:}\ {\rm A\ formula}\ \varphi\\
+&amp;\mathbf{Output:}\ {\rm &#39;&#39;Satisfiable&#39;&#39;\ if}\
+\varphi\ {\rm is\ satisfiable,\ and\ &#39;&#39;Unsatisfiable&#39;&#39;\
+otherwise}\\
+&amp;\\
+&amp;1.\hspace{2mm}\mathbf{function\ }{\rm LAZY\mbox{-}BASIC}(\varphi)\\
+&amp;2.\hspace{10mm}\mathcal{B}:=e(\varphi);\\
+&amp;3.\hspace{10mm}\mathbf{while\ }{\rm(TRUE)\ }\mathbf{do}\\
+&amp;4.\hspace{16mm}\langle\alpha,res\rangle:={\rm
+SAT\mbox{-}SOLVER}(\mathcal{B});\\
+&amp;5.\hspace{16mm}\mathbf{if\ }res={\rm
+&#39;&#39;Unsatisfiable&#39;&#39;\ }\mathbf{then\ return\ }{\rm
+&#39;&#39;Unsatisfiable&#39;&#39;};\\
+&amp;6.\hspace{16mm}\mathbf{else}\\
+&amp;7.\hspace{23mm}\langle t,res\rangle:={\rm
+DEDUCTION}(\hat{Th}(\alpha));\\
+&amp;8.\hspace{23mm}\mathbf{if\ }res={\rm
+&#39;&#39;Satisfiable&#39;&#39;\ }\mathbf{then\ return\ }{\rm
+&#39;&#39;Satisfiable&#39;&#39;};\\
+&amp;9.\hspace{23mm}\mathcal{B}:=\mathcal{B}\land e(t);
+\end{aligned}
+\]</span> LAZY-BASIC算法其实在上一小节已经大致说明了, 这里再总结一下.
+算法首先将公式 <span class="math inline">\(\varphi\)</span>
+进行布尔编码赋值给 <span class="math inline">\(\mathcal{B}\)</span>,
+进入循环体. 公式 <span class="math inline">\(\mathcal{B}\)</span> 传给
+SAT 求解器, 并返回一个元组 <span class="math inline">\(&lt;assignment,
+result&gt;\)</span>, 其中 <span
+class="math inline">\(assignment\)</span>中包含的就是使得公式 <span
+class="math inline">\(\mathcal{B}\)</span> 可满足的一组赋值, 而 <span
+class="math inline">\(result\)</span> 是说明公式是否可满足; 进入判断,
+如果不可满足, 那么整个公式就是不可满足的. 否则, 将布尔编码对应的 <span
+class="math inline">\(T\)</span>-文字合取式传给 DEDUCTION(), 判断 <span
+class="math inline">\(\hat{Th(\alpha)}\)</span> 公式是否是可满足的,
+并同样返回一个元组; 如果结果是可满足的, 如前文所说,
+那么整个公式就是可满足的. 否则, 就把这组赋值对应的布尔编码添加到公式
+<span class="math inline">\(\mathcal{B}\)</span> 中, 以防止重复赋值.
+当然, 可以把这个算法集成到 CDCL-SAT 中去, 以获得更高的效率. 算法2就是在
+CDCL-SAT 求解器中集成了 DEDUCTION方法的算法. <span
+class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 2:\ }{\rm LAZY\mbox{-}CDCL}\\
+&amp;\mathbf{Input:}\ {\rm A\ formula}\ \varphi\\
+&amp;\mathbf{Output:}\ {\rm &#39;&#39;Satisfiable&#39;&#39;\ if\ the\
+formula\ }\ {\rm is\ satisfiable,\ and\
+&#39;&#39;Unsatisfiable&#39;&#39;\ otherwise}\\
+\\
+&amp;1.\hspace{2mm}\mathbf{function}\ {\rm LAZY\mbox{-}CDCL} \\
+&amp;2.\hspace{10mm}{\rm ADDCLAUSES}(cnf(e(\varphi))); \\
+&amp;3.\hspace{10mm}\mathbf{while\ }{\rm TRUE\ }\mathbf{do} \\
+&amp;4.\hspace{18mm}\mathbf{while\ }{\rm (BCP()\ =\
+&#39;&#39;conflict&#39;&#39;)}\ \mathbf{do} \\
+&amp;5.\hspace{26mm}backtrack\mbox{-}level:={\rm
+ANALYZE\mbox{-}CONFLICT()}; \\
+&amp;6.\hspace{26mm}\mathbf{if\ }backtrack\mbox{-}level&lt;0\
+\mathbf{then\ return\ }{\rm &#39;&#39;Unsatisfiable&#39;&#39;}; \\
+&amp;7.\hspace{26mm}\mathbf{else\ }{\rm
+BackTrack}(backtrack\mbox{-}level);\\
+&amp;8.\hspace{18mm}\mathbf{if\ }{\rm \neg DECIDE()\
+}\mathbf{then}\hspace{55mm}\triangleright\ {\rm Full\ assignment} \\
+&amp;9.\hspace{26mm}\langle t,res\rangle:={\rm
+DEDUCTION}(\hat{Th}(\alpha));\hspace{19.5mm}\triangleright\ {\rm \alpha\
+is\ the\ assignment}\\
+&amp;10.\hspace{24mm}\mathbf{if\ }res={\rm
+&#39;&#39;Satisfiable&#39;&#39;\ }\mathbf{then\ return\ }{\rm
+&#39;&#39;Satisfiable&#39;&#39;};\\
+&amp;11.\hspace{24mm}{\rm ADDCLAUSES}(e(t)); \\
+\end{aligned}
+\]</span></p>
+<h3 id="理论传播和dpllt框架">理论传播和DPLL(<span
+class="math inline">\(T\)</span>)框架</h3>
+<p>但是 LAZY-CDCL 算法可以进一步优化. 比如说, 在公式 <span
+class="math inline">\(\varphi\)</span> 中有一个变量 <span
+class="math inline">\(x_1\)</span>, 存在两个文字分别是 <span
+class="math inline">\(x_1\ge 10\)</span> 和 <span
+class="math inline">\(x_1\lt 0\)</span>. 假设在 DECIDE() 过程中,
+两个文字分别被赋值为 <span class="math inline">\(e(x_1\ge 10)\mapsto \rm
+TRUE\)</span> 和 <span class="math inline">\(e(x_1\lt 0)\mapsto \rm
+TRUE\)</span>. 不可避免地，任何对DEDUCTION()
+的调用都会存在这两个事实之间的矛盾, 而与任何其他判定无关.
+但是算法2直到完全赋值之后才执行 <span
+class="math inline">\(then\)</span> 之后的语句,
+所以用以进行完全赋值的时间就被浪费了. 而且, 如果完全赋值被拒绝了,
+也就是说一组完全复制不能使公式可满足,
+那么可能是由于一组赋值的子集存在矛盾的情况, 换句话说,
+上述错误的赋值可能并没有被排除在外, 这就造成了效率的极大降低. 所以,
+可以考虑把 DEDUCTION 提前, 在未完全赋值之前执行. 这样做有两个目的:</p>
+<ol type="1">
+<li>矛盾的赋值可以尽早排除.</li>
+<li>那些尚未被赋值的蕴涵信息可以告知 SAT 求解器. 继续上述例子, 如果
+<span class="math inline">\(e(x_1\ge 10)\mapsto \rm TRUE\)</span>,
+那么就可一断定 <span class="math inline">\(e(x_2\lt 0)\)</span> 赋值为
+<span class="math inline">\(\rm FALSE\)</span>, 以避免冲突的赋值.</li>
+</ol>
+<p>这就引出了优化之后的算法, DPLL(<span
+class="math inline">\(T\)</span>). 如算法3所示. <span
+class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 3:\ }{\rm DPLL}(T)\\
+&amp;\mathbf{Input:}\ {\rm A\ formula}\ \varphi\\
+&amp;\mathbf{Output:}\ {\rm &#39;&#39;Satisfiable&#39;&#39;\ if\ the\
+formula\ }\ {\rm is\ satisfiable,\ and\
+&#39;&#39;Unsatisfiable&#39;&#39;\ otherwise}\\
+\\
+&amp;1.\hspace{2mm}\mathbf{function}\ {\rm DPLL}(T) \\
+&amp;2.\hspace{10mm}{\rm ADDCLAUSES}(cnf(e(\varphi))); \\
+&amp;3.\hspace{10mm}\mathbf{while\ }{\rm TRUE\ }\mathbf{do} \\
+&amp;4.\hspace{18mm}\mathbf{repeat}\\
+&amp;5.\hspace{26mm}\mathbf{while\ }{\rm (BCP()\ =\
+&#39;&#39;conflict&#39;&#39;)}\ \mathbf{do} \\
+&amp;6.\hspace{34mm}backtrack\mbox{-}level:={\rm
+ANALYZE\mbox{-}CONFLICT()}; \\
+&amp;7.\hspace{34mm}\mathbf{if\ }backtrack\mbox{-}level&lt;0\
+\mathbf{then\ return\ }{\rm &#39;&#39;Unsatisfiable&#39;&#39;}; \\
+&amp;8.\hspace{34mm}\mathbf{else\ }{\rm
+BackTrack}(backtrack\mbox{-}level);\\
+&amp;9.\hspace{26mm}\langle t,res\rangle:={\rm
+DEDUCTION}(\hat{Th}(\alpha));\\
+&amp;10.\hspace{24mm}{\rm ADDCLAUSES}(e(t));\\
+&amp;11.\hspace{16mm}\mathbf{until\ }t\equiv{\rm TRUE};\\
+&amp;12.\hspace{16mm}\mathbf{until\ }\alpha\ {\rm is\ a\ }full\ {\rm
+assignment\ }\mathbf{then\ return\ }{\rm
+&#39;&#39;Satisfiable&#39;&#39;};\\
+&amp;13.\hspace{16mm}{\rm DECIDE()};\\
+\end{aligned}
+\]</span> 下面对 DPLL(<span class="math inline">\(T\)</span>)
+做简要说明. 内层的 while 循环还是执行布尔约束传导判断是否存在冲突, 这与
+CDCL 算法的主要部分是一致的. 重要的是集成了 DEDUCTION(),
+判断文字布尔编码对应的合取范式是否是可满足的.
+不论是否可满足都将其加入到原公式中去, 如果是可满足,
+那么不影响最终判定结果; 如果不满足, 那么就将矛盾的赋值排除在外. 外层的
+repeate 循环直到 DEDUCTION() 返回的结果为真时结束. 并判断赋值公式 <span
+class="math inline">\(\alpha\)</span> 是否是完全赋值, 如果是完全赋值,
+则原公式可满足. 否则, 同样执行 CDCL 算法中的 DECIDE() 方法,
+判断是否没有再可以赋值的变量了, 循环继续. 该算法相较于 CDCL
+算法主要的不同之处就在于(当然是对于等式逻辑来说的),
+对于子句的部分赋值对应布尔编码的合取式子进行了可满足性的判定,
+并通过理论传播策略, 加速了判定过程的执行,
+并尽可能早地将造成矛盾条件的赋值剔除, 以达到较好的性能.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/DPLL/">DPLL</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/cec5682c000f/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">等式逻辑与未解释函数</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/ecd0f787ac3d/">
+                        <span class="hidden-mobile">CDCL Algorithm</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'b3cd608bdd8e54d70bb272158df929d3'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

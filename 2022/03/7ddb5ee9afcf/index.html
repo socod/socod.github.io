@@ -1,0 +1,875 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍线性求解的扩展和变量、量词消除的方法.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性演算(二)">
+<meta property="og:url" content="https://socod.github.io/2022/03/7ddb5ee9afcf/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍线性求解的扩展和变量、量词消除的方法.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://socod.github.io/img/lineararithmetic/fig1.png">
+<meta property="og:image" content="https://socod.github.io/img/lineararithmetic/fig2.png">
+<meta property="article:published_time" content="2022-03-11T01:52:22.000Z">
+<meta property="article:modified_time" content="2022-03-11T02:07:39.340Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="量词消除">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://socod.github.io/img/lineararithmetic/fig1.png">
+  
+  
+  <title>线性演算(二) - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="线性演算(二)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-11 09:52" pubdate>
+        2022年3月11日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">线性演算(二)</h1>
+            
+            <div class="markdown-body">
+              <h1 id="线性演算求解">线性演算求解</h1>
+<h2 id="分支定界法the-branch-and-bound-method">1 分支定界法(The Branch
+and Bound Method)</h2>
+<p>分支定界法主要用于解决<strong>整数</strong>线性规划问题(integer
+linear programs). 就像 Simplex 算法的例子一样,
+分支定界法使用来解决优化问题的,
+但是我们还是讨论其在判定问题中的应用.</p>
+<p><strong>定义</strong>:松弛系统(relaxed system)
+给定一个线性规划系统(integer linear system) <span
+class="math inline">\(S\)</span>, 该系统没有整数的要求, 也就是说,
+变量没有要求必须是整型.</p>
+<p>用 relaxed(<span class="math inline">\(S\)</span>) 来表示系统 <span
+class="math inline">\(S\)</span> 的松弛问题. 假定存在一个程序 <span
+class="math inline">\(LP_{feasible}\)</span>,
+该程序接收一个线性规划系统作为输入, 如果 <span
+class="math inline">\(S\)</span> 是可满足的则返回"unsat",
+否则返回一组可满足的赋值. 可以通过通用 Simplex 算法的变式来实现 <span
+class="math inline">\(LP_{feasible}\)</span>. 如下算法,
+判定一个整型线性约束规划系统的可满足性问题. <span
+class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 1:\ }{\rm
+FEASIBILITY\mbox{-}BRANCH\mbox{-}AND\mbox{-}BOUND}\\
+&amp;\mathbf{Input:}\ {\rm An\ integer\ linear\ system}\ S\\
+&amp;\mathbf{Output:}\ {\rm &#39;&#39;Satisfiable&#39;&#39;\ if}\ S\
+{\rm is\ satisfiable,\ and\ &#39;&#39;Unsatisfiable&#39;&#39;\
+otherwise}\\
+\\
+&amp;1.\hspace{2mm}\mathbf{procedure}\ {\rm
+SEARCH\mbox{-}INTEGRAL\mbox{-}SOLUTION}(S) \\
+&amp;2.\hspace{10mm}{\rm res}=LP_{feasible}({\rm relaxed}(S)); \\
+&amp;3.\hspace{10mm}\mathbf{if\ }{\rm res\ =\
+&#39;&#39;Unsatisfiable&#39;&#39;}\ \mathbf{then\
+return};\hspace{30mm}\triangleright\ {\rm prune\ branch}\\
+&amp;4.\hspace{10mm}\mathbf{else\ }\\
+&amp;5.\hspace{18mm}\mathbf{if}\ {\rm res\ is\ integral\
+}\mathbf{then}\hspace{40mm}\triangleright\ {\rm integer\ solution\
+found}\\
+&amp;\hspace{30mm}\mathbf{abort\ }{\rm
+(&#39;&#39;Satisfiable&#39;&#39;)}; \\
+&amp;6.\hspace{18mm}\mathbf{else\ }\\
+&amp;7.\hspace{26mm} {\rm Select\ a\ variable\ }v{\rm\ that\ is\
+assigned\ a\ nonintegral\ value\ }r;\\
+&amp;8.\hspace{26mm} {\rm SEARCH\mbox{-}INTEGRAL\mbox{-}SOLUTION}(S\
+\cup\ (v\le\lfloor r\rfloor));\\
+&amp;9.\hspace{26mm} {\rm SEARCH\mbox{-}INTEGRAL\mbox{-}SOLUTION}(S\
+\cup\ (v\ge\lceil r\rceil));\\
+&amp;10.\hspace{78mm}\triangleright\ {\rm no\ integer\ solution\ in\
+this\ branch} \\
+\\
+\\
+\\
+&amp;11.\hspace{2mm}\mathbf{procedure}\ {\rm
+FEASIBILITY\mbox{-}BRANCH\mbox{-}AND\mbox{-}BOUND}(S) \\
+&amp;12.\hspace{8mm}{\rm SEARCH\mbox{-}INTEGRAL\mbox{-}SOLUTION}(S); \\
+&amp;13.\hspace{8mm}\mathbf{return\
+}{\rm(&#39;&#39;Unsatisfiable&#39;&#39;)};\\
+\end{aligned}
+\]</span> 该算法通过程序 <span
+class="math inline">\(LP_{feasible}\)</span> 来解决松弛问题;
+如果该问题是不可满足的, 那么就回溯, 因为在该分支下没有整数解. 相反,
+如果该问题是可满足的, 同时 <span
+class="math inline">\(LP_{feasible}\)</span> 返回了一组整数解,
+那么该问题终止. 否则, 该问题分解为两个子问题, 并递归调用自身.
+下面用个例子说明问题的分解是如果处理的.</p>
+<h3 id="例1">例1</h3>
+<p>设 <span class="math inline">\(x_1,...,x_4\)</span> 是系统 <span
+class="math inline">\(S\)</span> 的变量. 假定 <span
+class="math inline">\(LP_{feasible}\)</span> 返回一组解 <span
+class="math display">\[
+(1,0.7,2.5,3)\tag{1}
+\]</span> SEARCH-INTEGRAL-SOLUTION方法在变量 <span
+class="math inline">\(x_2\)</span> 和 <span
+class="math inline">\(x_3\)</span> 之间进行选择, <span
+class="math inline">\(x_2,x_3\)</span> 是非整数赋值的变量.
+假定选择了变量 <span class="math inline">\(x_2\)</span>. 在算法的第 8
+行, 然后, 将 <span class="math inline">\(S\)</span>
+(在当前递归层级求解的线性系统)增加约束, 并发送给更深的递归层级求解.
+<span class="math display">\[
+x_2\le0\tag{2}
+\]</span> 如果在当前分支下, 没有合适的解, 那么对系统 <span
+class="math inline">\(S\)</span> 将使用另外的约束条件,
+并同时进一步递归求解. <span class="math display">\[
+x_2\ge1\tag{3}
+\]</span> 如果这两次调用都返回了, 就说明 <span
+class="math inline">\(S\)</span> 没有可满足的解, 判定程序就回溯.
+应当注意, 从初始的递归层回溯,
+将会导致FEASIBILITY-BRANCH-AND-BOUND算法返回"Unsatisfiable",
+即不可满足.</p>
+<p>上述算法存在一个问题, 该算法不是完备的(complete):
+会有让其一直分支下去的例子, 即进入递归的死循环. 比如说线性系统 <span
+class="math inline">\(1\le 3x-3y\le2\)</span>, 没有整数解,
+但是也没有有界实数解, 所以该系统会让算法一直循环下去. 为了算法的完备性,
+必须依靠这些公式具有的小模型属性. 也就是说, 如果存在可满足的解,
+那么在有限域(finite bound)中, 也应该存在这样的解, 对于该理论,
+这是可计算的. 因此, 一旦我们在每个变量的域上计算了此界限,
+就可以在传值之后停止搜索. 同样的界限同样可以应用于可行性问题. 简要地说,
+给定一个整数线性规划系统 <span class="math inline">\(S\)</span>, <span
+class="math inline">\(M\times N\)</span> 的系数矩阵 <span
+class="math inline">\(A\)</span>, 如果有一组解, 那么系统 <span
+class="math inline">\(S\)</span> 的凸包的极点也是一组解, 并且任一解
+<span class="math inline">\(x^0\)</span> 有如下约束: <span
+class="math display">\[
+x_j^0\le((M+N)\cdot N\cdot \theta)^N\ {\rm for}\ j = 1,...,N,
+\]</span> 其中, <span class="math inline">\(\theta\)</span>
+是该问题中的最大元素. 因此上式给定每一变量设定了界限,
+也就是给每一个变量添加了显式的约束, 强制算法终止.</p>
+<p>其实,
+分支定界法可以直接扩展成一种解决一些变量是整型而其他的是实型的系统.
+在优化问题中, 这类问题就是混合线性规划问题(mixed integer
+programming).</p>
+<h2 id="切平面cutting-planes">2 切平面(Cutting Planes)</h2>
+<p>切平面是添加在线性系统中的约束, 用以移除非整数解;
+如果系统中的解所有都是可满足的整数解, 那么维持这种可满足性.
+这些新的约束提高了求解整数线性规划系统过程中松弛的紧密度,
+因此可以使分支定界算法运行得更快(这种组合称作分支剪界, branch-and-cut).
+此外, 如果满足某些条件, 以下所述类型的 Simplex
+和切平面算法将形成整数线性演算的判定过程.</p>
+<p>我们讨论切平面的一类, 称作 Gomory 剪切(Gomory cuts). 先说明例子,
+然后推广.</p>
+<h3 id="例2">例2</h3>
+<p>假定问题包含整型变量 <span
+class="math inline">\(x_1,x_2,x_3\)</span>, 有下界 <span
+class="math inline">\(1\le x_1\)</span> 和 <span
+class="math inline">\(0.5\le x_2\)</span>. 此外, 假定通用 Simplex
+算法的最终的表(tableau)包含下面的约束 <span class="math display">\[
+x_3 = 0.5x_1+2.5x_2,
+\]</span> 并且有一组解 <span
+class="math inline">\(\alpha:\{x_3\mapsto1.75, x_1\mapsto1,
+x_2\mapsto0.5\}\)</span>, 显然, 该赋值是满足上面的式子的.
+每个变量减去该赋值得到 <span class="math display">\[
+x_3-1.75=0.5(x_1-1)+2.5(x_2-0.5).
+\]</span> 现在将上面式子改写成坐式是整数的形式: <span
+class="math display">\[
+x_3-1=0.75+0.5(x_1-1)+2.5(x_2-0.5).
+\]</span> 最右边的两项必须是正值, 因为 1 和 0.5 分别是 <span
+class="math inline">\(x_1\)</span> 和 <span
+class="math inline">\(x_2\)</span> 的下界. 因此,
+式子的右边累加起来也必须是一个整数, 也就是说 <span
+class="math display">\[
+0.75+0.5(x_1-1)+2.5(x_2-0.5)\ge1.
+\]</span> 但是, 该约束在赋值 <span class="math inline">\(\alpha\)</span>
+下是不可满足的, 因为通过构造, 除分数 0.75 外, 左侧的所有元素在 <span
+class="math inline">\(\alpha\)</span> 下均等于零. 也就是说,
+将此约束加入到松弛系统中将会把该解剔除掉. 从另一个角度来说,
+它不能移除任何整数解.</p>
+<p>让我们将此示例概括为生成此类切割平面的方法. 泛化还涉及为变量分配上限,
+负系数和正系数的情况. 为了从约束中导出Gomory 剪切,
+该约束必须满足两个条件:首先, 对于基础变量的赋值要是分数; 其次,
+对于所有非基础变量的赋值要对应于它们其中一个有限域值.
+以下用例子说明,</p>
+<p>考虑第 <span class="math inline">\(i\)</span> 个约束: <span
+class="math display">\[
+x_i=\Sigma_{x_j\in\mathcal{N}}a_{ij}x_j,\tag{4}
+\]</span> 其中 <span class="math inline">\(x_i\in \mathcal{B}\)</span>.
+令 <span class="math inline">\(\alpha\)</span> 是由通用 Simplex
+算法返回的赋值, 因此, <span class="math display">\[
+\alpha(x_i)=\Sigma_{x_j\in\mathcal{N}}a_{ij}\alpha(x_j).\tag{5}
+\]</span>
+现在将非基本变量划分为当前已分配其下限的变量和当前已分配其上限的变量两部分:
+<span class="math display">\[
+J=\{j\ |\  x_j\in\mathcal{N}\land \alpha(x_j)=l_j\},\\
+K=\{j\ |\  x_j\in\mathcal{N}\land \alpha(x_j)=u_j\}.
+\]</span> (4) 式子减 (5) 式子得 <span class="math display">\[
+x_i-\alpha(x_i)=\Sigma_{j\in J}a_{ij}(x_j-l_j)-\Sigma_{j\in
+K}a_{ij}(u_j-x_j).\tag{6}
+\]</span> 令 <span
+class="math inline">\(f_0=\alpha(x_i)-\lfloor\alpha(x_i)\rfloor\)</span>.
+因为我们假定 <span class="math inline">\(\alpha(x_i)\)</span> 不是整数,
+所以 <span class="math inline">\(0\lt f_0 \le1\)</span>. 可以将 (6)
+重写成 <span class="math display">\[
+x_i-\lfloor\alpha(x_i)\rfloor=f_0+\Sigma_{j\in
+J}a_{ij}(x_j-l_j)-\Sigma_{j\in K}a_{ij}(u_j-x_j).
+\]</span> 注意等式左边是一个整数. 现在考虑两种情形.</p>
+<ul>
+<li><p>如果 <span class="math inline">\(\Sigma_{j\in
+J}a_{ij}(x_j-l_j)-\Sigma_{j\in K}a_{ij}(u_j-x_j)\gt0\)</span>,
+又因等式左边要是整型, 所以, <span class="math display">\[
+  f_0+\Sigma_{j\in J}a_{ij}(x_j-l_j)-\Sigma_{j\in
+K}a_{ij}(u_j-x_j)\ge1.\tag{7}
+  \]</span> 现在将 <span class="math inline">\(J\)</span> 和 <span
+class="math inline">\(K\)</span> 分别分解成如下两个部分: <span
+class="math display">\[
+  \begin{aligned}
+  &amp;J^+=\{j\ |\ j\in J\land a_{ij}\gt0\},\\
+  &amp;J^-=\{j\ |\ j\in J\land a_{ij}\lt0\},\\
+  &amp;K^+=\{j\ |\ j\in K\land a_{ij}\gt0\},\\
+  &amp;K^-=\{j\ |\ j\in K\land a_{ij}\lt0\}.\\
+  \end{aligned}
+  \]</span> 仅收集 (7) 中不等式左边的正元素得 <span
+class="math display">\[
+  \Sigma_{j\in J^+}a_{ij}(x_j-l_j)-\Sigma_{j\in
+K^-}a_{ij}(u_j-x_j)\ge1-f_0,
+  \]</span> 或者, 等价地, <span class="math display">\[
+  \Sigma_{j\in J^+}\frac{a_{ij}}{1-f_0}(x_j-l_j)-\Sigma_{j\in
+K^-}\frac{a_{ij}}{1-f_0}(u_j-x_j)\ge1 \tag{8}
+  \]</span></p></li>
+<li><p>如果 <span class="math inline">\(\Sigma_{j\in
+J}a_{ij}(x_j-l_j)-\Sigma_{j\in K}a_{ij}(u_j-x_j)\le0\)</span>,
+又因等式左边要是整型, 所以, <span class="math display">\[
+  f_0+\Sigma_{j\in J}a_{ij}(x_j-l_j)-\Sigma_{j\in
+K}a_{ij}(u_j-x_j)\le0.\tag{9}
+  \]</span> 由式子 (9) 得出 <span class="math display">\[
+  \Sigma_{j\in J^-}a_{ij}(x_j-l_j)-\Sigma_{j\in
+K^+}a_{ij}(u_j-x_j)\le-f_0.
+  \]</span> 两边同除以 <span class="math inline">\(-f_0\)</span> 得
+<span class="math display">\[
+  -\Sigma_{j\in J^-}\frac{a_{ij}}{f_0}(x_j-l_j)+\Sigma_{j\in
+K^+}\frac{a_{ij}}{f_0}(u_j-x_j)\ge1.\tag{10}
+  \]</span></p></li>
+</ul>
+<p>注意式子 (8) 和 (10) 的左边都是大于 0 的, 因此这两个式子联立可以得到
+<span class="math display">\[
+\begin{aligned}
+&amp;\Sigma_{j\in J^+}\frac{a_{ij}}{1-f_0}(x_j-l_j)-\Sigma_{j\in
+J^-}\frac{a_{ij}}{f_0}(x_j-l_j)\\
+&amp;+\Sigma_{j\in K^+}\frac{a_{ij}}{f_0}(u_j-x_j)-\Sigma_{j\in
+K^-}\frac{a_{ij}}{1-f_0}(u_j-x_j)\ge1
+\end{aligned}
+\]</span> 由于在当前赋值 <span class="math inline">\(\alpha\)</span> 下,
+左侧的每个元素都等于 0, 因此该赋值 <span
+class="math inline">\(\alpha\)</span> 被新的约束排除. 换句话说,
+可以保证对带有约束条件的线性问题的解与先前的解不同.</p>
+<h2 id="fourier-motzkin-variable-elimination">3 Fourier-Motzkin Variable
+Elimination</h2>
+<p>与 Simplex 方法类似, Fourier-Motzkin
+变量消除接收<strong>实数</strong>变量线性约束的合取式, 并判定其可满足性.
+效率并不如 Simplex算法, 但是针对一些较小的公式还是有优势的. 在实践中,
+它主要用以消除存在量词.</p>
+<p>让 <span class="math inline">\(m\)</span> 代表约束的数量, <span
+class="math inline">\(x_1,...,x_n\)</span> 表示这些约束所涉及到的变量.
+先从消除等式开始.</p>
+<h3 id="等式约束的处理">3.1 等式约束的处理</h3>
+<p>首先第一步, 如下形式的等式约束要被消除: <span class="math display">\[
+\Sigma_{j=1}^na_{i,j}\cdot x_j=b_i.
+\]</span> 我们在第 <span class="math inline">\(i\)</span> 个等式约束中,
+选择变量 <span class="math inline">\(x_j\)</span> 的非零系数 <span
+class="math inline">\(a_{i,j}\)</span>. 不失一般性地, 假定要消除的变量是
+<span class="math inline">\(x_n\)</span>. 上述约束可以改写成 <span
+class="math display">\[
+x_n=\frac{b_i}{a_{i,n}}-\Sigma_{j=1}^{n-1}\frac{a_{i,j}}{a_{i,n}}\cdot
+x_j.\tag{11}
+\]</span> 在其他所有的约束中, 将等式 (11) 右边将 <span
+class="math inline">\(x_n\)</span> 替换掉, 同时移除第 <span
+class="math inline">\(i\)</span> 个约束. 迭代这个过程,
+指导所有的等式都没移除掉. 这样系统中就只剩下不等式的形式了 <span
+class="math display">\[
+\bigwedge_{i=1}^m\Sigma_{j=1}^na_{i,j}x_j\le b_i.
+\]</span></p>
+<h3 id="变量消除">3.2 变量消除</h3>
+<p>变量消除的主要思想是, 启发式地选择一个变量,
+然后通过将其约束投影到系统的其余部分来消除它, 结果形成新的约束.</p>
+<p>一个简单地例子来说明, 考虑如下约束 <span class="math display">\[
+0\le x\le 1, 0\le y\le 1, \frac{3}{4}\le z\le 1
+\]</span> 其约束如图1所示</p>
+<p><img src="\img\lineararithmetic\fig1.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></p>
+<center>
+图1
+</center>
+<p>上述约束构造了一个长方体, 将这些约束投影到 <span
+class="math inline">\(x\)</span> 轴和 <span
+class="math inline">\(y\)</span> 轴, 由此就消除了变量 <span
+class="math inline">\(z\)</span>, 并形成了一个长方形. <span
+class="math display">\[
+0\le x\le 1, 0\le y\le 1.
+\]</span> 如图2所示,</p>
+<p><img src="\img\lineararithmetic\fig2.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></p>
+<center>
+图2
+</center>
+<p>图2所示的三角形区域由下面的约束构造 <span class="math display">\[
+x\le y+10, y\le 15, y\ge -x+20.
+\]</span> 将该三角形投影到 <span class="math inline">\(x\)</span>
+轴就形成了一条线段 <span class="math display">\[
+5\le x\le 25.
+\]</span> 推广, 假定 <span class="math inline">\(x_n\)</span>
+是要被消除的变量. 约束根据x的系数进行划分. 考虑下标是<span
+class="math inline">\(i\)</span>的约束: <span class="math display">\[
+\Sigma_{j=1}^{n}a_{i,j}\cdot x_j\le b_i.
+\]</span> 拆分累加和, 可将上面的式子重写成 <span class="math display">\[
+a_{i,n}\cdot x_n \le b_i - \Sigma_{j=1}^{n-1}a_{i,j}\cdot x_j.
+\]</span> 如果 <span class="math inline">\(a_{i,n}\)</span> 为 0, 当消除
+<span class="math inline">\(x_n\)</span> 的时候可以忽略该约束. 否则,
+将上述不等式两边同除以 <span class="math inline">\(a_{i,n}\)</span>.
+如果 <span class="math inline">\(a_{i,n}\)</span>为正, 得到 <span
+class="math display">\[
+x_n \le
+\frac{b_i}{a_{i,n}}-\Sigma_{j=1}^{n-1}\frac{a_{i,j}}{a_{i,n}}\cdot
+x_j\tag{1}
+\]</span> 所以, 如果 <span class="math inline">\(a_{i,n}\gt 0\)</span>,
+该约束就是 <span class="math inline">\(x_n\)</span> 的上界. 如果 <span
+class="math inline">\(a_{i,n}\le 0\)</span>, 该约束就是下界.</p>
+<h2 id="the-omega-test">4 The Omega Test</h2>
+<p>Omega 测试算法是判定整型变量线性约束可满足问题的算法. 可以看作是
+Fourier-Motzkin 算法的变式. 这两者都不算是最快的判定过程,
+但是它们都可以用作存在量词的消除.</p>
+<p>每一个合取式可以看作是如下形式的等式或者非严格等式 <span
+class="math display">\[
+\Sigma_{i=1}^na_ix_i=b,\\
+\Sigma_{i=1}^na_ix_i\le b.
+\]</span> 系数 <span class="math inline">\(a_i\)</span> 假定为整数;
+如果不是, 则可以通过使用系数合理的假设, 将约束条件乘以分母的最小公倍数,
+将问题转换为整数系数. Omega 测试算法的执行时间取决于系数 <span
+class="math inline">\(a_i\)</span> 的大小. 因此要将约束进行转换,
+以获得较小的系数. 这可以通过将每个约束的系数 <span
+class="math inline">\(a_1,a_2,...,a_n\)</span> 除以它们的最大公约数
+<span class="math inline">\(g\)</span> 来完成.
+所得的约束称为正则化(normalized)约束. 如果该约束为等式约束, 则得到 <span
+class="math display">\[
+\Sigma_{i=1}^n\frac{a_i}{g}x_i=\frac{b}{g}.
+\]</span> 如果 <span class="math inline">\(g\)</span> 不能整除 <span
+class="math inline">\(b\)</span>, 则该系统是不可满足的.
+如果该约束是一个不等式, 可以通过舍入常量来增强约束: <span
+class="math display">\[
+\Sigma_{i=1}^n\frac{a_i}{g}x_i\le \lfloor\frac{b}{g}\rfloor.
+\]</span> 比如说, 等式 <span class="math inline">\(3x+3y=2\)</span>
+可以正则化成 <span class="math inline">\(x+y=\frac{2}{3}\)</span>,
+由此是不可满足的. 约束 <span class="math inline">\(8x+6y\le 0\)</span>
+可以正则化为 <span class="math inline">\(4x+3y\le 0\)</span>. 约束 <span
+class="math inline">\(1\le 4y\)</span> 可以增强为 <span
+class="math inline">\(1\le y\)</span>.</p>
+<p>在 Fourier-Motzkin 算法中, 等式形式和不等式形式的约束是分开考虑的;
+在对不等式约束进行处理之前, 所有的等式约束是被移除了的.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%87%8F%E8%AF%8D%E6%B6%88%E9%99%A4/">量词消除</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/7e9d080a4eac/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Bit Vectors (1)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/0d3f0f950b1e/">
+                        <span class="hidden-mobile">Small-step 操作语义</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '57064de515f54b12c04c1e0054ffa7b6'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

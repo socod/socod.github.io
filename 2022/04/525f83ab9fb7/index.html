@@ -1,0 +1,784 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍位向量求解算法.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bit Vectors (2)">
+<meta property="og:url" content="https://socod.github.io/2022/04/525f83ab9fb7/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍位向量求解算法.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-05T04:58:59.000Z">
+<meta property="article:modified_time" content="2022-06-10T09:30:06.407Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="数据验证">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>Bit Vectors (2) - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Bit Vectors (2)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-05 12:58" pubdate>
+        2022年4月5日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Bit Vectors (2)</h1>
+            
+            <div class="markdown-body">
+              <h1 id="位向量演算">位向量演算</h1>
+<h2 id="算术运算符">算术运算符</h2>
+<p>算术运算符的约束通常依照那些作为电路的运算符的实现.
+实验说明了很多候选的电路设计往往是最简单的那种在验证的时候, SAT
+求解器的负担最小. 先定义一位加法器, 也就是全加器(full adder).</p>
+<p><strong>全加器</strong>. 一个全加器使用两个函数来进行逻辑定义的,
+进位(carry)和求和(sum). 这两个函数都接收三个输入<span
+class="math inline">\(a,b,cin\)</span>. 函数carry计算加法器结果的进位,
+函数sum计算和: <span class="math display">\[
+\begin{aligned}
+sum(a,b,cin)&amp;\doteq (a\oplus b)\oplus cin,\\
+carry(a,b,cin)&amp;\doteq (a\land b)\lor ((a\oplus b)\land cin).
+\end{aligned}
+\]</span> 我们可以将该定义扩展到任意长度的位向量的加法器.</p>
+<p>进位定义. 令 <span class="math inline">\(x\)</span> 和 <span
+class="math inline">\(y\)</span> 表示两个 <span
+class="math inline">\(l\)</span> 个比特长度的位向量, <span
+class="math inline">\(cin\)</span> 表示一个单比特位. 进位 <span
+class="math inline">\(c_0\)</span> 和 <span
+class="math inline">\(c_l\)</span> 递归地定义如下: <span
+class="math display">\[
+c_i \doteq
+\begin{equation}
+\left\{
+\begin{array}{lr}
+cin:i=0\\
+carry(x_{i-1},y_{i-1},c_{i-1}):otherwise.
+\end{array}
+\right.
+\end{equation}
+\]</span> <strong>加法器</strong>. 一个 <span
+class="math inline">\(l\)</span> 比特的加法器, 将两个 <span
+class="math inline">\(l\)</span> 比特的位向量 <span
+class="math inline">\(x,y\)</span> 和一个进位 <span
+class="math inline">\(cin\)</span> 映射为 对应的 和(sum) 与一个输出进位.
+令 <span class="math inline">\(c_i\)</span> 表示第 <span
+class="math inline">\(i\)</span> 个进位. 函数add用进位 <span
+class="math inline">\(c_i\)</span> 来定义: <span class="math display">\[
+\begin{aligned}
+add(x,y,cin)&amp;\doteq \langle result, cout\rangle,\\
+result_i &amp;\doteq sum(x_i,y_i,c_i)\ for\ i\in \{0,...,l-1\},\\
+cout &amp;\doteq c_n.
+\end{aligned}
+\]</span> 该结构的等效电路称作行波进位加法器(ripple carry adder).
+该加法器可以很容易地用一个带有进位 <span
+class="math inline">\(cin=0\)</span> 的加法器实现针对 <span
+class="math inline">\(t=a+b\)</span> 的约束: <span
+class="math display">\[
+\bigwedge_{i=0}^{l-1}(add(a,b,0).result_i\Longleftrightarrow e(t)_i).
+\]</span> 同时加法器可以通过归纳地证明上面的约束成立, 当且仅当 <span
+class="math inline">\(\langle a\rangle_U + \langle b\rangle_U = \langle
+e(t)\rangle_U\ \rm mod\ 2^l\)</span>,
+同时说明了约束与之前说明的语义相符.</p>
+<p>通过使用以下约束, 在同一电路中实现减法 <span
+class="math inline">\(t=a-b\)</span>: <span class="math display">\[
+\bigwedge_{i=0}^{l-1}(add(a,\thicksim b,1).result_i \Longleftrightarrow
+e(t)_i).
+\]</span> 同样的, 该实现利用了事实: <span class="math inline">\(\langle
+(\thicksim b) + 1\rangle_S = -\langle b\rangle_S \rm\ mod\
+2^l\)</span>.</p>
+<h2 id="关系运算符">关系运算符</h2>
+<p>等式 <span class="math inline">\(a=_{l}b\)</span> 用简单的合取式实现:
+<span class="math display">\[
+\bigwedge_{i=1}^{l-1} a_i = b_i \Longleftrightarrow e(t).
+\]</span> 如上所述, 将 <span class="math inline">\(a\lt b\)</span>
+的大小关系转换为 <span class="math inline">\(a-b\lt 0\)</span>.
+并为减法建立加法器. 因此, <span class="math inline">\(b\)</span> 取反,
+加法器的进位设置为true. <span class="math inline">\(a\lt b\)</span>
+的结果取决于编码. 对于无符号操作数, 如果加法器的进位 <span
+class="math inline">\(cout\)</span> 为FALSE, 则 <span
+class="math inline">\(a\lt b\)</span> 成立: <span
+class="math display">\[
+\langle a\rangle_U \lt \langle b\rangle_U \Longleftrightarrow \neg
+add(a,\thicksim b,1).cout.
+\]</span> 如果是带符号的操作数, 当且仅当 <span
+class="math inline">\((a_{l-1}=b_{l-1})\ne cout\)</span> 时, <span
+class="math inline">\(a\lt b\)</span> 成立: <span
+class="math display">\[
+\langle a\rangle_S \lt \langle b\rangle_S \Longleftrightarrow
+(a_{l-1}\Longleftrightarrow b_{l-1})\oplus add(a,b,1).cout.
+\]</span> 涉及混合编码的比较是通过将两个操作数都扩展一位,
+然后进行带符号的比较来实现的.</p>
+<h2 id="移位">移位</h2>
+<p>我们称移位运算符的左侧操作数(要移位的向量)的宽度为移位的宽度(<em>width
+of the shift</em>), 而右侧操作数的宽度为移位距离的宽度(<em>width of the
+shift distance</em>). 我们按照以下方式限制左右移位: 移位的宽度 <span
+class="math inline">\(l\)</span> 必须为2的幂次, 并且移位距离 <span
+class="math inline">\(n\)</span> 的宽度必须为 <span
+class="math inline">\(\log_2l\)</span>. 在这种限制下,
+可以通过使用以下称为桶形移位器(<em>barrel
+shifter</em>)的构造来实现左右移位. 该移位操作分为 <span
+class="math inline">\(n\)</span> 个阶段. 阶段 <span
+class="math inline">\(s\)</span> 可以将操作数移动 <span
+class="math inline">\(2^s\)</span> 个比特或者保持不动. 函数 <span
+class="math inline">\(ls\)</span> 针对阶段 <span class="math inline">\(s
+\in \{-1,...,n-1\}\)</span> 递归地定义如下: <span
+class="math display">\[
+ls(a_{[l]}, b_{[n]U},-1)\doteq a,
+ls(a_{[l]}, b_{[n]U}, s)\doteq \\
+\lambda i\in\{0,...,l-1\}.
+\begin{equation}
+\left
+\{\begin{array}{lr}
+(ls(a,b,s-1))_{i-2^s}&amp;:&amp;i\ge 2^s\land b_s\\
+(ls(a,b,s-1))_i&amp;:&amp;\neg b_s\\
+0&amp;:&amp;otherwise.
+\end{array}
+\right.
+\end{equation}
+\]</span> 桶形移位器地构造仅需要时间复杂度为 <span
+class="math inline">\(O(n\log n)\)</span> 的逻辑操作, 而原始的实现方式要
+<span class="math inline">\(O(n^2)\)</span> 时间复杂度.</p>
+<h2 id="乘法和除法">乘法和除法</h2>
+<p>乘法器可以按照最简单的电路设计来实现,
+它采用移位加法的思想(<em>shift-and-add idea</em>). 为阶段 <span
+class="math inline">\(s\in \{-1,...,n-1\}\)</span> 递归地定义函数
+<em>mul</em>, 其中 <span class="math inline">\(n\)</span>
+表示第二个操作数的宽度: <span class="math display">\[
+mul(a,b,-1)\doteq 0,\\
+mul(a,b,s)\doteq mul(a,b,s-1)+(b_s ? (a&lt;&lt;s):0).
+\]</span> 除法 <span class="math inline">\(a/_Ub\)</span>
+通过额外添加两个约束来实现: <span class="math display">\[
+\begin{aligned}
+&amp;b\ne 0\Longleftrightarrow e(t).b+r=a,\\
+&amp;b\ne 0\Longleftrightarrow r\lt b.
+\end{aligned}
+\]</span> 变量 <span class="math inline">\(r\)</span> 是一个新的位向量,
+其宽度与 <span class="math inline">\(b\)</span> 相同, 并包含余数.
+有符号除法和模运算以类似的方式实现.</p>
+<h2 id="增量-bit-flattening-算法">增量 Bit Flattening 算法</h2>
+<p>对于某些运算来说, BV-Constraint 生成的公式可能很大.
+除了这些公式的绝对大小之外, 它们的对称性和连通性也是最新的命题 SAT
+求解器的决策启发式方法的负担. 随之而来的后果就是,
+带乘法运算的公式通常很难求解.
+其他算术运算符(例如除法和模)也会有类似的结果.</p>
+<p>比如说, 考虑如下位向量公式: <span class="math display">\[
+a\cdot b=c \land b\cdot a\ne c \land x\lt y \land x\gt y.
+\]</span> 当这个公式被编码成CNF时, 一个宽度为32位的 SAT
+实例就会产生约11000个变量. 该公式显然是不可满足的. 有两个原因:
+最开始的两个合取的式子矛盾, 同样地, 后两个合取的式子也是矛盾的. 大多数
+SAT 求解器的决策启发式方法倾向于首先对经常使用的变量进行拆分,
+因此倾向于对 <span class="math inline">\(a\)</span>, <span
+class="math inline">\(b\)</span>和 <span
+class="math inline">\(c\)</span> 进行判定. 因此,
+求解器试图在包括两个乘法运算的困难部分上显示该公式的不满足性.
+该公式仅包含两个关系运算符的"简单"部分被忽略了. 大多数命题 SAT
+求解器都不能在合理的时间内解决该公式.</p>
+<p>因此, 在许多情况下, 逐步建立扁平化的公式 <span
+class="math inline">\(\mathcal{B}\)</span> 是有益处的.
+算法1是根据如下想法的实现: 正如之前, 从公式 <span
+class="math inline">\(\varphi\)</span> 的命题骨架开始. 然后,
+我们为"廉价"的运算符添加约束, 并为"昂贵"的运算符省略约束.
+按位运算符通常是廉价的, 而算术运算符很昂贵. 缺少约束的编码可以视为对公式
+<span class="math inline">\(\varphi\)</span> 的抽象. 那么,
+当前扁平化的公式 <span class="math inline">\(\mathcal{B}\)</span>
+会被传给一个命题 SAT 求解器. 如果, <span
+class="math inline">\(\mathcal{B}\)</span> 是不可满足的, 那么原公式
+<span class="math inline">\(\varphi\)</span> 也是不可满足的.
+将公式后半部分的约束条件添加到 <span
+class="math inline">\(\mathcal{B}\)</span> 中后,
+编码后的公式就变得不可满足, 并且会得出结论,
+在不考虑乘法运算的情况下原公式 <span
+class="math inline">\(\varphi\)</span> 是不可满足的.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 1:\ }{\rm
+INCREMENTAL\mbox{-}BV\mbox{-}FLATTENING}\\
+&amp;\mathbf{Input:}\ {\rm A\ formula}\ \varphi\ {\rm in\
+bit\mbox{-}vector\ logic}\\
+&amp;\mathbf{Output:}\ {\rm &#39;&#39;Satisfiable&#39;&#39;\ if\ the\
+formula\ }\ {\rm is\ satisfiable,\ and\
+&#39;&#39;Unsatisfiable&#39;&#39;\ otherwise}\\
+\\
+&amp;1.\hspace{2mm}\mathbf{function}\ {\rm
+INCREMENTAL\mbox{-}BV\mbox{-}FLATTENING}(\varphi)\\
+&amp;2.\hspace{10mm} \mathcal{B}:=e(\varphi);\hspace{55mm}
+\triangleright\ {\rm propositional\ skeleton\ of\ }\varphi\\
+&amp;3.\hspace{10mm}\mathbf{for\ }{\rm each\ } t_{[l]}\in T(\varphi)\
+\mathbf{do} \\
+&amp;4.\hspace{18mm}\mathbf{for\ }{\rm each\ } i\in \{0,...,l-1\}\
+\mathbf{do} \\
+&amp;5.\hspace{26mm}{\rm set}\ e(t)_i\ {\rm to\ a\ new\ Boolean\
+variable};  \\
+&amp;6.\hspace{10mm}\mathbf{while\ } {\rm (TRUE)}\ \mathbf{do}\\
+&amp;7.\hspace{18mm}\alpha := {\rm SAT\mbox{-}SOLVER}(\mathcal{B}); \\
+&amp;8.\hspace{18mm}\mathbf{if\ }\alpha={\rm
+&#39;&#39;Unsatisfiable&#39;&#39;}\ \mathbf{return} \\
+&amp;9.\hspace{26mm}\mathbf{return}\ {\rm
+&#39;&#39;Unsatisfiable&#39;&#39;}; \\
+&amp;10.\hspace{16mm}\mathbf{else\ }\\
+&amp;11.\hspace{24mm}{\rm Let\ } I\subseteq T(\varphi)\ {\rm be\ the\
+set\ of\ terms\ that\ are}\\
+&amp;\hspace{38mm}{\rm inconsistent\ with\ the\ satisfying\ assignment};
+\\
+&amp;12.\hspace{24mm}\mathbf{if}\ I=\emptyset\ \mathbf{then} \\
+&amp;13.\hspace{30mm}\mathbf{return}\ {\rm
+&#39;&#39;Satisfiable&#39;&#39;};\\
+&amp;14.\hspace{24mm}\mathbf{else} \\
+&amp;15.\hspace{30mm}{\rm Select\ &#39;&#39;easy&#39;&#39;\ }
+F&#39;\subseteq I; \\
+&amp;16.\hspace{30mm}\mathbf{for}\ {\rm each\ } t_{[l]}\in F&#39;\
+\mathbf{do}\\
+&amp;17.\hspace{38mm}\mathcal{B}:=\mathcal{B}\ \wedge\ {\rm
+BV\mbox{-}CONSTRAINT}(e,t);\\
+\end{aligned}
+\]</span></p>
+<p>如果公式 <span class="math inline">\(\mathcal{B}\)</span> 是可满足的,
+以下两种情况之一适用:</p>
+<ol type="1">
+<li>原公式 <span class="math inline">\(\varphi\)</span> 是不可满足的,
+但是需要一个或多个被省略的约束条件说明这一点.</li>
+<li>原公式 <span class="math inline">\(\varphi\)</span> 是可满足的.</li>
+</ol>
+<p>为了区分这两种情况, 我们可以检查 SAT
+求解器产生的可满足赋值是否满足省略的约束.
+由于我们可能已经移除了一些变量, 所以可能要对可满足的赋值进行扩展,
+将缺失的值设置为某个常数, 例如, 0. 如果此赋值满足所有约束,
+则第二种情况适用, 并且算法终止.</p>
+<p>如果不是这样, 那么被省略的一个或多个约束条件与 SAT
+求解器提供的赋值不一致.我们用 <span class="math inline">\(I\)</span>
+来表示这些项的集合. 算法通过选择其中的一些项, 将其约束条件添加到公式
+<span class="math inline">\(\mathcal{B}\)</span> 中, 并重复进行.
+算法终止, 因为我们每一次迭代都会严格地添加更多的约束条件.
+在最坏的情况下, <span class="math inline">\(T(\varphi)\)</span>
+中的所有约束条件都被添加到编码中.</p>
+<p>在许多情况下, 省略特定运算符的约束可能会导致扁平化的公式太弱,
+从而被太多的虚假模型所满足. 另一方面, 全约束可能会给 SAT
+求解器带来太多负担. 在全约束的最大强度和完全省略约束之间的折中办法,
+是用未解释的函数替换位向量上的函数.当在检查两个模型的等价性时,
+这种技术特别有效. 比如说, 令 <span class="math inline">\(a_1\ op\
+b_1\)</span> 和 <span class="math inline">\(a_2\ op\ b_2\)</span>
+为两项, 其中 <span class="math inline">\(op\)</span> 是二元运算符.
+用一个新的未解释的符号 <span class="math inline">\(G\)</span>
+来替换运算符 <span class="math inline">\(op\)</span> 得到 <span
+class="math inline">\(G(a_1,b_1)\)</span> 和 <span
+class="math inline">\(G(a_2,b_2)\)</span>. 得出的公式是抽象的,
+并不包含对应于 <span class="math inline">\(op\)</span>
+的扁平化的约束条件.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/">数据验证</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/04/eb1812b5cb5f/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">数组理论 (一)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/7e9d080a4eac/">
+                        <span class="hidden-mobile">Bit Vectors (1)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '381c487f39bce6c819388bf71aee4d97'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

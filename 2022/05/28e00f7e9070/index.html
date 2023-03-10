@@ -1,0 +1,832 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍数组理论的编码.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组理论 (二)">
+<meta property="og:url" content="https://socod.github.io/2022/05/28e00f7e9070/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍数组理论的编码.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://socod.github.io/img/ArrayEncod/Fig1.png">
+<meta property="og:image" content="https://socod.github.io/img/ArrayEncod/Fig2.png">
+<meta property="og:image" content="https://socod.github.io/img/ArrayEncod/Fig3.png">
+<meta property="article:published_time" content="2022-05-21T06:50:07.000Z">
+<meta property="article:modified_time" content="2022-07-26T14:54:53.444Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="数组">
+<meta property="article:tag" content="数组判定">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://socod.github.io/img/ArrayEncod/Fig1.png">
+  
+  
+  <title>数组理论 (二) - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="数组理论 (二)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-21 14:50" pubdate>
+        2022年5月21日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">数组理论 (二)</h1>
+            
+            <div class="markdown-body">
+              <h1 id="数组理论延迟编码过程">数组理论延迟编码过程</h1>
+<h2 id="基于dpllt的增量编码">1. 基于DPLL(<span
+class="math inline">\(T\)</span>)的增量编码</h2>
+<p><a href="https://socod.github.io/ArrayIntro/">数组理论
+(一)</a>说明了一种通过规约程序来实现将数组理论编码成带有索引下标和元素的理论.
+本质上,
+它是通过添加读写覆盖规则和扩展性规则的实例来实现的.实际上,算法生成的大多数实例都是不必要的,
+也就增加了判定问题的计算成本. 所以要讨论一种新的程序或者算法,
+该算法增量的生成读写覆盖和扩展性规则的实例. 设计该算法是为了能够集成到
+DPLL(<span class="math inline">\(T\)</span>) 程序中去.
+它使用未解释函数将数组公式延迟编码为等式逻辑.
+该算法假定索引理论是无量词的, 但是确实允许数组之间的相等性.</p>
+<p><em>预处理</em></p>
+<p>我们在算法主要阶段之前执行预处理步骤.
+预处理步骤详尽地实例化了读覆盖写规则的前半部分, 比如说,
+对于公式中存在的所有的表达式 <span class="math inline">\(a\{i\leftarrow
+e\}\)</span>, 添加相应的约束 <span class="math display">\[
+a\{i\leftarrow e\}[i]= e.
+\]</span> 因此, 这就产生了线性数量的约束.
+读覆盖写公理的第二种情况和扩展性规则将逐步实施.</p>
+<p>在介绍增量编码之前, 简要地对DPLL(<span
+class="math inline">\(T\)</span>) 的基本原则进行说明. 在 DPPL(<span
+class="math inline">\(T\)</span>) 中, 命题 SAT
+求解器用于获取公式中理论原子的(可能是部分)布尔赋值.
+该赋值被传递给理论求解器, 该理论求解器确定该赋值是否为 <span
+class="math inline">\(T-consistent\)</span>.
+理论求解器可以将添加的命题约束传递回 SAT 求解器,
+以实现理论传播和理论学习. 这些约束将添加到由 SAT
+求解器维护的子句数据库中. 然后, 该过程将迭代进行, 要么确定公式为 UNSAT,
+要么生成新的(可能是部分的)布尔赋值.</p>
+<h2 id="读覆盖写公理的延迟实例化">2. 读覆盖写公理的延迟实例化</h2>
+<p>如下算法将一个数组公式的文字(也就是数组理论的原子)的集合作为输入.
+文字的合取式记为 <span class="math inline">\(\hat{Th}\)</span>. 如果
+<span class="math inline">\(\hat{Th}\)</span> 是一致性的(为真),
+算法返回<span class="math inline">\(\rm TRUE\)</span>;
+否则返回一个在该数组理论下为真的公式 <span
+class="math inline">\(t\)</span>, 并且禁用之前的赋值 <span
+class="math inline">\(\hat{Th}\)</span>. 公式 <span
+class="math inline">\(t\)</span> 初始化为 <span
+class="math inline">\(\rm TRUE\)</span>,
+并且随着算法的执行会增强公式的正确性.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 1:}\ \text{ARRAY-ENCODING-PROCEDURE}\\
+&amp;\mathbf{Input:}\quad\quad \text{A conjunction of array literals }
+\hat{Th}\\
+&amp;\mathbf{Output:}\quad\; \text{TRUE, or a valid array formula } t\
+\text{that blocks } \hat{Th}\\
+\\
+&amp;1.\; t:=\text{TRUE};\\
+&amp;2.\; \text{Compute equivalence classes of terms in } \hat{Th};\\
+&amp;3.\; \text{Construct the weak equivalence graph } G\ \text{from }
+\hat{Th};\\
+&amp;4.\; \mathbf{for}\; a,b,i,j\; \text{such that } a[i]\;\text{and}\;
+b[j]\ \text{are terms in } \hat{Th}\; \mathbf{do}\\
+&amp;5.\;\quad\quad \mathbf{if}\; i\approx j\; \mathbf{then}\\
+&amp;6.\;\quad\quad\quad\; \mathbf{if}\ a[i]\not\approx b[j]\
+\mathbf{then}\\
+&amp;7.\;\quad\quad\quad\quad\; \mathbf{for}\;\text{each simple path }
+p\in G\ \text{from } a\;\text{to } b\; \mathbf{do}\\
+&amp;8.\;\quad\quad\quad\quad\quad\; \mathbf{if}\; \text{each label }
+l\; \text{on } p\text{&#39;s edges satisfies } l\neq i\;\mathbf{then}\\
+&amp;9.\;\quad\quad\quad\quad\quad\quad\; t:=t\wedge ((i=j\wedge
+Cond_i(p))\Longrightarrow a[i]=b[j]);\\
+&amp;10.\; \mathbf{return}\;t;
+\end{aligned}
+\]</span></p>
+<p>算法1 第2行中 <span class="math inline">\(\hat{Th}\)</span>
+提到的等价类会被计算出来. 之前已经说过如何使用同余闭包算法计算等价类.
+我们用 <span class="math inline">\(t_1\approx t_2\)</span> 表示项 <span
+class="math inline">\(t_1\)</span> 和 <span
+class="math inline">\(t_2\)</span> 在同一个等价类中.</p>
+<p>算法1 第3行构造了一个带有标记的无向图 <span
+class="math inline">\(G(V,E)\)</span>, 称作弱等价图(<strong>weak
+equivalence graph</strong>). 顶点集 <span
+class="math inline">\(V\)</span> 对应 <span
+class="math inline">\(\hat{Th}\)</span> 中的数组项. 边集是有可选的标记,
+并添加如下:</p>
+<ol type="1">
+<li>对于数组项之间的每个等式 <span class="math inline">\(a = b\)</span>,
+在 <span class="math inline">\(a\)</span> 和 <span
+class="math inline">\(b\)</span> 之间添加一个未标记的边.</li>
+<li>对于每个数组项 <span class="math inline">\(a\)</span>
+和对于该项的更新 <span class="math inline">\(a\{i\leftarrow
+v\}\)</span>, 在其顶点之间添加标记为 <span
+class="math inline">\(i\)</span> 的边.</li>
+</ol>
+<p>以下用一个例子进行说明. 考虑如下公式 <span class="math display">\[
+\begin{align*}
+\hat{Th}&amp;\doteq i\ne j \land i\ne k\land a\{j\leftarrow v\}=b \land
+a\{k\leftarrow w\}\\ &amp;= c\land b[i]\ne c[i].\tag{2.1}
+\end{align*}
+\]</span> <span class="math inline">\(\hat{Th}\)</span>
+对应的弱等价图为:</p>
+<p><img src="\img\ArrayEncod\Fig1.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></p>
+<p>每当 <span class="math inline">\(G\)</span> 中存在从 <span
+class="math inline">\(a\)</span> 到 <span
+class="math inline">\(b\)</span> 的路径时, 两个数组 <span
+class="math inline">\(a\)</span> 和 <span
+class="math inline">\(b\)</span> 称为弱等效项(<strong>weakly
+equivalent</strong>). 这意味着它们在所有数组元素上均相等,
+除了可能在路径上更新的元素之外. 上例中的数组 <span
+class="math inline">\(a, b\)</span> 和 <span
+class="math inline">\(c\)</span> 都是弱等价的.</p>
+<p>算法1 第4-9行生成了增强数组元素等价性的约束. 这与 <span
+class="math inline">\(\hat{Th}\)</span> 中的任何一对数组元素项 <span
+class="math inline">\(a[i]\)</span> 和 <span
+class="math inline">\(b[j]\)</span> 有关. 根据等价类, 其中索引项 <span
+class="math inline">\(i\)</span> 和 <span
+class="math inline">\(j\)</span> 必须是相等的, 但是 <span
+class="math inline">\(a[i]\)</span> 和 <span
+class="math inline">\(b[j]\)</span> 不相等. 这个想法是确定数组 <span
+class="math inline">\(a\)</span> 和 <span
+class="math inline">\(b\)</span> 是否通过不使用索引 <span
+class="math inline">\(i\)</span> 的数组更新链进行连接.
+如果存在具有此属性的链, 那么 <span class="math inline">\(a[i]\)</span>
+肯定等于 <span class="math inline">\(b[j]\)</span>. 我们将使用弱等价图
+<span class="math inline">\(G\)</span> 检查这个链是否存在. 我们将考虑从
+<span class="math inline">\(a\)</span> 到 <span
+class="math inline">\(b\)</span> 的所有路径 <span
+class="math inline">\(p\)</span>. 如果根据我们的等价类,
+路径中的任何一条边标签的索引等于 <span class="math inline">\(i\)</span>,
+那么就可以丢弃该路径. 否则, 我们就找到了所需的链, 并将 <span
+class="math display">\[
+(i=j \land Cond_i(p))\Longrightarrow a[i]=b[j]
+\]</span> 作为约束条件加入到 <span class="math inline">\(t\)</span> 中.
+表达式 <span class="math inline">\(Cond_i(p)\)</span>
+是以下合取的约束:</p>
+<ol type="1">
+<li>对于从 <span class="math inline">\(a\)</span> 到 <span
+class="math inline">\(b\)</span> 的未标记边, 添加约束 <span
+class="math inline">\(a=b\)</span>.</li>
+<li>对于添加了标记 <span class="math inline">\(k\)</span> 的边, 添加约束
+<span class="math inline">\(i\ne k\)</span>.</li>
+</ol>
+<p>继续上面的例子, 我们有两个非平凡的等价类: <span
+class="math inline">\(\{a\{j\leftarrow v\}, b\}\)</span> 和 <span
+class="math inline">\(\{a\{k\leftarrow w\}, c\}\)</span>. 因此, 项 <span
+class="math inline">\(b[i], c[i]\)</span> 满足 <span
+class="math inline">\(b[i]\ne c[i]\)</span>, 而且它们的索引是大致相等的.
+在图 <span class="math inline">\(G\)</span> 上有一条从 <span
+class="math inline">\(b\)</span> 到 <span
+class="math inline">\(c\)</span> 的路径 <span
+class="math inline">\(p\)</span>, 它的边都没有标注与 <span
+class="math inline">\(i\)</span> 相同的等价类的索引, 即 <span
+class="math inline">\(j\ne i, k\ne i\)</span>. 对于这条路径 <span
+class="math inline">\(p\)</span>, 可以得到 <span class="math display">\[
+Cond_i(p) = i\ne j\land j\ne k
+\]</span> 然后将第9行中的 <span class="math inline">\(t\)</span> 更新为
+<span class="math display">\[
+t:= (i=i\land i\ne j\land i=k)\Longrightarrow b[i]=c[i].
+\]</span> 现在 上面的 <span class="math inline">\(t\)</span>
+被添加到上面的公式 2.1 中了. <span class="math inline">\(t\)</span>
+左边显然成立, 由此我们推出一个与 <span class="math inline">\(b[i]\ne
+c[i]\)</span> 矛盾的条件. 因此, 我们证明了最初例子的不可满足性.</p>
+<p>应当注意, 当没有这样一种链接的时候, 上述算法返回的约束为 <span
+class="math inline">\(\rm TRUE\)</span>. 在这种情况下, 数组理论 <span
+class="math inline">\(\hat{Th}\)</span> 是可满足的. 否则, <span
+class="math inline">\(t\)</span> 就是一个封锁子句(<strong>blocking
+clause</strong>), 也就是说, <span class="math inline">\(t\)</span>
+的命题骨架与 <span class="math inline">\(\hat{Th}\)</span> 的是不一致的.
+这样就保证了 <span class="math inline">\(DPLL(T )\)</span>
+程序的命题部分的进展.</p>
+<h2 id="扩展规则的延迟实例化">3. 扩展规则的延迟实例化</h2>
+<p>前面所示算法生成的约束足以蕴涵各个数组元素之间所需的等价性.
+为了获得可扩展数组理论的完整判定程序,
+我们需要添加蕴涵整个数组之间相等的约束. 除了执行前一小节的算法,
+还应执行下述算法, 它产生进一步的约束, 蕴涵数组项的相等性.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{Algorithm\ 2:}\ \text{EXTENSIONAL-ARRAY-ENCODING}\\
+&amp;\mathbf{Input:}\quad\quad \text{A conjunction of array literals }
+\hat{Th}\\
+&amp;\mathbf{Output:}\quad\; \text{TRUE, or a valid array formula } t\
+\text{that blocks } \hat{Th}\\
+\\
+&amp;1.\; t:=\text{TRUE};\\
+&amp;2.\; \text{Compute equivalence classes of terms in } \hat{Th};\\
+&amp;3.\; \text{Construct the weak equivalence graph } G\ \text{from }
+\hat{Th};\\
+&amp;4.\; \mathbf{for}\; a,b\; \text{such that } a\;\text{and}\; b\
+\text{are terms in } \hat{Th}\; \mathbf{do}\\
+&amp;5.\;\quad \mathbf{if}\; a\not\approx b\; \mathbf{then}\\
+&amp;6.\;\quad\quad\; \mathbf{for}\;\text{each simple path } p\in G\
+\text{from } a\;\text{to } b\; \mathbf{do}\\
+&amp;7.\;\quad\quad\quad\quad \text{Let } S\; \text{be the set of edge
+labels of }p;\\
+&amp;8.\;\quad\quad\quad\quad t:=t\wedge (\bigwedge_{i\in
+S}Cond_i^u(p)\Longrightarrow a=b);\\
+&amp;9.\; \mathbf{return}\;t;
+\end{aligned}
+\]</span></p>
+<p>推导两个数组项之间的相等性如下: 考虑 <span
+class="math inline">\(\hat{Th}\)</span> 中所用不相等的数组项 <span
+class="math inline">\(a,b\)</span>, 以及 <span
+class="math inline">\(a\)</span> 和 <span
+class="math inline">\(b\)</span> 之间的任何相等链. 选择一个这样的链,
+我们将其称为 <span class="math inline">\(p\)</span>, 并令 <span
+class="math inline">\(S\)</span>
+为该链中数组更新中使用的所有不同索引的集合. 对于所有索引 <span
+class="math inline">\(i\in S\)</span>, 执行以下操作:</p>
+<ol type="1">
+<li>在 <span class="math inline">\(p\)</span> 的第一个边上找到以 <span
+class="math inline">\(i\)</span> 或索引 <span
+class="math inline">\(j\)</span> 使得 <span
+class="math inline">\(j\approx i\)</span> 的数组项. 用 <span
+class="math inline">\(first\)</span> 表示该数组项, .并用 <span
+class="math inline">\(p&#39;\)</span> 表示该边之前的路径 <span
+class="math inline">\(p\)</span> 的前缀.</li>
+<li>找到在最近一次更新后的数组项, 该数组标有 <span
+class="math inline">\(i\)</span> 或索引 <span
+class="math inline">\(k\)</span>, 使得 <span
+class="math inline">\(k\approx i\)</span>. 用 <span
+class="math inline">\(last\)</span> 表示该数组项, 并用 <span
+class="math inline">\(p&#39;&#39;\)</span> 表示该边之后的路径 <span
+class="math inline">\(p\)</span> 的后缀.</li>
+<li>检查 <span class="math inline">\(fist[i]\)</span> 与 <span
+class="math inline">\(last[i]\)</span> 是否相等.</li>
+</ol>
+<p>如果这适用于所有索引, 则 <span class="math inline">\(a\)</span>
+必等于 <span class="math inline">\(b\)</span>. <span
+class="math inline">\(G\)</span> 中的这种链具有以下形式:</p>
+<p><img src="\img\ArrayEncod\Fig2.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></p>
+<p>算法2 使用图 <span class="math inline">\(G\)</span>
+来检查是否存在这样的链, 如下所述: 它考虑了从 <span
+class="math inline">\(a\)</span> 到 <span
+class="math inline">\(b\)</span> 的所有路径 <span
+class="math inline">\(p\)</span>. 对于每个路径 <span
+class="math inline">\(p\)</span>, 它计算集合 <span
+class="math inline">\(S\)</span>. 然后将 <span class="math display">\[
+\bigwedge_{i\in S}Cond_i^u(p)\Longrightarrow a=b
+\]</span></p>
+<p>作为约束添加到 <span class="math inline">\(t\)</span> 中, 其中 <span
+class="math inline">\(Cond_i^u(p)\)</span> 的定义如下: 如果在 <span
+class="math inline">\(p\)</span> 中没有边的索引标签等于 <span
+class="math inline">\(i\)</span>, 则为 <span class="math display">\[
+Cond_i^u(p):=Cond_i(p).
+\]</span> 否则, 这是索引 <span class="math inline">\(i\)</span> 在 <span
+class="math inline">\(p\)</span> 上的更新满足上述约束的条件, 其形式如下:
+<span class="math display">\[
+Cond_i^u(p):=Cond_i(p&#39;)\land first[i]=last[i]\land
+Cond_i(p&#39;&#39;).
+\]</span> 考虑输入到算法2 的公式: <span class="math display">\[
+\hat{Th}:=v=w \land b=a\{i\leftarrow v\}\land b\ne a\{i\leftarrow w\}.
+\]</span> 上式具有不一致性. 预处理步骤是添加读写公理的第一部分的实例.
+对于 <span class="math inline">\(\hat{Th}\)</span> 中的理论文字,
+我们可得 <span class="math display">\[
+a\{i\leftarrow v\}[i]=v\ {\rm and}\ a\{i\leftarrow w\}[i]=w.
+\]</span> 接下来, 构造如下的弱等价图:</p>
+<p><img src="\img\ArrayEncod\Fig3.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></p>
+<p>除其他外, 算法2 将 <span class="math inline">\(b\)</span> 和 <span
+class="math inline">\(a\{i\leftarrow w\}\)</span> 标识为数组项.
+它们之间只有一条路径, 并且该路径的集合 <span
+class="math inline">\(S\)</span> 是关于 <span
+class="math inline">\(\{i\}\)</span> 的单例图. 数组项的 <span
+class="math inline">\(first\)</span> 是 <span
+class="math inline">\(a\{i\leftarrow v\}\)</span>, 数组项的 <span
+class="math inline">\(last\)</span> 是 <span
+class="math inline">\(a\{i\leftarrow w\}\)</span>. 请注意, <span
+class="math inline">\(p&#39;\)</span> 是从 <span
+class="math inline">\(b\)</span> 到 <span
+class="math inline">\(a\{i\leftarrow v\}\)</span> 的路径, 而 <span
+class="math inline">\(p&#39;&#39;\)</span> 为空. 我们可得 <span
+class="math display">\[
+Cond_i^u(p)=(a\{i\leftarrow v\}[i]=a\{i\leftarrow w\}[i])
+\]</span> 然后添加约束 <span class="math display">\[
+a\{i\leftarrow v\}[i]=a\{i\leftarrow w\}[i]\Longrightarrow
+b=a\{i\leftarrow w\}
+\]</span> 到公式中去. 回想一下, 我们已经添加了约束 <span
+class="math inline">\(a\{i\leftarrow v\}[i]=v\)</span> 和 <span
+class="math inline">\(a\{i\leftarrow w\}[i]=w\)</span>
+并假定在公式的所有模型中 <span class="math inline">\(v = w\)</span>.
+等式逻辑的判定程序将确定 <span class="math inline">\(a\{i\leftarrow
+v\}[i]=a\{i\leftarrow w\}[i]\)</span> 成立, 因此 <span
+class="math inline">\(DPLL(T)\)</span> 将推断出 <span
+class="math inline">\(b=a\{i\leftarrow w\}\)</span>
+在该公式的任何模型中都必须为真, 这与原公式 <span
+class="math inline">\(\hat{Th}\)</span> 的第三个文字矛盾.
+<code>Qed</code></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E7%BB%84/">数组</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E7%BB%84%E5%88%A4%E5%AE%9A/">数组判定</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/e44910fffebb/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">指针逻辑</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/d9b2728991b4/">
+                        <span class="hidden-mobile">悠泥客指针</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'ed568dce948825c358eb616af116b651'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

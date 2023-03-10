@@ -1,0 +1,864 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍量化公式及量词消除算法.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="量化公式">
+<meta property="og:url" content="https://socod.github.io/2022/06/6d923e6ce0cf/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍量化公式及量词消除算法.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-11T02:01:56.000Z">
+<meta property="article:modified_time" content="2022-07-29T02:55:22.572Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="量词消除">
+<meta property="article:tag" content="量化公式">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>量化公式 - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="量化公式">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-11 10:01" pubdate>
+        2022年6月11日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">量化公式</h1>
+            
+            <div class="markdown-body">
+              <h1 id="简介">1.简介</h1>
+<p>量化允许我们指定谓词的有效性范围, 换句话说,
+即谓词应包含的域(值的范围).
+用于指定量化的逻辑中使用的语法元素称为量词(<strong>quantifier</strong>).
+最常用的两个量词分别是全称量词 "<span
+class="math inline">\(\forall\)</span>"和存在量词 "<span
+class="math inline">\(\exists\)</span>". 这两个量词是可以相互转换的:
+<span class="math display">\[
+\forall x.\varphi \Longleftrightarrow \neg\exists x.\neg\varphi.
+\]</span> 一些量化声明的例子:</p>
+<ul>
+<li><p>对于任意整数 <span class="math inline">\(x\)</span>, 存在一个整数
+<span class="math inline">\(y\)</span> 小于 <span
+class="math inline">\(x\)</span>: <span class="math display">\[
+  \forall x\in \mathbb{Z}.\exists y\in \mathbb{Z}.y\lt x.
+  \]</span></p></li>
+<li><p>存在一个整数 <span class="math inline">\(y\)</span>,
+对于任意一个整数 <span class="math inline">\(x\)</span>, <span
+class="math inline">\(x\)</span> 总是大于 <span
+class="math inline">\(y\)</span>: <span class="math display">\[
+  \exists y\in\mathbb{Z}.\forall x\in\mathbb{Z}.x\gt y.
+  \]</span></p></li>
+<li><p>对于任意大于1的自然数 <span class="math inline">\(n\)</span>,
+存在一个质数 <span class="math inline">\(p\)</span>, 使得 <span
+class="math inline">\(n\lt p\lt 2n\)</span>: <span
+class="math display">\[
+  \forall n\in\mathbb{N}.\exists p\in\mathbb{N}.n\gt 1\Longrightarrow
+(isprime(p)\land n\lt p\lt 2n).
+  \]</span></p></li>
+</ul>
+<p>在以上三个示例中, 全称量词和存在量词之间存在量词交替. 实际上,
+我们在前面考虑的可满足性和有效性问题可以解释为具有非交替量词的公式的判定问题.
+当我们考虑命题公式 <span class="math display">\[
+x\lor y
+\]</span> 是否可满足时, 可以等价地考虑是否 <em>存在</em> 一组 <span
+class="math inline">\(x,y\)</span> 的赋值满足该公式. 相似地,
+当我们考虑对于 <span class="math inline">\(x,y\in \mathbb{N}\)</span>
+<span class="math display">\[
+x\gt y\lor x\lt y
+\]</span> 是否成立, 可以等价地考虑对于 <em>任意</em> 自然数 <span
+class="math inline">\(x,y\)</span>, 该公式是否成立.</p>
+<p>所以, 上面两个判定问题地等价形式分别是 <span class="math display">\[
+\exists x\in \mathbb{B}.\exists y\in\mathbb{B}.(x\lor y)
+\]</span> 和 <span class="math display">\[
+\forall x\in\mathbb{N}.\forall y\in\mathbb{N}.x\gt y\lor x\lt y.
+\]</span> 下面引入两个在量化公式中比较重要的两个概念.</p>
+<p><strong>自由变量</strong>(<strong>free variable</strong>).
+在一个给定的公式中, 至少有一个变量不受任何量词约束,
+那么该变量称作自由变量.</p>
+<p><strong>句子</strong>(<strong>sentence</strong>). 如果一个公式 <span
+class="math inline">\(\mathcal{Q}\)</span> 中的变量没有一个是自由变量,
+那么该公式就成为句子.</p>
+<p>我们只考虑句子形式的公式, 也就是说只关注无自由变量公式的判定问题.
+应该注意到, 带有量词的任意一阶理论都是不可判定的.
+所以我们只讨论可判定的理论.</p>
+<h2 id="量化布尔公式">1.1 量化布尔公式</h2>
+<p>量化命题逻辑(<strong>quantified propositional
+logic</strong>)是用量词增强的命题逻辑.
+量化命题逻辑中的句子被称为量化布尔公式(<strong>quantified Boolean
+formulas</strong>, QBF). 逻辑允许的句子集合由以下语法定义: <span
+class="math display">\[
+\begin{align*}
+formula&amp;:formula\land formula\ |\ \neg formula\ |\ (formula)\ \\
+&amp;\;|\;identifier\ |\ \exists identifier.formula
+\end{align*}
+\]</span> QBF 可用于规划问题的建模, 比如说国际象棋问题. 比如说,
+对于一个象棋玩家来说, 判断是否存在一个在 <span
+class="math inline">\(k\)</span> 步之内取胜的策略.
+给定棋盘状态并假设白棋先行, 不管黑棋的步数如何, 白棋能否以 <span
+class="math inline">\(k\)</span> 步率先吃掉黑棋的国王.
+这类问题可以用QBF进行建模, 因为这相当于问白棋是否 <em>存在</em>
+这样一种走法, 使得对于黑棋 <em>所有</em> 可能的走法, 白棋在 <span
+class="math inline">\(k\)</span> 步之内取胜. 应该知道 <span
+class="math inline">\(k\)</span> 须得为奇数. 这就是典型的规划问题.
+我们以 QBF 的形式对象棋问题进行建模.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 80%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(\rm
+标识符\)</span></th>
+<th><span class="math inline">\(\rm 意义\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span
+class="math inline">\(x_{\{m,n,i\}}\)</span></td>
+<td>棋子 <span class="math inline">\(m\)</span> 第 <span
+class="math inline">\(i\)</span> 步骤在棋盘上所处的位置 <span
+class="math inline">\(n\)</span>, 其中 <span class="math inline">\(1\le
+m\le 4s, 0\le n\le s^2, 0\le i\le k\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span
+class="math inline">\(I_0\)</span></td>
+<td><span class="math inline">\(x_{\{m,n,0\}}\)</span> 变量上的子句集合,
+表示棋盘的初始状态.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span
+class="math inline">\(T^w_i\)</span></td>
+<td><span class="math inline">\(x_{\{m,n,i\}}, x_{\{m,n,i+\}}\)</span>
+变量上的子句集合, 表示白棋在步骤 <span class="math inline">\(i\)</span>
+的有效移动.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span
+class="math inline">\(T^b_i\)</span></td>
+<td><span class="math inline">\(x_{\{m,n,i\}}, x_{\{m,n,i+\}}\)</span>
+变量上的子句集合, 表示黑棋在步骤 <span class="math inline">\(i\)</span>
+的有效移动.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span
+class="math inline">\(G_k\)</span></td>
+<td><span class="math inline">\(x_{\{m,n,k\}}\)</span> 变量上的子句集合,
+表示棋局的目标, 比如说, 在 <span class="math inline">\(k\)</span>
+步之内, 黑棋的国王被白棋吃掉.</td>
+</tr>
+</tbody>
+</table>
+<p>由此可以公式化该问题, 得到公式: <span class="math display">\[
+\begin{align*}
+&amp;\exists\{x_{\{m,n,0\}}\}\exists\{x_{\{m,n,1\}}\}\forall\{x_{\{m,n,2\}}\}\exists\{x_{\{m,n,3\}}\}...\forall\{x_{\{m,n,k-1\}}\}\exists\{x_{\{m,n,k\}}\}.\\
+&amp;I_0\land ((T^b_1\land T^b_3\land ...\land T^b_{k-2})
+\Longrightarrow (T^w_0\land T^w_2\land ...\land T^w_{k-1}\land G_k)).
+\end{align*}
+\]</span> 其实, 该公式并不能够很好的对问题进行描述.
+由于僵局出现的可能性: 可能存在这样一种情况, 黑方无法采取有效措施,
+导致平局. 在这种情况下上面的公式是有效的, 尽管它是不应该有效的.
+该问题的可能解决方案是通过适当地修改 <span
+class="math inline">\(T^w\)</span> 来禁止白棋进行导致这种状态的走法.</p>
+<h2 id="量化析取线性演算">1.2 量化析取线性演算</h2>
+<p>量化析取线性演算(<strong>quantified disjunctive linear
+arithmetic</strong>, QDLA)的文法定义如下: <span class="math display">\[
+\begin{aligned}
+formula&amp;:formula\land formula\ |\ \neg formula\ |\ (formula)\ \\
+&amp;\;|\;predicate\ |\ \forall identifier.formula\\
+predicate&amp;:\Sigma_ia_ix_i\lt c.
+\end{aligned}
+\]</span> 其中 <span class="math inline">\(c, a_i\)</span> 为常数, <span
+class="math inline">\(x_i\)</span>为实型变量. 比如说, 如下公式就是QDLA:
+<span class="math display">\[
+\forall x.\exists y.\exists z.((y+1\le x\hspace{1pc} \lor\hspace{1pc}
+z+1\le y )\hspace{1pc} \land\hspace{1pc} 2x+1\lt z).
+\]</span></p>
+<h1 id="量词消除quantifier-elimination">2. 量词消除(<strong>Quantifier
+Elimination</strong>)</h1>
+<h2 id="前束范式prenex-normal-form">2.1 前束范式(<strong>prenex normal
+form</strong>)</h2>
+<p>首先定义针对量化公式的范式.</p>
+<p><strong>前束范式</strong>. 如果一个公式符合如下形式则称之为前束范式:
+<span class="math display">\[
+Q[n]V[n]...Q[1]V[1].\langle quantifier\mbox{-}free formula\rangle,
+\]</span> 其中, 对于所有的 <span
+class="math inline">\(i\in\{1,2,...,n\}, Q[i]\in\{\forall,
+\exists\}\)</span>, <span class="math inline">\(V[i]\)</span>
+是一个变量. 我们将公式左侧的量化字符串称为量化前缀,
+而将量化前缀右侧的无量词公式称为量化后缀.</p>
+<p><strong>引理</strong>. 对于每一个量化公式 <span
+class="math inline">\(\mathcal{Q}\)</span>, 存在一个前束范式形式的公式
+<span class="math inline">\(\mathcal{Q}&#39;\)</span>, 当且仅当 <span
+class="math inline">\(\mathcal{Q}&#39;\)</span> 为真时 <span
+class="math inline">\(\mathcal{Q}\)</span> 为真.</p>
+<p>对于量化公式的判定, 要先将其转换成前束范式. 例如下面的转换算法 1.
+<span class="math display">\[
+\begin{align*}
+&amp;\mathbf{Algorightm\;1\;:}\;\text{PRENEX}\\
+\\
+&amp;\mathbf{Input:}\quad\;\;\; \text{A quantified formula}\\
+&amp;\mathbf{Output:}\quad\text{A formula in prenex normal form}\\
+\\
+&amp;\;1.\;\text{Eliminate Boolean connectives other than } \vee,\wedge,
+\text{and } \neg.\\
+&amp;\;2.\;\text{Push negations to the right across all quantifiers,
+using De Morgan&#39;s rules}.\\
+&amp;\;3.\;\text{If there are name conflicts across scopes, solve by
+renaming: give each variable}\\
+&amp;\quad\;\;\text{in each scope a unique name}.\\
+&amp;\;4.\; \text{Move quantifiers out by using equivalences such as}\\
+\\
+&amp;\hspace{25mm}\phi_1\land Qx.\phi_2(x)\Longleftrightarrow
+Qx.(\phi_1\land\phi_2(x))\\
+&amp;\hspace{25mm}\phi_1\lor Qx.\phi_2(x)\Longleftrightarrow
+Qx.(\phi_1\lor\phi_2(x))\\
+&amp;\hspace{25mm}Q_1y.\phi_1(y)\land Q_2x.\phi_2(x)\Longleftrightarrow
+Q_1y.Q_2x.(\phi_1(y)\land\phi_2(x))\\
+&amp;\hspace{25mm}Q_1y.\phi_1(y)\lor Q_2x.\phi_2(x)\Longleftrightarrow
+Q_1y.Q_2x.(\phi_1(y)\lor\phi_2(x))\\
+\\
+&amp;\;\;\;\;\ \text{where } Q,Q_1,Q_2\in\{\exists,\forall\}\;\text{are
+quantifiers},\; x\notin var(\phi_1),\;\text{and } y\notin var(\phi_2).
+\end{align*}
+\]</span></p>
+<p>用一个例子说明该算法的执行过程. 考虑如下量化公式: <span
+class="math display">\[
+\mathcal{Q}:=\neg \exists x.\neg(\exists y.((y\Longrightarrow x)\land
+(\neg x\lor y))\land \neg \forall y,((y\land x)\lor (\neg x\land \neg
+y))).
+\]</span> 在算法的第1,2步, 消除蕴含符号, 并将非运算符移到里边: <span
+class="math display">\[
+\forall x.(\exists y.((\neg y\lor x)\land (\neg x\lor y))\land \exists
+y.((\neg y\lor \neg x)\land (x\lor y))).
+\]</span> 算法第3步, 因为有两个量词作用在变量 <span
+class="math inline">\(y\)</span> 上, 所以要对其进行重命名: <span
+class="math display">\[
+\forall x.(\exists y_1.((\neg y_1\lor x)\land (\neg x\lor y_1))\land
+\exists y_2.((\neg y_2\lor \neg x)\land (x\lor y_2))).
+\]</span> 最后, 算法第4步, 将公式中的所有量词移到公式前面: <span
+class="math display">\[
+\forall x.\exists y_1.\exists y_2.(\neg y_1\lor x)\land (\neg x\lor
+y_1)\land (\neg y_2\lor \neg x)\land (x\lor y_2).
+\]</span> 我们假定在量词消除算法中, 输入的公式为前束范式.</p>
+<h2 id="量词消除算法quantifier-elimination-algorithm">2.2
+量词消除算法(<strong>quantifier elimination algorithm</strong>)</h2>
+<p>量词消除算法的作用是将一个量化公式转换成等价的无量词的公式.
+并不是每一个理论都有对应的量词消除算法. 实际上,
+量词消除算法的存在通常意味着逻辑的可判定性,
+然而并非所有理论都是可判定的. 存在一个消除量词的程序是显而易见的.
+全称量词的消除可以向存在量词进行转换. 为此,
+我们定义了投影(<strong>projection</strong>)的一般概念,
+每个理论都必须具体化.</p>
+<p><strong>投影</strong>. 变量 <span class="math inline">\(x\)</span>
+从具有 <span class="math inline">\(n\)</span>
+个量词的前束范式的量化公式的投影, <span class="math display">\[
+\mathcal{Q}_1=Q[n]V[n]...Q[2]V[2].\exists x.\phi,
+\]</span> 是一个公式 <span class="math display">\[
+\mathcal{Q}_2=Q[n]V[n]...Q[2]V[2].\phi&#39;
+\]</span> 其中<span class="math inline">\(x\notin
+var(\phi&#39;)\)</span>, <span class="math inline">\(\phi,
+\phi&#39;\)</span> 都是无量词公式, 那么 <span
+class="math inline">\(\mathcal{Q}_1, \mathcal{Q}_2\)</span>
+逻辑上等价.</p>
+<p>如下, 算法是用于消除前束范式中所有量词的 PROJECTION 算法.</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;\mathbf{Algorithm\;2:}\; \text{QUANTIFIER-ELIMINATION}\\
+\\
+&amp;\mathbf{Input:}\quad \text{A sentence } Q[n]V[n]...Q[1]V[1].\phi,\;
+\text{where }\phi\;\text{is quantifier-free}\\
+&amp;\mathbf{Output:}\; \text{A (quantifier-free) formula over constants
+}\phi&#39;,\;\text{which is valid}\\
+&amp;\quad\quad\quad\quad\;\;\text{if and only if }\phi\;\text{is
+valid}.\\
+\\
+&amp;\;1.\; \phi&#39;:=\phi;\\
+&amp;\;2.\; \mathbf{for}\; i:=1,...,n\; \mathbf{do}\\
+&amp;\;3.\; \quad\quad\mathbf{if}\; Q[i]=\exists\; \mathbf{then}\\
+&amp;\;4.\; \quad\quad\quad\quad \phi&#39;:=\;\; \text{PROJECT}(\;\;
+\phi&#39;, V[i]);\\
+&amp;\;5.\; \quad\quad\mathbf{else}\\
+&amp;\;6.\; \quad\quad\quad\quad \phi&#39;:=\neg\text{PROJECT}(\neg
+\phi&#39;, V[i]);\\
+&amp;\;7.\; \text{Return}\;\phi&#39;;
+\end{align*}
+\]</span></p>
+<p>用两个例子说明量词消除算法的执行.</p>
+<p><strong>量化布尔公式的量词消除</strong></p>
+<p>我们可以运用二元解析的技术对量词进行消除. 下面举例说明, 考虑如下公式:
+<span class="math display">\[
+\begin{align*}
+&amp;\forall u_1.\forall u_2.\exists e_1.\forall u_3.\exists e_3.\exists
+e_2.\\
+&amp;(u_1\lor \neg e_1)\land (\neg u_1\lor \neg e_2\lor
+e_3)\land(u_2\lor \neg u_3\lor \neg e_1)\land(e_1\lor e_2)\land(e_1\lor
+\neg e_3).
+\end{align*}
+\]</span> 通过解析在 <span class="math inline">\(e_2\)</span>
+上的第二个和第四个子句得到: <span class="math display">\[
+\begin{align*}
+&amp;\forall u_1.\forall u_2.\exists e_1.\forall u_3.\exists e_3.\\
+&amp;(u_1\lor \neg e_1)\land (\neg u_1\lor \neg e_1\lor
+e_3)\land(u_2\lor \neg u_3\lor \neg e_1)\land(e_1\lor \neg e_3).
+\end{align*}
+\]</span> 通过解析在 <span class="math inline">\(e_3\)</span>
+上的第二个和第四个子句得到: <span class="math display">\[
+\forall u_1.\forall u_2.\exists e_1.\forall u_3.
+(u_1\lor \neg e_1)\land (\neg u_1\lor e_1)\land(u_2\lor \neg u_3\lor
+\neg e_1).
+\]</span> 通过消除 <span class="math inline">\(u_3\)</span> 得到: <span
+class="math display">\[
+\forall u_1.\forall u_2.\exists e_1.
+(u_1\lor \neg e_1)\land (\neg u_1\lor e_1)\land(u_2\lor\neg e_1).
+\]</span> 通过解析在 <span class="math inline">\(e_1\)</span>
+上的第一个和第二个子句, 与第二个和第三个子句得到: <span
+class="math display">\[
+\forall u_1.\forall u_2.
+(u_1\lor \neg u_1)\land (\neg u_1\lor u_2).
+\]</span> 第一个子句是重言式, 因此可以直接移除. 接下来可以移除 <span
+class="math inline">\(u_1\)</span> 和 <span
+class="math inline">\(u_2\)</span>, 这将导致空的子句.
+因此该公式为假.</p>
+<p><strong>量化析取线性演算的量词消除</strong></p>
+<p>考虑如下量化的线性公式, <span class="math display">\[
+\forall x.\exists y.\exists z.(y+1\le
+x\hspace{1pc}\land\hspace{1pc}z+1\le
+y\hspace{1pc}\land\hspace{1pc}2x+1\le z).
+\]</span> 消除 <span class="math inline">\(z\)</span>, 得到: <span
+class="math display">\[
+\forall x.\exists y.(y+1\le x\hspace{1pc}\land\hspace{1pc}2x+1\le y-1).
+\]</span> 消除 <span class="math inline">\(y\)</span>, 得到: <span
+class="math display">\[
+\forall x.(2x+2\le x-1).
+\]</span> 将全称量词转变成存在量词得到: <span class="math display">\[
+\neg \exists x.\neg(2x+2\le x-1).
+\]</span> 化简得到: <span class="math display">\[
+\neg \exists x.x\gt -3.
+\]</span> 可见原公式为假.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%87%8F%E8%AF%8D%E6%B6%88%E9%99%A4/">量词消除</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%87%8F%E5%8C%96%E5%85%AC%E5%BC%8F/">量化公式</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/a6effd395506/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">组合理论的判定</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/e44910fffebb/">
+                        <span class="hidden-mobile">指针逻辑</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '3637512cb1a241de838d34905ef36edb'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

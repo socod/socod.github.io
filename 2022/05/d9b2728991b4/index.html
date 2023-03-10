@@ -1,0 +1,619 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍智能指针 unique_ptr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="悠泥客指针">
+<meta property="og:url" content="https://socod.github.io/2022/05/d9b2728991b4/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍智能指针 unique_ptr">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-10T10:50:23.000Z">
+<meta property="article:modified_time" content="2022-06-30T03:02:18.721Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="智能指针">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>悠泥客指针 - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="悠泥客指针">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-10 18:50" pubdate>
+        2022年5月10日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">悠泥客指针</h1>
+            
+            <div class="markdown-body">
+              <h1 id="unique_ptr">unique_ptr</h1>
+<h2 id="简介">1. 简介</h2>
+<p><font face="Helvetica">C++</font>
+为编程人员提供了3种智能指针--<font face="Helvetica">std::shared_ptr,
+std::unique_ptr, std::weak_ptr</font>. 本文先介绍
+<font face="Helvetica">std::unique_ptr</font>,
+该类型的指针能够管理堆上的对象, 同时在适当时候(作用域外)释放内存.
+应当说明 <font face="Helvetica">unique_ptr</font> 定义在头文件
+<font face="Helvetica"><memory></font> 中. 下面是其模板的定义:
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-keyword">template</span>&lt;<br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">T</span>,</span><br><span class="hljs-class">    <span class="hljs-keyword">class</span> <span class="hljs-title">Deleter</span> =</span> std::default_delete&lt;T&gt;<br>&gt; <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">unique_ptr</span>;</span><br><span class="hljs-comment">///</span><br><span class="hljs-keyword">template</span>&lt;<br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">T</span>,</span><br><span class="hljs-class">    <span class="hljs-keyword">class</span> <span class="hljs-title">Deleter</span></span><br><span class="hljs-class">&gt;</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">unique_ptr</span>&lt;</span>T[], Deleter&gt;;<br></code></pre></td></tr></table></figure> 当如下操作之一执行的时候, 使用对应的删除器将对象释放:</p>
+<ol type="1">
+<li><font face="Helvetica">unique_ptr</font> 所管理的对象被销毁</li>
+<li>通过重写的赋值运算 <font face="Helvetica">operator=</font> 或者
+公有成员函数 <font face="Helvetica">reset()</font> 将
+<font face="Helvetica">unique_ptr</font> 管理的对象赋给其他指针.</li>
+</ol>
+<p>调用 <code>get_deleter()(ptr)</code> 使用用户提供的删除器释放
+<font face="Helvetica">unique_ptr</font> 对象. 默认的删除器要使用
+<code>delete</code> 运算符来销毁对象并释放对象占据的内存.</p>
+<p>当然, <font face="Helvetica">unique_ptr</font> 也可以不指向任何对象,
+此时即为空.</p>
+<p><font face="Helvetica">unique_ptr</font> 管理对象的方法有两种:</p>
+<ol type="1">
+<li>使用 <code>new</code> 创建单个对象</li>
+<li>使用 <code>new[]</code>
+管理动态分配的对象数组(释放内存也要使用对应的删除器).</li>
+</ol>
+<div class="note note-info">
+            <p>优雅使用 <font face="Helvetica">unique_ptr</font> 的注意事项:</p>
+          </div>
+<p>可以想见的是, 对象所有权只能在 <code>non-const</code>
+<font face="Helvetica">unique_ptr</font> 之间进行转移. 如果对象是由
+<code>const std::unique_str</code> 来管理的, 那该对象只受作用域的限制.
+<font face="Helvetica">unique_ptr</font> 通常用来管理对象的生存期,
+包括:</p>
+<ol type="1">
+<li>通过确保在(程序)正常退出和抛出异常退出两种情况下都能正常删除对象,
+为处理具有动态生存期的对象的类或者函数提供一种异常安全的机制.</li>
+<li>将独占的具有动态生存期的对象传递到函数中.</li>
+<li>从函数获取独占的具有动态生存期的对象.</li>
+<li>可以作为可移动容器的元素类型, 比如保有指向动态分配对象的指针的容器
+<font face="Helvetica">std::vector</font>.</li>
+</ol>
+<p><font face="Helvetica">std::unique_ptr</font> 可为不完整类型 T 构造,
+例如可以用于改善 <a
+target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/pimpl">plmpl</a>
+方法中句柄的用途. 若使用默认删除器, 在调用点处, T 必须是完整的类型,
+例如在调用析构函数, 使用移动赋值运算符以及调用
+<font face="Helvetica">std::unique_ptr</font> 的成员函数
+<font face="Helvetica">reset()</font> 的时候. 相反地, 不能将
+<font face="Helvetica">std::shared_ptr</font> 从原始指针 (raw pointer)
+构造成不完整类型, 但是当 T 是不完整类型时可以被销毁. 应当注意的是, 如果
+T 是一个类模板的特化, 则 <font face="Helvetica">std::unique_ptr</font>
+作为操作数使用, 比如, 由于所谓的 Argument-dependent lookup (ADT),
+<code>!p</code> 要求 T 的参数必须是完整类型.</p>
+<p>如果 T 是 B 的派生类, 那么 <code>std::unique_ptr&lt;T&gt;</code>
+是可以隐式转换成 <code>std::unique_ptr&lt;B&gt;</code> 的.
+经过隐式转换后形成的 <code>std::unique_ptr&lt;B&gt;</code>
+的默认删除器将会调用 B 自身的删除器 (<code>delete</code>, 或者
+<code>delete[]</code>), 这将会导致未定义的行为 (undefined behavior),
+除非 B 的析构函数是虚函数. 还应当注意的是,
+<font face="Helvetica">std::shared_ptr</font> 就不同了, 转换后的
+<code>std::shared_ptr&lt;B&gt;</code> 将仍旧使用 T 的删除器, 不论 B
+的析构是否为虚函数, 也会正确删除被占有对象.</p>
+<p>不同于 <font face="Helvetica">std::shared_ptr</font>,
+<font face="Helvetica">std::unique_ptr</font> 能够通过任何满足
+<em>NullablePointer</em> 的自定义句柄类型管理对象. 这就允许,
+通过提供宏定义指针 <font face="Helvetica">boost::offset_ptr</font>
+或者其他奇特指针 (fancy pointer -- 提供指针抽象的指针) 的删除器,
+来管理位于共享内存中的对象.</p>
+<h2 id="示例">2. 示例</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cassert&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cstdio&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;fstream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;memory&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdexcept&gt;</span></span><br><br><span class="hljs-comment">// 说明运行时多态机制的基类</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">B</span></span><br><span class="hljs-class">&#123;</span><br>  <span class="hljs-keyword">virtual</span> ~<span class="hljs-built_in">B</span>() = <span class="hljs-keyword">default</span>;<br><br>  <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">bar</span><span class="hljs-params">()</span> </span>&#123; std::cout &lt;&lt; <span class="hljs-string">&quot;B::bar\n&quot;</span>; &#125;<br>&#125;;<br><br><span class="hljs-comment">// 派生类</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">D</span> :</span> B<br>&#123;<br>  <span class="hljs-built_in">D</span>() &#123; std::cout &lt;&lt; <span class="hljs-string">&quot;D::D\n&quot;</span>; &#125;<br>  ~<span class="hljs-built_in">D</span>() &#123; std::cout &lt;&lt; <span class="hljs-string">&quot;D::~D\n&quot;</span>; &#125;<br><br>  <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">bar</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span> </span>&#123; std::cout &lt;&lt; <span class="hljs-string">&quot;D::bar\n&quot;</span>; &#125;<br>&#125;;<br><br><span class="hljs-comment">// 接收 unique_ptr 为参数, 可以是值传递, 也可以是右值引用传递</span><br><span class="hljs-function">std::unique_ptr&lt;D&gt; <span class="hljs-title">pass_through</span><span class="hljs-params">(std::unique_ptr&lt;D&gt; p)</span></span><br><span class="hljs-function"></span>&#123;<br>  p-&gt;<span class="hljs-built_in">bar</span>();<br>  <span class="hljs-keyword">return</span> p;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  std::cout &lt;&lt; <span class="hljs-string">&quot;1) Unique ownership semantics demo\n&quot;</span>;<br>  &#123;<br>    <span class="hljs-comment">// 创建一个 p 独占的对象</span><br>    std::unique_ptr&lt;D&gt; p = std::make_unique&lt;D&gt;();<br><br>    <span class="hljs-comment">// 通过函数 pass_through 转移所有权</span><br>    std::unique_ptr&lt;D&gt; q = <span class="hljs-built_in">pass_through</span>(std::<span class="hljs-built_in">move</span>(p));<br><br>    <span class="hljs-comment">// `p` 现在为 `nullptr`</span><br>    <span class="hljs-built_in">assert</span>(!p);<br>  &#125;<br><br>  std::cout &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>               <span class="hljs-string">&quot;2) Runtime polymorphism demo\n&quot;</span>;<br>  &#123;<br>    <span class="hljs-comment">// 创建一个基类型的指针p, 指向派生类型的对象</span><br>    std::unique_ptr&lt;B&gt; p = std::make_unique&lt;D&gt;();<br><br>    <span class="hljs-comment">// 运行时多态, 因为指向的是派生类的对象</span><br>    <span class="hljs-comment">// 理应调用派生类的成员函数</span><br>    p-&gt;<span class="hljs-built_in">bar</span>();<br>  &#125;<br><br>  std::cout &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>               <span class="hljs-string">&quot;3) Array form of unique_ptr demo\n&quot;</span>;<br>  &#123;<br>    <span class="hljs-function">std::unique_ptr&lt;D[]&gt; <span class="hljs-title">p</span><span class="hljs-params">(<span class="hljs-keyword">new</span> D[<span class="hljs-number">3</span>])</span></span>;<br>  &#125; <span class="hljs-comment">// 析构 ~D() 会被调用三次</span><br><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>输出: <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs shell">1) Unique ownership semantics demo<br>D::D<br>D::bar<br>D::~D<br><br>2) Runtime polymorphism demo<br>D::D<br>D::bar<br>D::~D<br><br>3) Array form of unique_ptr demo<br>D::D<br>D::D<br>D::D<br>D::~D<br>D::~D<br>D::~D<br></code></pre></td></tr></table></figure></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/C/">C++</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/">智能指针</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/28e00f7e9070/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">数组理论 (二)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/eb1812b5cb5f/">
+                        <span class="hidden-mobile">数组理论 (一)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '67a6f05cc45fea056cb2bce119347aad'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

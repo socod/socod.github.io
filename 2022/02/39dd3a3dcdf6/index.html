@@ -1,0 +1,938 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍线性演算及其求解.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性演算(一)">
+<meta property="og:url" content="https://socod.github.io/2022/02/39dd3a3dcdf6/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍线性演算及其求解.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-13T07:22:17.000Z">
+<meta property="article:modified_time" content="2022-03-11T02:12:34.207Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="线性规划">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>线性演算(一) - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="线性演算(一)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-13 15:22" pubdate>
+        2022年2月13日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">线性演算(一)</h1>
+            
+            <div class="markdown-body">
+              <h1 id="线性演算linear-arithmetic">线性演算(Linear Arithmetic)</h1>
+<p>线性演算文法定义: <span class="math display">\[
+\begin{aligned}
+formula&amp;:formula\land formula\ |\ (formula)\ |\ atom\\
+atom&amp;:sum\ op\ sum\\
+op&amp;:=\ |\ \le\ |\ &lt; \\
+sum&amp;:term\ |\ sum+term\\
+term&amp;:identifier\ |\ constant\ |\ constant\ identifier
+\end{aligned}
+\]</span> 根据文法构造良定义的线性演算公式, 如下: <span
+class="math display">\[
+3x_1+2x_2\le5x_3\ \land\ 2x_1-2x_2=0.
+\]</span> 从上面的公式可以看出, 等式逻辑(equality
+logic)是作为线性演算的一部分的.</p>
+<h2 id="线性演算的求解器">1 线性演算的求解器</h2>
+<p>Simplex 方法是针对数值优化的一个算法.
+给定实数变量的线性约束的合取公式, Simplex 算法用以找到目标函数的最佳值.
+目标函数和约束合称为线性程序(Linear program).
+我们只关注判定问题而不是优化问题, 所以, 讨论对于 Simplex 方法的一种变体,
+称作通用 Simplex 方法(general Simplex). 通用 Simplex
+方法接收在实数集上的线性约束的合取公式, 并且没有目标函数,
+并判定集合的可满足性质.另外, 整型线性规划(Integer linear programming,
+ILP)也是一类基于整型的约束问题.</p>
+<h2 id="simplex-算法">2 Simplex 算法</h2>
+<p>Simplex 算法, 判定弱线性不等式合取公式(weak linear
+inequalities)的可满足行问题.就公式的变量而言,
+约束集常伴有一个线性目标函数. 如果约束集合是可满足的, Simplex
+算法就提供一个可满足的赋值, 该赋值使得目标函数的值最大化. Simplex
+算法是最坏指数复杂度的算法. 也有多项式时间的算法解决此类问题(ellipsoid
+method, 1979). Simplex
+算法在实践中仍然是一个值得考虑的非常高效并广泛使用的方法,
+显然是因为现实中指数复杂度的问题很少.</p>
+<h3 id="范式">2.1 范式</h3>
+<p>因为只考虑判定问题而不是优化问题, 所以涉及到的只是 Simplex
+算法的变型, 通用 Simplex(general Simplex).
+后者并不涉及到目标函数求最值问题. 通用 Simplex
+算法接收两种约束类型作为输入:</p>
+<ol type="1">
+<li><p>等式形式的公式 <span class="math display">\[
+a_1x_1+...+a_nx_n=0.
+\]</span></p></li>
+<li><p>变量的上下界 <span class="math display">\[
+l_i\le x_i\le u_i.
+\]</span></p></li>
+</ol>
+<p>以上输入公式的形式称为一般形式(general form).
+一般形式的公式并入限制弱线性约束的建模能力,
+因为我们可以将任意的弱线性约束转换成上述的形式. 所谓弱线性约束即, <span
+class="math inline">\(L\Join R\)</span>, 其中的 <span
+class="math inline">\(\Join\in\{=,\le,\ge\}\)</span>. <span
+class="math inline">\(m\)</span> 表示约束的个数. 对于第 <span
+class="math inline">\(i\)</span> 个约束, <span
+class="math inline">\(1\le i\le m\)</span>:</p>
+<ol type="1">
+<li><p>将 <span class="math inline">\(R\)</span>
+中的所有加数移到左侧以得到 <span class="math inline">\(L^\prime\Join
+b\)</span>, 其中 <span class="math inline">\(b\)</span>
+是一个常数.</p></li>
+<li><p>引入一个新的变量 <span class="math inline">\(s_i\)</span>.
+添加约束 <span class="math display">\[
+L^\prime-s_i=0\ {\rm and}\ s_i\Join b.
+\]</span> 如果 <span class="math inline">\(\Join\)</span> 是等式运算符,
+重写 <span class="math inline">\(s_i = b\)</span> 为 <span
+class="math inline">\(s_i\ge b\ \)</span> 和 <span
+class="math inline">\(\ s_i\le b\)</span>.</p></li>
+</ol>
+<p>转换过后, 原公式和现公式是等价的.</p>
+<p>比如, 考虑如下约束合取式子: <span class="math display">\[
+\begin{aligned}
+x+y\ge 2 &amp;\ \land \\
+2x-y \ge 0 &amp;\ \land \\
+-x+ 2y \ge 1 &amp;\ .
+\end{aligned}
+\]</span> 该问题可以改写为如下一般形式: <span class="math display">\[
+\begin{aligned}
+x+y-s_1=0&amp;\ \land\\
+2x-y-s_2=0&amp;\ \land\\
+-x+2y-s_3=0&amp;\ \land\\
+s_1\ge 2&amp;\ \land\\
+s_2\ge 0&amp;\ \land\\
+s_3\ge 1&amp;\ .
+\end{aligned}
+\]</span> 新引入的变量 <span class="math inline">\(s_1,...s_m\)</span>
+称为附加变量(additional variables). 原约束中的变量 <span
+class="math inline">\(x_1,...,x_n\)</span> 称为问题变量(problem
+variables). 因此, 转换之后的约束由 <span
+class="math inline">\(n\)</span> 个问题变量和 <span
+class="math inline">\(m\)</span> 个附加变量组成.</p>
+<h3 id="simplex算法基础">2.2 Simplex算法基础</h3>
+<p>通常将线性约束满足问题视为几何问题. 在几何体系下,
+每一个变量对应一个维度, 每一个约束就定义了一个凸子空间(convex subspace):
+特别地, 不等式定义半空间(half-spaces), 等式定义超平面(hyperplanes).
+满足赋值的(闭合)子空间由半空间和超平面的交点定义, 并形成凸多面体.
+凸子空间之间的交点也是凸的这一事实暗示了这一点. 同样地, 用一个 <span
+class="math inline">\(m\times(n+m)\)</span> 的矩阵 <span
+class="math inline">\(A\)</span> 来代表输入问题的系数. 变量 <span
+class="math inline">\(x_1,...,x_n,s_1,...,s_m\)</span> 重写为向量
+<strong>x</strong>. 据此, 上述问题的等价形式为存在一个向量
+<strong>x</strong> 使得 <span class="math display">\[
+A{\rm x} = 0\ {\rm and}\ \bigwedge_{i=1}^{m}l_i\le s_i\le u_i,
+\]</span> 其中, <span
+class="math inline">\(l_i\in\{-\infty\}\bigcup\mathbb{Q}\)</span> 是变量
+<span class="math inline">\(x_i\)</span> 的下界, <span
+class="math inline">\(u_i\in\{+\infty\}\bigcup\mathbb{Q}\)</span> 是变量
+<span class="math inline">\(x_i\)</span> 的上界. 继续上面的例子,
+将合取公式按 <span class="math inline">\(x,y,s_1,s_2,s_3\)</span>
+写成系数矩阵的形式 <span class="math display">\[
+\begin{pmatrix}
+1&amp; 1&amp; -1&amp; 0&amp; 0\\
+2&amp; -1&amp; 0&amp; -1&amp; 0\\
+-1&amp; 2&amp; 0&amp; 0&amp; -1
+\end{pmatrix}.
+\]</span> 那 <span class="math inline">\(m\)</span>
+个变量的集合对应的是列, 称为基本变量(basic variables), 记为 <span
+class="math inline">\(\mathcal{B}\)</span>, 也称为因变量,
+因为这些变量的值由哪些非基本变量(nonbasic variables)决定. 非基本变量记为
+<span class="math inline">\(\mathcal{N}\)</span>. 方便存储和操作矩阵
+<span class="math inline">\(A\)</span> 的一种表现形式称作
+<strong>tableau</strong>, 这是简化了矩阵 <span
+class="math inline">\(A\)</span>, 使其没有了对角子矩阵. 因此, tableau
+是一个 <span class="math inline">\(m\times n\)</span> 的矩阵, 其中,
+每一列对应的是非基本变量, 每一行与一个基本变量相关联.
+相同的基本变量在矩阵 <span class="math inline">\(A\)</span>
+中对角子矩阵的该行上具有"-1"条目. 因此,
+原来存储在对角矩阵中的信息现在由标记行的变量表示.</p>
+<p>继续我们的例子, 转换后的 tableau 和范围约束如下</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: center;"><span
+class="math inline">\(s\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span
+class="math inline">\(s_1\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span
+class="math inline">\(s_2\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">-1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span
+class="math inline">\(s_3\)</span></td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">2</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\begin{aligned}
+2 \le s_1\\
+0 \le s_2\\
+1 \le s_3
+\end{aligned}
+\]</span></p>
+<p>tableau 简化了矩阵 <span class="math inline">\(A\)</span> 的表达形式,
+因此 <span class="math inline">\(A\)</span>x=0 可以重写成 <span
+class="math display">\[
+\bigwedge_{x_i\in\mathcal{B}}(x_i =
+\Sigma_{x_j\in\mathcal{N}}a_{ij}x_j).
+\]</span></p>
+<h3 id="带有上下界的-simplex-算法">2.3 带有上下界的 Simplex 算法</h3>
+<p>通用 Simplex 算法除了 tableau 之外, 还维护一组赋值 <span
+class="math inline">\(\alpha: \mathcal{B\bigcup
+Q}\rightarrow\mathbb{Q}\)</span>. 算法按如下步骤初始化数据结构:</p>
+<ul>
+<li>基本变量集合 <span class="math inline">\(\mathcal{B}\)</span>
+就是附加变量的集合.</li>
+<li>非基本变量结合 <span class="math inline">\(\mathcal{N}\)</span>
+就是问题变量的集合.</li>
+<li>对于任意的 <span class="math inline">\(x_i, i\in{1,...,n+m},
+\alpha(x_i) = 0\)</span>.</li>
+</ul>
+如果给所有变量的初始 0 赋值满足所有基本变量的上下界,
+那么可以说该公式是可满足的. 否则, 该算法开始修改赋值的处理程序. $$
+<span class="math display">\[\begin{aligned}
+&amp;\mathbf{Algorithm\ 1.}\ \rm{GENERAL\mbox{-}SIMPLEX}\\
+&amp;\mathbf{Input:}\ \rm{A\ linear\ system\ of\ constraints}\
+\mathcal{S}\\
+&amp;\mathbf{Output:}\ \rm{&#39;&#39;Satisfiable&#39;&#39;\ if\ the\
+system\ is\ satisfiable\ and\ &#39;&#39;Unsatisfiable&#39;&#39;\
+otherwise}\\
+&amp;\\
+&amp;1.\hspace{2mm}\rm{Transform\ the\ system\ into\ the\ general\
+form}\\
+
+&amp;\hspace{49mm}A\mathbf{x}=0\hspace{5mm} {\rm
+and}\hspace{5mm}\bigwedge^m_{i=1}l_i\le s_i\le u_i
+\\
+&amp;2.\hspace{2mm}{\rm Set\ }\mathcal{B}\ {\rm to\ be\ the\ set\ of\
+additional\ variables\ }s_1,...,s_m.\\
+&amp;3.\hspace{2mm}{\rm Construct\ the\ tableau\ for\ }A.\\
+&amp;4.\hspace{2mm}{\rm Determine\ a\ fixed\ order\ on\ the\
+variables}.\\
+&amp;5.\hspace{2mm}{\rm If\ there\ is\ no\ basic\ variable\ that\
+violates\ its\ bounds,\ return\ &#39;&#39;Satisfiable&#39;&#39;.\ }\\
+&amp;\hspace{5.5mm}{\rm Otherwise,\ let\ }x_i\ {\rm be the first\ basic\
+variable\ in\ the\ order\ that\ violates\ its\ bounds}.\\
+&amp;6.\hspace{2mm}{\rm Search\ for\ the\ first\ suitable\ nonbasic\
+variable\ }x_j\ {\rm in\ the\ order\ for\ pivoting\ with\ }x_i.\\
+&amp;\hspace{5.5mm}{\rm If\ there\ is\ no\ such\ variable,\ return\
+&#39;&#39;Unsatisfiable&#39;&#39;}.\\
+&amp;7.\hspace{2mm}{\rm Perform\ the\ pivot\ operation\ on\ }x_i\ {\rm
+and}\ x_j.\\
+&amp;8.\hspace{2mm}{\rm Go\ to\ step\ 5}.
+\end{aligned}\]</span>
+<p>$$ 算法1 总结了通用 Simplex 算法的过程, 该算法包含两个不变式:</p>
+<ul>
+<li><p><strong>In-1.</strong> <span
+class="math inline">\(A\)</span>x=0</p></li>
+<li><p><strong>In-2.</strong> 非基础变量的值总是在界定的范围内: <span
+class="math display">\[
+  \forall x_j\in \mathcal{N}.l_j\le \alpha(x_j)\le u_j.
+  \]</span></p></li>
+</ul>
+<p>显然, 这些不变式最初是成立的, 因为向量 <strong>x</strong>
+中的所有变量都设置为 0, 并且非基本变量没有界定上下界.</p>
+<p>算法的主循环检查是否存在任一基本变量超过所规定的阈值.
+如果没有这样一个变量, 那么基本变量和非基本变量同时满足其自身的界限.
+由于不变式 <strong>In-1</strong>, 这意味着当前的赋值 <span
+class="math inline">\(\alpha\)</span> 是满足的,
+算法返回"Satisfiable".</p>
+<p>否则, 让变量的 <span class="math inline">\(x_i\)</span>
+作为超出阈值的基本变量, 假定, 不失一般性地, <span
+class="math inline">\(\alpha(x_i)&gt;u_i\)</span>, 也就是说 <span
+class="math inline">\(x_i\)</span> 的赋值超过了规定的上界.
+那我们如何改变对于 <span class="math inline">\(x_i\)</span>
+的赋值使其满足阈值的要求? 我们需要找到减少 <span
+class="math inline">\(x_i\)</span> 值的方法. <span
+class="math inline">\(x_i\)</span> 的值是这样指定的: <span
+class="math display">\[
+x_i = \Sigma_{x_j\in \mathcal{N}} a_{ij}x_j.
+\]</span> 可以通过减小非基本变量 <span
+class="math inline">\(x_j\)</span> 的值来减小 <span
+class="math inline">\(x_i\)</span> 的值, 此时 <span
+class="math inline">\(a_{ij}&gt; 0\)</span>, 并且其当前赋值大于其下界
+<span class="math inline">\(l_j\)</span>, 或者通过增加非基本变量 <span
+class="math inline">\(x_j\)</span> 的值来减小 <span
+class="math inline">\(x_i\)</span> 的值, 此时 <span
+class="math inline">\(a_{ij}&lt;0\)</span>, 并且其当前赋值小于其上界
+<span class="math inline">\(u_j\)</span>. 任一变量 <span
+class="math inline">\(x_j\)</span> 满足其中一个条件就称为合适(suitable).
+如果不存在合适的变量, 那么该问题就是不可满足的并且算法终止.</p>
+<p>用 <span class="math inline">\(\theta\)</span> 表示增加或者减少 <span
+class="math inline">\(\alpha(x_j)\)</span> 的大小, 以符合 <span
+class="math inline">\(x_i\)</span> 的上界要求: <span
+class="math display">\[
+\theta \doteq \frac{u_i - \alpha(x_i)}{a_{ij}}.
+\]</span> 将 <span class="math inline">\(x_j\)</span> 增加(或减少) <span
+class="math inline">\(\theta\)</span>, 将 <span
+class="math inline">\(x_i\)</span> 置于其自身的值域内. 另一方面, <span
+class="math inline">\(x_j\)</span> 不必再满足其值域, 因此可能违反不变式
+<strong>In-2</strong>. 因此, 我们在 tableau 中交换 <span
+class="math inline">\(x_i\)</span> 和 <span
+class="math inline">\(x_j\)</span>, 使 <span
+class="math inline">\(x_i\)</span> 为非基本变量, 而 <span
+class="math inline">\(x_j\)</span> 为基本变量. 这需要对 tabeau 进行转换,
+这称为变基操作. 重复执行变基操作, 直到找到可满足的赋值,
+或者判定系统不可满足.</p>
+<h3 id="变基操作">2.4 变基操作</h3>
+<p>在进行变量 <span class="math inline">\(x_i\)</span> 和 <span
+class="math inline">\(x_j\)</span> 的变换之前, 需要引入如下定义:</p>
+<p>给定两个变量 <span class="math inline">\(x_i\)</span> 和 <span
+class="math inline">\(x_j\)</span>, 系数 <span
+class="math inline">\(a_{ij}\)</span> 称为轴元素(pivot element). 变量
+<span class="math inline">\(x_j\)</span> 所在的列称为轴列(pivot column).
+行 <span class="math inline">\(i\)</span> 称为轴行(pivot row).</p>
+<p>变换两个变量的前提条件是它们的枢轴元素即系数不能是 0, 即 <span
+class="math inline">\(a_{ij}\ne0\)</span>. 变基操作如下:</p>
+<ol type="1">
+<li>首先解决变量 <span class="math inline">\(x_j\)</span> 对应的行 <span
+class="math inline">\(i\)</span>.</li>
+<li>对于所有的不等于 <span class="math inline">\(i\)</span> 的行 <span
+class="math inline">\(l\)</span>, 使用从行 <span
+class="math inline">\(i\)</span> 取得的关于 <span
+class="math inline">\(x_j\)</span> 的等式来消除 <span
+class="math inline">\(x_j\)</span>.</li>
+</ol>
+<p>这个过程其实就是高斯消元法(Gaussian variable elimination).</p>
+<p>比如说, 对于上述的例子. 初始化赋值 <span
+class="math inline">\(\alpha(x_i)=0\)</span>. 针对上文的 tableau
+和约束条件.显然, <span class="math inline">\(s_1\)</span> 是大于等于 2
+的, 而初始赋值为 0, 所以不符合约束条件. 按顺序来说, 最低的非基本变量是
+<span class="math inline">\(x\)</span>. 变量 <span
+class="math inline">\(x\)</span> 的系数是正值, 没有上限约束,
+所以可以作为变基操作的变量. 需要对变量 <span
+class="math inline">\(s_1\)</span> 进行加 2 操作, 使得其能够满足大于等于
+2 的约束条件, 也就意味着变量 <span class="math inline">\(x\)</span>
+同时也要自增 2(<span class="math inline">\(\theta=2\)</span>).
+变基操作的第一步是对于 <span class="math inline">\(s_1\)</span> 所在行对
+<span class="math inline">\(x\)</span> 进行变换操作: <span
+class="math display">\[
+s_1=x+y\Longleftrightarrow x=s_1-y.
+\]</span> 该等式带入到其他行的等式中去: <span class="math display">\[
+\begin{aligned}
+s_2=2(s_1-y)-y&amp;\Longleftrightarrow s_2=2s_1-3y\\
+s_3=-(s_1-y)+2y&amp;\Longleftrightarrow s_3=-s_1+3y
+\end{aligned}
+\]</span> 写成表格形式:</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(s_1\)</span></th>
+<th><span class="math inline">\(y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(x\)</span></td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(s_2\)</span></td>
+<td>2</td>
+<td>-3</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(s_3\)</span></td>
+<td>-1</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\begin{aligned}
+\alpha(x)&amp;=2\\
+\alpha(y)&amp;=0\\
+\alpha(s_1)&amp;=2\\
+\alpha(s_2)&amp;=4\\
+\alpha(s_3)&amp;=-2\\
+\end{aligned}
+\]</span></p>
+<p>第一步变基操作之后, 可以看到变量 <span
+class="math inline">\(s_3\)</span> 也不满足其约束条件;
+这是下一步要进行变基操作的变量. 结合上文, 适合参与变换的是变量 <span
+class="math inline">\(y\)</span>. 需要在 <span
+class="math inline">\(s_3\)</span> 的基础上加上 3 才能满足其下界的要求.
+也就是说, <span class="math display">\[
+\theta=\frac{1-(-2)}{3}=1.
+\]</span> 在对变量 <span class="math inline">\(s_3\)</span> 和 <span
+class="math inline">\(y\)</span> 进行变换操作之后, 最终的 tableau 为</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(s_1\)</span></th>
+<th><span class="math inline">\(s_3\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(x\)</span></td>
+<td>2/3</td>
+<td>-1/3</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(s_2\)</span></td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(y\)</span></td>
+<td>1/3</td>
+<td>1/3</td>
+</tr>
+</tbody>
+</table>
+<p>对应的赋值为 <span class="math display">\[
+\begin{aligned}
+\alpha(x)&amp;=1\\
+\alpha(y)&amp;=1\\
+\alpha(s_1)&amp;=2\\
+\alpha(s_2)&amp;=1\\
+\alpha(s_3)&amp;=1\\
+\end{aligned}
+\]</span> 该组赋值 <span class="math inline">\(\alpha\)</span>
+满足约束条件, 因此 <span class="math inline">\(\{x\mapsto 1,
+y\mapsto1\}\)</span> 是一组可满足的赋值.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92/">线性规划</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/0d3f0f950b1e/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Small-step 操作语义</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/cec5682c000f/">
+                        <span class="hidden-mobile">等式逻辑与未解释函数</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '11003f03582239469f4b8ceb0da3b42b'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

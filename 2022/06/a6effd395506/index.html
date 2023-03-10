@@ -1,0 +1,914 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon_catty.jpg">
+  <link rel="icon" href="/img/favicon_catty.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="socod">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="介绍组合理论的判定过程.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="组合理论的判定">
+<meta property="og:url" content="https://socod.github.io/2022/06/a6effd395506/index.html">
+<meta property="og:site_name" content="socod">
+<meta property="og:description" content="介绍组合理论的判定过程.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-26T12:52:30.000Z">
+<meta property="article:modified_time" content="2022-07-29T03:46:03.374Z">
+<meta property="article:author" content="socod">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="组合理论">
+<meta property="article:tag" content="Nelson-Oppen">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>组合理论的判定 - socod</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"socod.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="socod" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>socod</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/atom.xml">
+                <i class="iconfont icon-rss"></i>
+                RSS
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post_banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="组合理论的判定">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      socod
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-26 20:52" pubdate>
+        2022年6月26日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">组合理论的判定</h1>
+            
+            <div class="markdown-body">
+              <h1 id="简介">1. 简介</h1>
+<p>之前我们一直讨论的是关于特定理论的判定过程, 比如命题逻辑, 等式逻辑,
+量化公式等. 但在实践中, 多数情况是几种理论的组合,
+所以要讨论关于组合理论的判定过程.
+我们主要介绍熟知的Nelson-Oppen组合方法.
+该方法假设我们对每种涉及的理论都有一个判定过程.
+Nelson-Oppen组合方法允许判定过程彼此通信,
+以确保组合理论可靠且完备的判定过程.</p>
+<p>首先说明几个组合理论中的重要概念.</p>
+<p>组合理论(<strong>theory combination</strong>):
+分别给出符合签名(signature) <span
+class="math inline">\(\Sigma_1,\Sigma_2\)</span>的两个理论 <span
+class="math inline">\(T_1,T_2\)</span>. 组合理论 <span
+class="math inline">\(T_1\oplus T_2\)</span> 是定义在公理集合 <span
+class="math inline">\(T_1 \cup T_2\)</span> 上的 <span
+class="math inline">\((\Sigma_1\cup\Sigma_2)\)</span>-理论.</p>
+<p>组合理论问题(<strong>the theory combination problem</strong>): 令
+<span class="math inline">\(\varphi\)</span> 是定义在签名 <span
+class="math inline">\(\Sigma_1\cup\Sigma_2\)</span> 上的组合理论公式.
+组合理论问题是判定组合理论 <span class="math inline">\(T_1\oplus
+T_2\)</span> 的有效性. 等价地, 这类问题是判断下式是否成立: <span
+class="math display">\[
+T_1\oplus T_2 \models \varphi.
+\]</span> 尽管理论 <span class="math inline">\(T_1,T_2\)</span>
+它们自身是可判定的, 但是它们的组合理论未必是可判定的.
+在一些特定的限制下, 组合理论就会是可判定的. 其中很重要的一个限制是,
+所涉及的理论是凸理论(<strong>convex theory</strong>).</p>
+<p>凸理论: <span class="math inline">\(\Sigma\)</span>-理论 <span
+class="math inline">\(T\)</span> 是凸理论, 如果对于 <span
+class="math inline">\(\Sigma\)</span>-公式 <span
+class="math inline">\(\varphi\)</span> 中的所有合取式公式都有 <span
+class="math display">\[
+\begin{aligned}
+&amp;(\varphi\Longrightarrow \bigvee_{i=1}^nx_i=y_i)\ is\ T-valid\ for\
+some\ finite\ n\gt1\Longrightarrow\\
+&amp;(\varphi\Longrightarrow x_i=y_i)\ is\ T-valid\ for\ some\
+i\in\{1,...,n\}
+\end{aligned}
+\]</span> 其中, <span class="math inline">\(x_i,y_i\)</span> 为变量.</p>
+<p>换句话说, 在一个凸理论 <span class="math inline">\(T\)</span> 中,
+如果一个公式 <span class="math inline">\(T-\)</span>蕴含 等式的析取,
+那么它也分别 <span
+class="math inline">\(T-\)</span>蕴含这些等式中的至少一项.</p>
+<p>一下用两个例子来说明凸理论和非凸理论.</p>
+<ul>
+<li><p>在实数集 <span class="math inline">\(\mathbb{R}\)</span>
+上的线性演算是凸的. 线性算术谓词的合取定义了一组值, 这些值可以为空,
+单例, 如 <span class="math display">\[
+  x\le 3\land x\ge 3\Longrightarrow x=3,
+  \]</span> 或无限大, 因此它意味着无限的析取. 在所有三种情况下,
+它都符合凸理论的定义.</p></li>
+<li><p>在整数集 <span class="math inline">\(\mathbb{Z}\)</span>
+上的线性演算是非凸的. 比如说, 当如下式子成立时 <span
+class="math display">\[
+  x_1=1\land x_2=2\land 1\le x_3\land x_3\le2\Longrightarrow
+(x_3=x_1\lor x_3=x_2).
+  \]</span> 以下两个式子都不成立: <span class="math display">\[
+  \begin{align*}
+  x_1=1\land x_2=2\land 1\le x_3\land x_3\le2\Longrightarrow x_3=x_1.\\
+  x_1=1\land x_2=2\land 1\le x_3\land x_3\le2\Longrightarrow x_3=x_2.
+  \end{align*}
+  \]</span></p></li>
+</ul>
+<h1 id="nelson-oppen-组合过程">2. Nelson-Oppen 组合过程</h1>
+<p>Nelson-Oppen组合过程为符合某些规定的理论提供了解决理论组合问题的方法.
+组合过程可以分为凸理论组合和非凸理论的组合.</p>
+<h2 id="凸理论组合">2.1 凸理论组合</h2>
+<p>Nelson-Oppen 约束(<strong>Nelson-Oppen restrictions</strong>).
+为了能够应用Nelson-Oppen过程, 理论 <span
+class="math inline">\(T_1,...,T_n\)</span> 需要满足如下约束:</p>
+<ol type="1">
+<li><span class="math inline">\(T_1,...,T_n\)</span>
+是具有等式的无量词一阶理论.</li>
+<li>每一个理论 <span class="math inline">\(T_1,...,T_n\)</span>
+都有自己的判定过程.</li>
+<li>签名是不相交的, 也即, 对于所有的 <span class="math inline">\(1\le
+i\lt j\le n\)</span>, <span class="math inline">\(\Sigma_i\cap
+\Sigma_j=\emptyset\)</span>.</li>
+<li><span class="math inline">\(T_1,...,T_n\)</span>
+是解释在无穷域上的理论, 例如, 定义在实数集 <span
+class="math inline">\(\mathbb{R}\)</span> 上的线性演算,
+有限长度的位向量理论就不符合要求.</li>
+</ol>
+<p>如下所示的算法1 是组合凸理论的Nelson-Oppen过程. 算法接收一个公式
+<span class="math inline">\(\varphi\)</span> 作为输入,
+该公式必须是文字的合取式. 通常来说,
+向一个凸理论中添加析取式子会导致其成为非凸理论.
+具有析取关系的凸理论的扩展可以由我们稍后将介绍的非凸理论的扩展来支持,
+或者也可以通过无量词理论章节中介绍的方法来提供支持,
+这是基于将理论的判定过程与SAT求解器组合在一起.</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;\mathbf{Algorithm\;1:}\; \text{NELSON-OPPEN-FOR-CONVEX-THEORIES}\\
+\\
+&amp;\mathbf{Input:}\; \text{A convex formula }\varphi\;\text{that mixes
+convex theories, with}\\
+&amp;\quad\quad\quad\quad\text{restrictions as specified in Nelson-Oppen
+restrictions}\\
+&amp;\mathbf{Output:}\; \text{``Satisfiable&#39;&#39; if
+}\varphi\;\text{is satisfiable, and &#39;&#39;Unsatisfiable&#39;&#39;
+otherwise}\\
+\\
+&amp;\;1.\; \it{Purification:}\;\text{Purify }\varphi\;\text{into
+}F_1,...,F_n.\\
+&amp;\;2.\; \text{Apply the decision procedure for }T_i\;\text{to
+}F_i.\; \text{If there exists }i\;\text{such that}\\
+&amp;\quad\; F_i\;\text{is unsatisfiable in }T_i,\;\text{return
+&#39;&#39;Unsatisfiable&#39;&#39;.}\\
+&amp;\;3.\; \it{Equality\ propagation:}\;\text{If there exist
+}i,j\;\text{such that }F_i\;T_i\mbox{-}\text{implies an equality}\\
+&amp;\quad\; \text{between variables of }\varphi\;\text{that is not
+}T_j\mbox{-}\text{implied by }F_j,\; \text{add this equality to }\\
+&amp;\quad\; F_j\;\text{and go to step 2}.\\
+&amp;\;4.\; \text{Return &#39;&#39;Satisfiable&#39;&#39;}.
+\end{align*}
+\]</span></p>
+<p>算法1 的第一步依赖于纯化(<strong>purification</strong>)的思想.
+纯化是公式的保持可满足性的一种转化, 此后每个原子都来自特定的理论.
+在这种情况下, 我们说所有原子都是纯净(<strong>pure</strong>)的.
+更具体地讲, 给定一个公式 <span class="math inline">\(\varphi\)</span>,
+纯化产生如下等价的可满足公式 <span
+class="math inline">\(\varphi&#39;\)</span>:</p>
+<ol type="1">
+<li><p>令 <span
+class="math inline">\(\varphi&#39;=\varphi\)</span>.</p></li>
+<li><p>对于 <span class="math inline">\(\varphi&#39;\)</span>
+中的每一个子表达式 <span class="math inline">\(\phi\)</span>:</p>
+<ol type="a">
+<li><p>用新的辅助变量 <span class="math inline">\(a_{\phi}\)</span> 替换
+<span class="math inline">\(\phi\)</span></p></li>
+<li><p>用 <span class="math inline">\(a_{\phi}=\phi\)</span> 对 <span
+class="math inline">\(\varphi&#39;\)</span> 进行约束.</p></li>
+</ol></li>
+</ol>
+<p><strong>例子1</strong>, 给定一个混合了线性演算和未解释函数的公式
+<span class="math display">\[
+\varphi:=x_1\le f(x_1),
+\]</span> 纯化的结果为 <span class="math display">\[
+\varphi&#39;:=x_1\le a\land a=f(x_1).
+\]</span> 公式 <span class="math inline">\(\varphi&#39;\)</span>
+中的所有原子都是纯的: <span class="math inline">\(x_1\le a\)</span>
+是一个线性演算的式子, <span class="math inline">\(a=f(x_1)\)</span>
+属于具有未解释函数的等式理论.</p>
+<p>纯化之后, 剩下一组纯表达式 <span
+class="math inline">\(F_1,...,F_n\)</span>:</p>
+<ol type="1">
+<li>所有的 <span class="math inline">\(i\)</span>, <span
+class="math inline">\(F_i\)</span> 属于理论 <span
+class="math inline">\(T_i\)</span>, 且是 <span
+class="math inline">\(T_i\)</span>-文字的合取式.</li>
+<li>允许共享变量, 比如说, 存在 <span class="math inline">\(i,j,1\le i\lt
+j\le n, var(F_i)\cap var(F_j)\ne\emptyset\)</span>.</li>
+<li>当且仅当 <span class="math inline">\(\bigwedge_{i=1}^nF_i\)</span>
+在组合理论中是可满足的时候, 组合理论中的公式 <span
+class="math inline">\(\varphi\)</span> 是可满足的.</li>
+</ol>
+<p><strong>例子2</strong>, 给定如下混合线性演算和未解释函数的式子 <span
+class="math display">\[
+(f(x_1,0)\ge x_3)\land (f(x_2,0)\le x_3)\land\\
+(x_1\ge x_2)\land (x_2\ge x_1)\land\\
+(x_3-f(x_1,0)\ge 1),
+\]</span> 纯化之后得到公式 <span class="math display">\[
+\begin{aligned}
+&amp;(a_1\ge x_3)\land(a_2\le x_3)\land(x_1\ge x_2)\land (x_2\ge
+x_1)\land (x_3-a_1\ge 1)\land\\
+&amp;(a_0=0)\land\\
+&amp;(a_1=f(x_1,a_0))\land\\
+&amp;(a_2=f(x_2,a_0)).
+\end{aligned}\tag{1}
+\]</span> 如下表所示, 我们可以得到基于上面公式的判定过程:</p>
+<p>表1.</p>
+<table>
+<colgroup>
+<col style="width: 61%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><span
+class="math inline">\(F_1(\mathbb{R}\ 上的线性演算)\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(F_2(\rm
+EUF)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(a_1\ge
+x_3\)</span><br /><span class="math inline">\(a_2\le
+x_3\)</span><br /><span class="math inline">\(x_1\ge
+x_2\)</span><br /><span class="math inline">\(x_2\ge
+x_1\)</span><br /><span class="math inline">\(x_3-a_1\ge
+1\)</span><br /><span class="math inline">\(a_0=0\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(a_1=f(x_1,a_0)\)</span><br /><span
+class="math inline">\(a_2=f(x_2,a_0)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\star\
+x_1=x_2\)</span><br /><span class="math inline">\(\ \
+a_1=a_2\)</span><br /><span class="math inline">\(\star
+a_1=x_3\)</span><br /><span class="math inline">\(\star\ \rm
+FALSE\)</span><br /></td>
+<td style="text-align: left;"><span
+class="math inline">\(x_1=x_2\)</span><br /><span
+class="math inline">\(\star\ a_1=a_2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>表1 显示了将公式(1)分为了两个纯公式 <span
+class="math inline">\(F_1\)</span> 和 <span
+class="math inline">\(F_2\)</span>. 第一个公式是一个线性演算式子,
+第二个公式是一个具有未解释函数的等式理论公式(EUF). <span
+class="math inline">\(F_1\)</span> 和 <span
+class="math inline">\(F_2\)</span> 都不是独立矛盾的, 因此,
+我们继续执行算法步骤3. 通过对实数进行线性算术的判定过程, 我们从<span
+class="math inline">\(F_1\)</span> 推断出 <span
+class="math inline">\(x_1 = x_2\)</span>,
+并将这一事实传播到另一个理论(即, 我们添加此等式至 <span
+class="math inline">\(F_2\)</span>). 现在我们可以推导 <span
+class="math inline">\(T_2\)</span> 中的 <span class="math inline">\(a_1
+= a_2\)</span> , 并将该等式传播到 <span
+class="math inline">\(F_1\)</span>. 从这个等式中, 我们得出 <span
+class="math inline">\(T1\)</span> 中的 <span class="math inline">\(a_1 =
+x_3\)</span>, 这与 <span class="math inline">\(T_1\)</span>中的 <span
+class="math inline">\(x_3-a_1\ge 1\)</span> 矛盾. 所以原公式为假.</p>
+<h2 id="非凸理论组合">2.2 非凸理论组合</h2>
+<p>接下来讨论非凸理论的组合(或者凸理论和非凸理论的组合). 首先,
+考虑如下的例子,
+该例表明了在凸理论组合算法处理的公式中如果其中有理论不是凸的,
+可能导致算法失效: <span class="math display">\[
+(1\le x)\land (x\le 2)\land p(x)\land \neg p(1)\land \neg p(2),\tag{2}
+\]</span> 其中 <span class="math inline">\(x\in \mathbb{Z}\)</span>.
+上述表达式混合了整数的线性演算和未解释函数谓词. 正如前面所描述的,
+针对整数的线性演算不是凸的. 纯化之后的结果得到 <span
+class="math display">\[
+\begin{aligned}
+&amp;1\le x\land x\le 2\land p(x)\land \neg p(a_1)\land\neg
+p(a_2)\land\\
+&amp;a_1=1\land\\
+&amp;a_2=2
+\end{aligned}
+\]</span> 下表展示了上面非凸理论公式谓词分为两个纯公式 <span
+class="math inline">\(F_1\)</span> 和 <span
+class="math inline">\(F_2\)</span>. 应当注意到 <span
+class="math inline">\(F_1\)</span> 和 <span
+class="math inline">\(F_2\)</span> 各自都是可满足的,
+但是在各自的理论中不能推出任何等式. 因此,
+尽管该凸理论原公式是不可满足的, 凸理论组合算法仍然返回的是
+"Satisfiable".</p>
+<p>该判定过程中所存在的问题, 不仅仅要关注蕴含等式,
+还要注意蕴含等式的析取. 回想一下, 变量是有限的,
+因此存在相等性和相等性的析取关系, 这意味着计算这些含义是可行的.
+给定这样的析取关系, 将问题分解为与析取关系一样多的部分,
+然后以递归方式调用该过程. 以公式(2) 的例子来说, <span
+class="math inline">\(F_1\)</span> 能够蕴含 <span
+class="math inline">\(x=1\lor x=2\)</span>. 因此,
+我们可以把问题一分为二, 分别考虑 <span
+class="math inline">\(x=1\)</span> 和 <span
+class="math inline">\(x=2\)</span> 的情况. 算法2 在算法1
+中添加了一个步骤: 该步骤就是实现该分割的.</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;\mathbf{Algorithm\;2:}\; \text{NELSON-OPPEN}\\
+\\
+&amp;\mathbf{Input:}\;\;\; \text{A formula }\varphi\;\text{that mixes
+theories, with restrictions as specified}\\
+&amp;\quad\quad\quad\quad\text{in Nelson-Oppen restrictions}\\
+&amp;\mathbf{Output:}\; \text{&#39;&#39;Satisfiable&#39;&#39; if
+}\varphi\;\text{is satisfiable, and &#39;&#39;Unsatisfiable&#39;&#39;
+otherwise}\\
+\\
+&amp;\;1.\; \it{Purification:}\;\text{Purify }\varphi\;\text{into
+}\varphi&#39;=F_1,...,F_n.\\
+&amp;\;2.\; \text{Apply the decision procedure for }T_i\;\text{to
+}F_i.\; \text{If there exists }i\;\text{such that}\\
+&amp;\quad\; F_i\;\text{is unsatisfiable},\;\text{return
+``Unsatisfiable&#39;&#39;.}\\
+&amp;\;3.\; \it{Equality\ propagation:}\;\text{If there exist
+}i,j\;\text{such that }F_i\;T_i\mbox{-}\text{implies an equality}\\
+&amp;\quad\; \text{between variables of }\varphi\;\text{that is not
+}T_j\mbox{-}\text{implied by }F_j,\; \text{add this equality to }\\
+&amp;\quad\; F_j\;\text{and go to step 2}.\\
+&amp;\;4.\; \it{Splitting:}\;\text{If there exists }i\;\text{such
+that}\\
+&amp;\quad\;\;  \bullet \quad\quad F_i\Longrightarrow(x_1=y_1\vee
+\cdots\vee x_k=y_k)\;\text{and}\\
+&amp;\quad\;\;  \bullet \quad\quad \forall j\in\{1,...,k\}.\;
+F_i\nRightarrow x_j=y_j,\\
+&amp;\quad\;\; \text{then apply NELSON-OPPEN recursively to}\\
+&amp;\hspace{50mm} \varphi&#39;\wedge x_1=y_1,...,\varphi&#39;\wedge
+x_k=y_k.\\
+&amp;\quad\;\; \text{If and of these subproblems is satisfiable, return
+&#39;&#39;Satisfiable&#39;&#39;. Otherwise,}\\
+&amp;\quad\;\; \text{return &#39;&#39;Unsatisfiable&#39;&#39;}.\\
+&amp;\;5.\; \text{Return &#39;&#39;Satisfiable&#39;&#39;}.
+\end{align*}
+\]</span></p>
+<p><strong>例子3</strong>, 继续考虑公式(2.1). 算法2 从 <span
+class="math inline">\(F_1\)</span> 中推出 <span
+class="math inline">\(x=1\lor x=2\)</span>, 并将该问题分为两个子问题,
+如下面两个表所示.</p>
+<p>表2. <span class="math inline">\(x=a_1\)</span> 的情况</p>
+<table>
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(F_1(整数集上的线性运算)\)</span></th>
+<th><span class="math inline">\(F_2(\rm EUF)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(1\le x\)</span><br /><span
+class="math inline">\(x\le 2\)</span><br /><span
+class="math inline">\(a_1=1\)</span><br /><span
+class="math inline">\(a_2=2\)</span></td>
+<td><span class="math inline">\(p(x)\)</span><br /><span
+class="math inline">\(\neg p(a_1)\)</span><br /><span
+class="math inline">\(\neg p(a_2)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(x=1\)</span><br /><span
+class="math inline">\(\star\ x=a_1\)</span></td>
+<td><br /><span class="math inline">\(x=a_1\)</span><br /><span
+class="math inline">\(\rm FALSE\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>表3. <span class="math inline">\(x=a_2\)</span> 的情况</p>
+<table>
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(F_1(整数集上的线性运算)\)</span></th>
+<th><span class="math inline">\(F_2(\rm EUF)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(1\le x\)</span><br /><span
+class="math inline">\(x\le 2\)</span><br /><span
+class="math inline">\(a_1=1\)</span><br /><span
+class="math inline">\(a_2=2\)</span></td>
+<td><span class="math inline">\(p(x)\)</span><br /><span
+class="math inline">\(\neg p(a_1)\)</span><br /><span
+class="math inline">\(\neg p(a_2)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(x=2\)</span><br /><span
+class="math inline">\(\star\ x=a_2\)</span></td>
+<td><br /><span class="math inline">\(x=a_2\)</span><br /><span
+class="math inline">\(\rm FALSE\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>由此, 因为两个子问题为假, 所以原问题不可满足.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%A4%E5%AE%9A%E8%BF%87%E7%A8%8B/">判定过程</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BB%84%E5%90%88%E7%90%86%E8%AE%BA/">组合理论</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Nelson-Oppen/">Nelson-Oppen</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a>，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/07/d7e9fc032ed0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">谢尔德指针</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/6d923e6ce0cf/">
+                        <span class="hidden-mobile">量化公式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"12d1896abf3d6c04131e","clientSecret":"ee919b42fa14c10871228126c4faa1bbd76af30e","repo":"blogcomments","owner":"socod","admin":["socod"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '8ab4fb828fc6b6cbc34f8b25cf8bf414'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
