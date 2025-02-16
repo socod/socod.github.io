@@ -16,26 +16,22 @@
   <meta name="author" content="socod">
   <meta name="keywords" content="">
   
-    <meta name="description" content="介绍红黑树.">
+    <meta name="description" content="介绍glib相关使用方法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="红黑树">
-<meta property="og:url" content="https://socod.github.io/2022/08/5cd9ec8eff25/index.html">
+<meta property="og:title" content="glib 浅析">
+<meta property="og:url" content="https://socod.github.io/2025/02/83fbdb14efa3/index.html">
 <meta property="og:site_name" content="socod">
-<meta property="og:description" content="介绍红黑树.">
+<meta property="og:description" content="介绍glib相关使用方法">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://socod.github.io/img/rbtree/rotation.svg">
-<meta property="og:image" content="https://socod.github.io/img/rbtree/rb_flow.svg">
-<meta property="og:image" content="https://socod.github.io/img/rbtree/rb_flow_delete.svg">
-<meta property="article:published_time" content="2022-08-21T01:44:10.697Z">
-<meta property="article:modified_time" content="2023-03-09T14:21:10.000Z">
+<meta property="article:published_time" content="2025-02-16T05:59:17.000Z">
+<meta property="article:modified_time" content="2025-02-16T05:59:17.000Z">
 <meta property="article:author" content="socod">
-<meta property="article:tag" content="自平衡二叉树">
+<meta property="article:tag" content="多线程">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://socod.github.io/img/rbtree/rotation.svg">
   
   
   
-  <title>红黑树 - socod</title>
+  <title>glib 浅析 - socod</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -226,7 +222,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="红黑树"></span>
+            <span id="subtitle" data-typed-text="glib 浅析"></span>
           
         </div>
 
@@ -242,8 +238,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-21 09:44" pubdate>
-          2022年8月21日 上午
+        <time datetime="2025-02-16 13:59" pubdate>
+          2025年2月16日 下午
         </time>
       </span>
     
@@ -254,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.3k 字
+          0 字
         
       </span>
     
@@ -265,7 +261,7 @@
         
         
         
-          15 分钟
+          1 分钟
         
       </span>
     
@@ -316,108 +312,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">红黑树</h1>
-            
-              <p class="note note-info">
-                
-                  
-                    本文最后更新于：2023年3月9日 晚上
-                  
-                
-              </p>
+            <h1 style="display: none">glib 浅析</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="引言">1. 引言</h2>
-<p>首先, 明确一个问题, 什么是<a
-target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Red%E2%80%93black_tree"><strong>红黑树</strong></a>?
-红黑树的历史可以追溯至1972年, 一个姓 Bayer 的人发明了一种特殊的 B-tree
-数据结构(可见 B-tree 先于红黑树). 这种树的特点是具有极好的平衡特性,
-并且任一从根节点到叶子节点的路径所包含的节点数都一致——计算机界的强迫症尤为严重.
-但是, 这种树并不是一种二叉搜索树. Bayer 称这种树为 "对称二叉B-tree".
-当然, 后来就发展成为 2-3-4树(什么是2-3-4树本文暂且按下不表). 继而1978年,
-L.J. Guibas 和 R. Sedgewick 在论文<a
-target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/4567957"><em>A Dichromatic
-Framework for Balanced Trees</em></a>中,
-基于前面说的对称二叉B-tree推演出了红黑树.
-至于为什么叫<font color='red'>红</font><strong>黑</strong>树,
-一说红黑是作者工作时彩色激光打印机能够打印的最好看的色彩,
-一说是红颜色和黑颜色的笔方便绘制红黑树.
-不论如何事物的发展总是基于所处的历史条件下的,
-上世纪七八十年代规模化的集成电路已经发展起来了,
-可以说硬件正在以摩尔定律所预测的那样指数式更新迭代,
-与此同时科学家们也必须找到高效管理数据的方法, 以充分利用硬件资源,
-从操作系统到应用软件, 从电路设计到指令系统,
-计算机系统的大厦根基不是一天建成的.</p>
-<div class="note note-primary">
-            <p>本文仅从数据结构角度介绍红黑树, 并不涉及其具体应用.</p>
-          </div>
-<h2 id="定义">2. 定义</h2>
-<p>要知道, 红黑树是一种特殊的2-3-4树,
-所有的自平衡二叉树都可以从2-3-4树那里寻得身影,
-可以说后者是一种平衡树的范式了. 笔者先介绍红黑树所具有的性质,
-再说明其结构体定义.</p>
-<p>红黑树是一中二叉搜索树, 那肯定具有一般搜索树的性质,
-除此之外还应具有的性质有:</p>
-<ol type="1">
-<li>每一个节点都需着色, 红或黑;</li>
-<li>根节点始终着黑色;</li>
-<li>每一个空叶子节点都着黑色;</li>
-<li>如果一个节点着红色, 则其两个孩子节点着黑色,
-也即相邻的两个节点不能同时着红色;</li>
-<li>任意节点到其后代空叶子的简单路径上的黑色节点数目都一致.</li>
-</ol>
-<p>下面给出红黑树的结构体定义:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">node</span>&#123;</span><br>    <span class="hljs-keyword">int</span> key;<br>    node* parent;<br>    <span class="hljs-keyword">char</span> color; <br>    node* left;<br>    node* right;<br>&#125;;<br></code></pre></td></tr></table></figure>
-<div class="note note-success">
-            <p>注意: 法无常法, 在于道可.</p>
-          </div>
-<h2 id="操作">3. 操作</h2>
-<p>一个含有 <span class="math inline">\(n\)</span> 个节点的红黑树,
-树高不超过 <span class="math inline">\(2*log(n+1)\)</span>.<em>证明略,
-有兴趣的读者可以查阅资料</em>.
-这也就是为什么红黑树是一种搜索性能较好的平衡树: 任何情况下, 搜索都可以在
-<span class="math inline">\(O(log\ n)\)</span> 时间内结束.</p>
-<h3 id="旋转">3.1 旋转</h3>
-<p>搜索是不会破环第 2 节中关于红黑树定义所描述的性质的,
-插入和删除则不然. 同平常的平衡树一样,
-在对红黑树上的节点进行操作之后原有性质被破环,
-需要进行树的旋转(rotation). 这里还有一个言外之意,
-旋转前后的树或者子树保有的性质一致. 下面举个小例子.</p>
-<p><img src="\img\rbtree\rotation.svg" srcset="/img/loading.gif" lazyload style="zoom:50%;"/></p>
-<center>
-图1. 旋转示意
-</center>
-<p>如图1所示, 不论将树结构向左旋还是右旋, 其中序遍历的结果都为: <span
-class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
-结合红黑树的定义, 我们可以给出左旋的代码.</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">leftrotate</span><span class="hljs-params">(node *p)</span></span>&#123;<br>    <span class="hljs-keyword">if</span> (p-&gt;right == <span class="hljs-literal">nullptr</span>)        <span class="hljs-comment">// 左旋判断右子树是否为空</span><br>        <span class="hljs-keyword">return</span>;<br>    <span class="hljs-keyword">else</span>&#123;<br>        node *y = p-&gt;right;         <span class="hljs-comment">// 记录右子树的根节点y</span><br>        <span class="hljs-keyword">if</span>(y-&gt;left != <span class="hljs-literal">nullptr</span>)&#123;     <span class="hljs-comment">// 判断右子树y的左孩子是否为空, 不为空则,</span><br>            p-&gt;right = y-&gt;left;     <span class="hljs-comment">// 将右子树y的左孩子挂在节点p的右子树上</span><br>            y-&gt;left-&gt;parent = p;<br>        &#125;<br>        <span class="hljs-keyword">else</span>                        <span class="hljs-comment">// 如果为空, 则</span><br>            p-&gt;right = <span class="hljs-literal">nullptr</span>;     <span class="hljs-comment">// 直接挂空节点</span><br><br>        <span class="hljs-keyword">if</span>(p-&gt;parent != <span class="hljs-literal">nullptr</span>)    <span class="hljs-comment">// 判断节点p是否为顶层的根节点, 否, 则</span><br>            y-&gt;parent = p-&gt;parent;<br>        <span class="hljs-keyword">if</span>(p-&gt;parent == <span class="hljs-literal">nullptr</span>)    <span class="hljs-comment">// 如果节点p是根节点, 则</span><br>            root = y;               <span class="hljs-comment">// p的右子树y就为左旋后的树根</span><br><br>        <span class="hljs-keyword">else</span>&#123;                       <span class="hljs-comment">// 节点p远离树根</span><br>            <span class="hljs-keyword">if</span>(p == p-&gt;parent-&gt;left)<br>                p-&gt;parent-&gt;left = y;<br>            <span class="hljs-keyword">else</span><br>                p-&gt;parent-&gt;right = y;<br>        &#125;<br><br>        y-&gt;left = p;                <span class="hljs-comment">// 父子节点角色互换</span><br>        p-&gt;parent = y;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>右旋的代码不再复制粘贴了:).</p>
-<h3 id="插入删除">3.2 插入&amp;删除</h3>
-<p>前文已经说明, 红黑树属于搜索树,
-所以其插入操作与二叉排序树的搜索插入类似,
-关键点在于变色以及根据着色特点进行再平衡即旋转的操作.
-根据第二节中所述的红黑树所具有的性质,
-可以总结出在插入或者删除之后调整红黑树的策略.</p>
-<h4 id="插入"><strong>插入</strong></h4>
-<p>简便起见,
-笔者使用流程图与伪代码相结合的方式描述插入(删除)操作的着色和旋转.
-插入操作的伪代码如下:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp">step0: node *t = node_to_insert;<br>step1: <span class="hljs-built_in">bst_insert</span>(t);<br>step2: <span class="hljs-keyword">if</span> t==root  then set t-&gt;color RED;<br>        set node *p = t-&gt;parent; set node *g = t-&gt;parent-&gt;parent;<br>step3: <span class="hljs-keyword">if</span> p-&gt;color == RED &amp;&amp; t != root then:<br>        step3<span class="hljs-number">.1</span>: <span class="hljs-keyword">if</span> t-&gt;uncle-&gt;color = RED then:<br>                p-&gt;color = BLACK; t-&gt;uncle-&gt;color = BLACK; g-&gt;color = RED;<br>                set t = g;<br>                <span class="hljs-keyword">goto</span> step2;<br>        step3<span class="hljs-number">.2</span>: <span class="hljs-keyword">if</span> t-&gt;uncle-&gt;color = BLACK then:<br>                <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: LL- g-&gt;left = p &amp;&amp; p-&gt;left = t ===&gt; p-&gt;color = BLACK; <br>                        g-&gt;color = RED; <span class="hljs-built_in">rightrotate</span>(g);<br>                <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: LR- g-&gt;left = p &amp;&amp; p-&gt;right = t ===&gt; t = p; <span class="hljs-built_in">leftrotate</span>(t); <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>;<br>                <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>: RR- g-&gt;right = p &amp;&amp; p-&gt;right = t ===&gt; p-&gt;color = BLACK; <br>                        g-&gt;color = RED; <span class="hljs-built_in">leftrotate</span>(g);<br>                <span class="hljs-keyword">case</span> <span class="hljs-number">4</span>: RL- g-&gt;right = p &amp;&amp; p-&gt;left = t ===&gt; t = p; <span class="hljs-built_in">rightrotate</span>(t); <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>;<br></code></pre></td></tr></table></figure>
-<p><img src="\img\rbtree\rb_flow.svg" srcset="/img/loading.gif" lazyload /></p>
-<center>
-图2. 红黑树插入操作流程图
-</center>
-<h4 id="删除"><strong>删除</strong></h4>
-<p>删除操作的伪代码如下: <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs cpp">step0: node *p = node_to_delete;<br>step1: <span class="hljs-built_in">bst_delete</span>(p);<br>step2: <span class="hljs-keyword">if</span> p-&gt;parent-&gt;left == p then s = p-&gt;parent-&gt;right;<br>        step2<span class="hljs-number">.1</span>: <span class="hljs-keyword">if</span> s-&gt;color == red then:<br>                    s-&gt;color = black; p-&gt;parent-&gt;color = red;<br>                    <span class="hljs-built_in">leftrotate</span>(p-&gt;parent);<br>                    s = p-&gt;parent-&gt;right;<br>        step2<span class="hljs-number">.2</span>: <span class="hljs-keyword">if</span> s-&gt;right-&gt;color == black &amp;&amp; s-&gt;left-&gt;color == black then:<br>                    s-&gt;color = red;<br>                    p = p-&gt;parent;<br>        step2<span class="hljs-number">.3</span>: <span class="hljs-keyword">else</span> <br>            step2<span class="hljs-number">.3</span>.a: <span class="hljs-keyword">if</span> s-&gt;right-&gt;color == black then:<br>                        s-&gt;left-&gt;color = black;<br>                        s-&gt;color = red;<br>                        <span class="hljs-built_in">rightrotate</span>(s);<br>                        s = p-&gt;parent-&gt;right;<br>            step2<span class="hljs-number">.3</span>.b: s-&gt;color = p-&gt;parent-&gt;color;<br>                        p-&gt;parent-&gt;color = black;<br>                        s-&gt;right-&gt;color = black;<br>                        <span class="hljs-built_in">leftrotate</span>(p-&gt;parent);<br>                        p = root;<br>        step2<span class="hljs-number">.4</span>: p-&gt;color = black; root-&gt;color = black;<br>                    <span class="hljs-keyword">if</span> p!=root &amp;&amp; p-&gt;color == black <span class="hljs-keyword">goto</span> step2;<br>step3: <span class="hljs-keyword">else</span> s = p-&gt;parent-&gt;left;<br>        step3<span class="hljs-number">.1</span>: <span class="hljs-keyword">if</span> s-&gt;color == red then:<br>                    s-&gt;color = black; p-&gt;parent-&gt;color = red;<br>                    <span class="hljs-built_in">rightrotate</span>(p-&gt;parent);<br>                    s = p-&gt;parent-&gt;left;<br>        step3<span class="hljs-number">.2</span>: <span class="hljs-keyword">if</span> s-&gt;left-&gt;color == black &amp;&amp; s-&gt;right-&gt;color == black then:<br>                    s-&gt;color = red;<br>                    p = p-&gt;parent;<br>        step3<span class="hljs-number">.3</span>: <span class="hljs-keyword">else</span> <br>            step3<span class="hljs-number">.3</span>.a: <span class="hljs-keyword">if</span> s-&gt;left-&gt;color == black then:<br>                        s-&gt;right-&gt;color = black;<br>                        s-&gt;color = red;<br>                        <span class="hljs-built_in">leftrotate</span>(s);<br>                        s = p-&gt;parent-&gt;right;<br>            step3<span class="hljs-number">.3</span>.b: s-&gt;color = p-&gt;parent-&gt;color;<br>                        p-&gt;parent-&gt;color = black;<br>                        s-&gt;left-&gt;color = black;<br>                        <span class="hljs-built_in">rightrotate</span>(p-&gt;parent);<br>                        p = root;<br>        step3<span class="hljs-number">.4</span>: p-&gt;color = black; root-&gt;color = black;<br>                    <span class="hljs-keyword">if</span> p!=root &amp;&amp; p-&gt;color == black <span class="hljs-keyword">goto</span> step2;<br></code></pre></td></tr></table></figure></p>
-<p><img src="\img\rbtree\rb_flow_delete.svg" srcset="/img/loading.gif" lazyload /></p>
-<center>
-图3. 红黑树删除操作流程图
-</center>
-<div class="note note-success">
-            <p>本文仅以流程图和伪代码形式介绍红黑树的插入删除再平衡，未以实际着色图示辅助说明，请读者谅解，未解处请自行查阅资料。</p><p>请常读常新。</p>
-          </div>
+                
 
                 
               </div>
@@ -436,12 +336,12 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
     
       <span class="category-chain">
         
-  <a href="/categories/C/" class="category-chain-item">C++</a>
+  <a href="/categories/C/" class="category-chain-item">C</a>
   
   
     <span>></span>
     
-  <a href="/categories/C/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="category-chain-item">数据结构</a>
+  <a href="/categories/C/glib/" class="category-chain-item">glib</a>
   
   
 
@@ -458,7 +358,7 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E8%87%AA%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/">#自平衡二叉树</a>
+        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">#多线程</a>
       
     </div>
   
@@ -470,8 +370,8 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>红黑树</div>
-      <div>https://socod.github.io/2022/08/5cd9ec8eff25/</div>
+      <div>glib 浅析</div>
+      <div>https://socod.github.io/2025/02/83fbdb14efa3/</div>
     </div>
     <div class="license-meta">
       
@@ -483,7 +383,7 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年8月21日</div>
+          <div>2025年2月16日</div>
         </div>
       
       
@@ -521,18 +421,12 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/02/83fbdb14efa3/" title="glib 浅析">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">glib 浅析</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/07/d7e9fc032ed0/" title="谢尔德指针">
-                        <span class="hidden-mobile">谢尔德指针</span>
+                      <a href="/2022/08/5cd9ec8eff25/" title="红黑树">
+                        <span class="hidden-mobile">红黑树</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -609,41 +503,23 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="C++"
-        id="heading-f6f87c9fdcf8b3c3f07f93f1ee8712c9" role="tab" data-toggle="collapse" href="#collapse-f6f87c9fdcf8b3c3f07f93f1ee8712c9"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="C"
+        id="heading-0d61f8370cad1d412f80b84d143e1257" role="tab" data-toggle="collapse" href="#collapse-0d61f8370cad1d412f80b84d143e1257"
         aria-expanded="true"
       >
-        C++
-        <span class="list-group-count">(3)</span>
+        C
+        <span class="list-group-count">(1)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-f6f87c9fdcf8b3c3f07f93f1ee8712c9"
-           role="tabpanel" aria-labelledby="heading-f6f87c9fdcf8b3c3f07f93f1ee8712c9">
+      <div class="category-collapse collapse show" id="collapse-0d61f8370cad1d412f80b84d143e1257"
+           role="tabpanel" aria-labelledby="heading-0d61f8370cad1d412f80b84d143e1257">
         
         
           
           
   <div class="category-post-list">
     
-    
-      
-      
-        <a href="/2022/05/d9b2728991b4/" title="悠泥客指针"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">悠泥客指针</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/07/d7e9fc032ed0/" title="谢尔德指针"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">谢尔德指针</span>
-        </a>
-      
     
   </div>
 
@@ -654,17 +530,17 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
     
     <div class="category-sub row nomargin-x">
       <a class="category-subitem 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="数据结构"
-        id="heading-0fea7c47d93da5689f31820ee525b367" role="tab" data-toggle="collapse" href="#collapse-0fea7c47d93da5689f31820ee525b367"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="glib"
+        id="heading-380e406ab5ba1b6659ea00c4513cfc13" role="tab" data-toggle="collapse" href="#collapse-380e406ab5ba1b6659ea00c4513cfc13"
         aria-expanded="true"
       >
-        数据结构
+        glib
         <span class="list-group-count">(1)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-0fea7c47d93da5689f31820ee525b367"
-           role="tabpanel" aria-labelledby="heading-0fea7c47d93da5689f31820ee525b367">
+      <div class="category-collapse collapse show" id="collapse-380e406ab5ba1b6659ea00c4513cfc13"
+           role="tabpanel" aria-labelledby="heading-380e406ab5ba1b6659ea00c4513cfc13">
         
         
           
@@ -673,10 +549,10 @@ class="math inline">\(a\mbox{-}b\mbox{-}c\mbox{-}d\mbox{-}e\)</span>.
     
       
       
-        <a href="/2022/08/5cd9ec8eff25/" title="红黑树"
+        <a href="/2025/02/83fbdb14efa3/" title="glib 浅析"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">红黑树</span>
+          <span class="category-post">glib 浅析</span>
         </a>
       
     
