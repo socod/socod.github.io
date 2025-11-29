@@ -4,25 +4,25 @@
   
   
   <entry>
-    <title>glib 浅析</title>
-    <link href="/2025/02/83fbdb14efa3/"/>
-    <url>/2025/02/83fbdb14efa3/</url>
+    <title>virtio device &amp; virtio driver</title>
+    <link href="/2025/02/61515834dfa5/"/>
+    <url>/2025/02/61515834dfa5/</url>
     
     <content type="html"><![CDATA[]]></content>
     
     
     <categories>
       
-      <category>C</category>
+      <category>virtualization</category>
       
-      <category>glib</category>
+      <category>virtio</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>多线程</tag>
+      <tag>虚拟化</tag>
       
     </tags>
     

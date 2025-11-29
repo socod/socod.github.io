@@ -17,23 +17,23 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>glib 浅析</title>
-    <link href="https://socod.github.io/2025/02/83fbdb14efa3/"/>
-    <id>https://socod.github.io/2025/02/83fbdb14efa3/</id>
+    <title>virtio device &amp; virtio driver</title>
+    <link href="https://socod.github.io/2025/02/61515834dfa5/"/>
+    <id>https://socod.github.io/2025/02/61515834dfa5/</id>
     <published>2025-02-16T05:59:17.000Z</published>
     <updated>2025-02-16T05:59:17.000Z</updated>
     
     
-    <summary type="html">介绍glib相关使用方法</summary>
+    <summary type="html">介绍 virtio 设备和驱动</summary>
     
     
     
-    <category term="C" scheme="https://socod.github.io/categories/C/"/>
+    <category term="virtualization" scheme="https://socod.github.io/categories/virtualization/"/>
     
-    <category term="glib" scheme="https://socod.github.io/categories/C/glib/"/>
+    <category term="virtio" scheme="https://socod.github.io/categories/virtualization/virtio/"/>
     
     
-    <category term="多线程" scheme="https://socod.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    <category term="虚拟化" scheme="https://socod.github.io/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/"/>
     
   </entry>
   
